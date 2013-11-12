@@ -143,6 +143,7 @@ public class MazeRunner extends Frame implements GLEventListener {
 		
 		input = new UserInput(canvas);
 		player.setControl(input);
+		player.getMaze(maze);
 	}
 
 /*
@@ -279,10 +280,10 @@ public class MazeRunner extends Frame implements GLEventListener {
 		player.update(deltaTime);
 		
 		// TODO: implement collision
-		if(maze.isWall(player.getLocationX(), player.getLocationZ()))
-		{
-			player.update(-1*deltaTime);
-		}
+//		if(maze.isWall(player.getLocationX(), player.getLocationZ()))
+//		{
+//			player.update(-1*deltaTime);
+//		}
 	}
 
 	/**
@@ -291,6 +292,9 @@ public class MazeRunner extends Frame implements GLEventListener {
 	 * This is done by copying the locations from the Player, since MazeRunner runs on a first person view.
 	 */
 	private void updateCamera() {
+		
+		
+		
 		camera.setLocationX( player.getLocationX() );
 		camera.setLocationY( player.getLocationY() );  
 		camera.setLocationZ( player.getLocationZ() );
