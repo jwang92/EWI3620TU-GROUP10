@@ -1,7 +1,7 @@
 NumberOfWalls: 5;
-1: 98 97; 35 70; brick_1.png;
-2: 34 65; 34 36; brick_2.png;
-3: 35 76; 20 47; tree_1.png;
-4: 65 10; 50 10; tree_3.png;
-5: 23 20; 23 50; window_1.png;
+98 97; 35 70; brick_1.png;
+34 65; 34 36; brick_2.png;
+35 76; 20 47; tree_1.png;
+65 10; 50 10; tree_3.png;
+23 20; 23 50; window_1.png;
 End;
