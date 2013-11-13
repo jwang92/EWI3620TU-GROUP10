@@ -9,6 +9,9 @@ public class FloorList {
 
 	ArrayList<Floor> floors;
 	
+	/**
+	 * Creates a new floorlist as ArrayList
+	 */
 	public FloorList()
 	{
 		
@@ -16,6 +19,11 @@ public class FloorList {
 		
 	}
 	
+	/**
+	 * Reads a file and creates a floorlist from the file
+	 * @param FileName The file to be read
+	 * @throws FileNotFoundException
+	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
 		
@@ -34,6 +42,10 @@ public class FloorList {
 				
 	}
 	
+	/**
+	 * Adds a Floor to the ArrayList
+	 * @param f The floor to be added
+	 */
 	public void addFloor(Floor f)
 	{
 		
@@ -41,6 +53,11 @@ public class FloorList {
 		
 	}
 
+	/**
+	 * Writes the complete list to a file
+	 * @param FileName The name of the file
+	 * @throws IOException
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfFloors: " + floors.size() + ";\r\n";

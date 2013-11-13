@@ -9,6 +9,9 @@ public class WallList {
 
 	ArrayList<Wall> walls;
 	
+	/**
+	 * Creates the walllist as ArrayList
+	 */
 	public WallList()
 	{
 		
@@ -16,6 +19,11 @@ public class WallList {
 		
 	}
 	
+	/**
+	 * Reads a file to a walllist
+	 * @param FileName The filename with walls
+	 * @throws FileNotFoundException
+	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
 		
@@ -34,13 +42,22 @@ public class WallList {
 				
 	}
 	
+	/**
+	 * Adds a wall to the list
+	 * @param w The wall to be added
+	 */
 	public void addWall(Wall w)
 	{
-		if(!walls.contains(w)){
-			walls.add(w);
-		}
+		
+		walls.add(w);
+		
 	}
 	
+	/**
+	 * Writes the complete list to a file
+	 * @param FileName The name of the file
+	 * @throws IOException
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfWalls: " + walls.size() + ";\r\n";

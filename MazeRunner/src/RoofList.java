@@ -9,6 +9,9 @@ public class RoofList {
 
 	ArrayList<Roof> roofs;
 	
+	/**
+	 * Creates a new rooflist as ArrayList
+	 */
 	public RoofList()
 	{
 		
@@ -16,6 +19,11 @@ public class RoofList {
 		
 	}
 	
+	/**
+	 * Fills the rooflist with roofs found in the file
+	 * @param FileName The name of the file to be read
+	 * @throws FileNotFoundException
+	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
 		
@@ -34,6 +42,10 @@ public class RoofList {
 				
 	}
 	
+	/**
+	 * Adds a roof to the list
+	 * @param r The Roof to be added
+	 */
 	public void addRoof(Roof r)
 	{
 		
@@ -41,6 +53,11 @@ public class RoofList {
 		
 	}
 	
+	/**
+	 * Writes the complete list to a string
+	 * @param FileName The name of the file where to list has to written to
+	 * @throws IOException
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfRoofs: " + roofs.size() + ";\r\n";

@@ -14,6 +14,18 @@ public class Roof {
 	
 	String texture;
 	
+	/**
+	 * Creates a new Roof with the given coordinates
+	 * @param xx1 x of coordinate 1
+	 * @param yy1 y of coordinate 1
+	 * @param xx2 x of coordinate 2
+	 * @param yy2 y of coordinate 2
+	 * @param xx3 x of coordinate 3
+	 * @param yy3 y of coordinate 3
+	 * @param xx4 x of coordinate 4
+	 * @param yy4 y of coordinate 4
+	 * @param tex Name of the texture
+	 */
 	public Roof(int xx1, int yy1, int xx2, int yy2, int xx3, int yy3, int xx4, int yy4, String tex)
 	{
 		
@@ -30,6 +42,10 @@ public class Roof {
 		
 	}
 	
+	/**
+	 * Creates format for filewriting
+	 * @return String with correct format
+	 */
 	public String toFileFormat()
 	{
 		
@@ -37,6 +53,11 @@ public class Roof {
 		
 	}	
 	
+	/**
+	 * Reads a Roof from Scanner
+	 * @param s The scanner with start the new line with the Roof
+	 * @return
+	 */
 	public static Roof Read(Scanner s)
 	{
 		
