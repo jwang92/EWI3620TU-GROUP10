@@ -3,11 +3,11 @@ import java.util.Scanner;
 
 public class Wall {
 
-	int startx;
-	int starty;
-	int endx;
-	int endy;
-	String texture;
+	private int startx;
+	private int starty;
+	private int endx;
+	private int endy;
+	private String texture;
 	
 	/**
 	 * Creates new Wall
@@ -26,6 +26,38 @@ public class Wall {
 		endy = ey;
 		texture = tex;
 		
+	}
+	
+	/**
+	 * Returns the x of the starting point of this wall
+	 * @return Returns the starting x of the wall
+	 */
+	public int getStartx(){
+		return startx;
+	}
+	
+	/**
+	 * Returns the y of the starting point of this wall
+	 * @return Returns the starting y of the wall
+	 */
+	public int getStarty(){
+		return starty;
+	}
+	
+	/**
+	 * Returns the x of the ending point of this wall
+	 * @return Returns the ending x of the wall
+	 */
+	public int getEndx(){
+		return endx;
+	}
+	
+	/**
+	 * Returns the y of the ending point of this wall
+	 * @return Returns the ending y of the wall
+	 */
+	public int getEndy(){
+		return endy;
 	}
 	
 	/**

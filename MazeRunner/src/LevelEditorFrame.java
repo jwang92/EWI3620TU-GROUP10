@@ -181,7 +181,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		drawWalls(gl);
 		
 		// Draw the File
-		if(wallList.walls.size() > 0){
+		if(wallList.getWalls().size() > 0){
 			try {
 				wallList.WriteToFile("WallsTest.txt");
 			} catch (IOException e) {
@@ -318,11 +318,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private void drawWalls(GL gl){
 		//Screen points
 		Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
-		for(int i = 0;i<wallList.walls.size();i++){
-			p1.x = wallList.walls.get(i).startx*gridDistance;
-			p1.y = screenHeight - wallList.walls.get(i).starty*gridDistance;
-			p2.x = wallList.walls.get(i).endx*gridDistance;
-			p2.y = screenHeight - wallList.walls.get(i).endy*gridDistance;
+		for(int i = 0;i<wallList.getWalls().size();i++){
+			p1.x = wallList.getWalls().get(i).getStartx()*gridDistance;
+			p1.y = screenHeight - wallList.getWalls().get(i).getStarty()*gridDistance;
+			p2.x = wallList.getWalls().get(i).getEndx()*gridDistance;
+			p2.y = screenHeight - wallList.getWalls().get(i).getEndy()*gridDistance;
 			wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
 		}
 	}
@@ -412,18 +412,21 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			if (me.getX() < buttonSize) {
 				// The first button is clicked
 				points.clear();
+				gridpoints.clear();
 				drawMode = DM_POINT;
 				System.out.println("Draw mode: DRAW_POINT");
 				buttonPressed = true;
 			} else if (me.getX() < 2 * buttonSize) {
 				// The second button is clicked
 				points.clear();
+				gridpoints.clear();
 				drawMode = DM_WALL;
 				System.out.println("Draw mode: DRAW_WALL");
 				buttonPressed = true;
 			} else if(me.getX() < 3 * buttonSize) {
 				// The Third button is clicked
 				points.clear();
+				gridpoints.clear();
 				drawMode = DM_KOCH;
 				System.out.println("Draw mode: DRAW_KOCH");
 				buttonPressed = true;

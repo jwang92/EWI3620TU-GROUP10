@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class WallList {
 
-	ArrayList<Wall> walls;
+	private ArrayList<Wall> walls;
 	
 	/**
 	 * Creates the walllist as ArrayList
@@ -15,8 +15,15 @@ public class WallList {
 	public WallList()
 	{
 		
-		walls = new ArrayList<Wall>();
-		
+		walls = new ArrayList<Wall>();	
+	}
+	
+	/**
+	 * Return the wall of this list in an ArrayList
+	 * @return Returns the ArrayList with the walls
+	 */
+	public ArrayList<Wall> getWalls(){
+		return walls;
 	}
 	
 	/**
