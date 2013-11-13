@@ -36,9 +36,9 @@ public class WallList {
 	
 	public void addWall(Wall w)
 	{
-		
-		walls.add(w);
-		
+		if(!walls.contains(w)){
+			walls.add(w);
+		}
 	}
 	
 	public void WriteToFile(String FileName) throws IOException{

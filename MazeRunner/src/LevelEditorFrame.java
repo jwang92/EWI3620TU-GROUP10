@@ -6,6 +6,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
@@ -37,8 +38,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private byte drawMode = DM_POINT;
 
 	private ArrayList<Point2D.Float> points;
+	
+	//Grid
+	private ArrayList<Point2D.Float> gridpoints;
 	private ArrayList<Point2D.Float> grid = new ArrayList<Point2D.Float>();
 	private Point2D.Float gridHighlight = new Point2D.Float();
+	
+	//Walls
+	private Wall wall = new Wall(-1, -1, -1, -1, "");
+	private WallList wallList = new WallList();
 
 	/**
 	* When instantiating, a GLCanvas is added to draw the level editor. 
@@ -48,6 +56,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		super("Knight vs Aliens: Level Editor");
 
 		points = new ArrayList<Point2D.Float>();
+		gridpoints = new ArrayList<Point2D.Float>();
 
 		// Set the desired size and background color of the frame
 		setSize(screenWidth, screenHeight);
@@ -167,6 +176,20 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 
 		// Draw a figure based on the current draw mode and user input
 		drawFigure(gl);
+		
+		// Draw the Walls
+		drawWalls(gl);
+		
+		// Draw the File
+		if(wallList.walls.size() > 0){
+			try {
+				wallList.WriteToFile("WallsTest.txt");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 
 		// Flush the OpenGL buffer, outputting the result to the screen.
 		gl.glFlush();
@@ -205,9 +228,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		triangleOnScreen(gl, 2.5f*buttonSize, screenHeight - 4.0f, 3*buttonSize -4.0f, screenHeight -buttonSize + 4.0f, 2*buttonSize +4.0f, screenHeight - buttonSize + 4.0f);
 			
 		}
-	
-
-	
+		
 	public void drawGrid(GL gl){
 		for(int i = 0; i < grid.size();i++){
 			if(gridHighlight.equals(grid.get(i))){
@@ -232,7 +253,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glPointSize(10.0f);
 		gl.glColor3f(0.0f, 0.0f, 0.0f);
 
+		//Screen points
 		Point2D.Float p1, p2, p3;
+		
+		//Grid points
+		Point2D.Float g1, g2;
 		switch (drawMode) {
 		case DM_POINT:
 			if (points.size() >= 1) {
@@ -246,8 +271,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				// If the draw mode is "line" and the user has supplied at least
 				// two points, draw a line between those points
 				p1 = points.get(0);
+				g1 = gridpoints.get(0);
 				p2 = points.get(1);
-				wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
+				g2 = gridpoints.get(1);
+				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,"brick.png");
+				wallList.addWall(wall);
 			}
 			break;
 		case DM_KOCH:
@@ -286,6 +314,20 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			System.exit(1);
 		}
 	}
+	
+	private void drawWalls(GL gl){
+		//Screen points
+		Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
+		for(int i = 0;i<wallList.walls.size();i++){
+			p1.x = wallList.walls.get(i).startx*gridDistance;
+			p1.y = screenHeight - wallList.walls.get(i).starty*gridDistance;
+			p2.x = wallList.walls.get(i).endx*gridDistance;
+			p2.y = screenHeight - wallList.walls.get(i).endy*gridDistance;
+			wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
+		}
+	}
+	
+	
 	/**
 	 * Help method that uses GL calls to draw a point.
 	 */
@@ -394,15 +436,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				if (drawMode == DM_POINT && points.size() >= 1) {
 					// If we're drawing points and one point was stored, reset the points list
 					points.clear();
+					gridpoints.clear();
 				} else if (drawMode == DM_WALL && points.size() >= 2) {
 					// If we're drawing lines and two points were already stored, reset the points list
 					points.clear();
+					gridpoints.clear();
 				} else if (drawMode == DM_KOCH && points.size() >= 3) {
 					// If we're drawing koch and three points were already stored, reset the points list
 					points.clear();
+					gridpoints.clear();
 				}
 				// Add a new point to the points list.
 				points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
+				gridpoints.add(gridHighlight);
 				System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
 			}
 		}
