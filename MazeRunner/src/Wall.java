@@ -20,6 +20,12 @@ public class Wall {
 		
 	}
 	
+	public String toFileFormat()
+	{
+		
+		return startx + " " + starty + "; " + endx + " " + endy + "; "+ texture + ";\r\n";
+		
+	}
 	
 	public static Wall Read(Scanner s)
 	{
@@ -35,5 +41,7 @@ public class Wall {
 		return new Wall(sx, sy, ex, ey, tex);		
 		
 	}
+	
+	
 	
 }
