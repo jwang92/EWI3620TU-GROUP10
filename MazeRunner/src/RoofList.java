@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,11 +34,40 @@ public class RoofList {
 				
 	}
 	
-	public static void main(String[] args) throws FileNotFoundException {
+	public void addRoof(Roof r)
+	{
 		
-		RoofList r = new RoofList();
-		r.Read("Roof.txt");
+		roofs.add(r);
+		
+	}
+	
+	public void WriteToFile(String FileName) throws IOException{
+		
+		String r = "NumberOfRoofs: " + roofs.size() + ";\r\n";
+		
+		for(int i = 0; i < roofs.size(); i++)
+		{
 			
+			r += roofs.get(i).toFileFormat();			
+			
+		}
+		
+		r += "End;";
+		
+		File f = new File(FileName);
+		
+		// Create new file with the given name if it doesn't exist yet
+		if(!f.exists())
+		{
+			
+			f.createNewFile();
+			
+		}
+		
+		FileWriter w = new FileWriter(f);
+		w.write(r);
+		w.close();
+		
 	}
 	
 }
