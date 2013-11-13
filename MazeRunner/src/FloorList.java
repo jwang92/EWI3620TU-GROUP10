@@ -70,13 +70,4 @@ public class FloorList {
 		
 	}
 	
-	public static void main(String[] args) throws IOException {
-		
-		FloorList f = new FloorList();
-		f.Read("Floor.txt");
-		
-		f.WriteToFile("asdasd.txt");
-				
-	}
-	
 }
