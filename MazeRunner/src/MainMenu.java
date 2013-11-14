@@ -31,7 +31,9 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	private float b1PosX =screenWidth/2.0f-buttonSizeX/2.0f;
 	private float b1PosY=screenHeight-2.0f*buttonSizeY;
 	public MazeRunner MazeRunner;
-
+	public GameStateManager State = new GameStateManager();
+	public int teller=0; 
+	
 	public MainMenu(){
 		super("Main Menu");
 		
@@ -76,7 +78,16 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	}
 	
 	public void display(GLAutoDrawable drawable) {
+		int tel = State.getState();
+		if(tel==0)
+			render(drawable);
+		else if (tel==1)
+			MazeRunner.display(drawable);
+	}
+	
+	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
@@ -201,13 +212,14 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	public void mouseReleased(MouseEvent me) {
 		
 		if (me.getY() >100 && me.getY() <200 && me.getX() > b1PosX && me.getX() < b1PosX+buttonSizeX) {
-				MazeRunner = new MazeRunner();
-				this.dispose();
+				//MazeRunner = new MazeRunner();
+				//this.dispose();
+				State.GameStateUpdate(GameState.MAINGAME_STATE);
 			} 
 	}
-
-	public static void main(String[] args) {
-		new MainMenu();
+	
+	public void setTeller(int d){
+		teller=d;
 	}
 
 }

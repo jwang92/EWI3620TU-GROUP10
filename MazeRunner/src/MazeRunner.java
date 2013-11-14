@@ -5,6 +5,7 @@ import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 
 import com.sun.opengl.util.*;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -56,10 +57,10 @@ public class MazeRunner extends Frame implements GLEventListener {
 	 */
 	public MazeRunner() {
 		// Make a new window.
-		super("MazeRunner");
+		//super("MazeRunner");
 		
 		// Let's change the window to our liking.
-		setSize( screenWidth, screenHeight);
+		/*setSize( screenWidth, screenHeight);
 		setBackground( Color.white );
 
 		// The window also has to close when we want to.
@@ -69,13 +70,14 @@ public class MazeRunner extends Frame implements GLEventListener {
 			{
 				System.exit(0);
 			}
-		});
-
+		});*/
+		
+		
 		initJOGL();							// Initialize JOGL.
 		initObjects();						// Initialize all the objects!
 		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
-		setVisible(true);
+		//setVisible(true);
 	}
 	
 	/**
@@ -202,7 +204,12 @@ public class MazeRunner extends Frame implements GLEventListener {
 	 * knows where to draw.
 	 */
 	public void display(GLAutoDrawable drawable) {
+		render(drawable);
+	}
+
+	public void render(GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
+		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		GLU glu = new GLU();
 		
 		// Calculating time since last frame.
@@ -230,7 +237,6 @@ public class MazeRunner extends Frame implements GLEventListener {
         // Flush the OpenGL buffer.
         gl.glFlush();
 	}
-
 	
 	/**
 	 * displayChanged(GLAutoDrawable, boolean, boolean) is called upon whenever the display mode changes.
@@ -313,8 +319,8 @@ public class MazeRunner extends Frame implements GLEventListener {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	//public static void main(String[] args) {
 		// Create and run MazeRunner.
-		new MazeRunner();
-	}
+		//new MazeRunner();
+	//}
 }
