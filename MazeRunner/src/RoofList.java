@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class RoofList {
 
-	ArrayList<Roof> roofs;
+	private ArrayList<Roof> roofs;
 	
 	/**
 	 * Creates a new rooflist as ArrayList
@@ -17,6 +17,14 @@ public class RoofList {
 		
 		roofs = new ArrayList<Roof>();
 		
+	}
+	
+	/**
+	 * Return the roofs of this list in an ArrayList
+	 * @return Returns the ArrayList with the roofs
+	 */
+	public ArrayList<Roof> getRoofs(){
+		return roofs;
 	}
 	
 	/**

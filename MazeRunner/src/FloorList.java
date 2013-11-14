@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class FloorList {
 
-	ArrayList<Floor> floors;
+	private ArrayList<Floor> floors;
 	
 	/**
 	 * Creates a new floorlist as ArrayList
@@ -17,6 +17,14 @@ public class FloorList {
 		
 		floors = new ArrayList<Floor>();
 		
+	}
+	
+	/**
+	 * Return the floors of this list in an ArrayList
+	 * @return Returns the ArrayList with the floors
+	 */
+	public ArrayList<Floor> getFloors(){
+		return floors;
 	}
 	
 	/**

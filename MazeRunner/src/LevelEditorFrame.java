@@ -14,6 +14,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLJPanel;
 
 import com.sun.opengl.util.Animator;
 
@@ -24,18 +25,21 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private int screenWidth = 800, screenHeight = 600;
 	private float buttonSize = screenHeight / 10.0f;
 	
-	//Grid size
+	//Grid distances
 	private int worldSizeX = 10, worldSizeY = 10; 
 	private float gridDistance = 50.0f;
+	private float gridOffsetX = 10, gridOffsetY = 10 + buttonSize;
+	private float gridDragX = 0, gridDragY = 0;
 
 	// A GLCanvas is a component that can be added to a frame. The drawing
 	// happens on this component.
-	private GLCanvas canvas;
+	private GLJPanel canvas;
 
-	private static final byte DM_POINT = 0;
+	private static final byte DM_OBJECT = 0;
 	private static final byte DM_WALL = 1;
-	private static final byte DM_KOCH = 2;
-	private byte drawMode = DM_POINT;
+	private static final byte DM_FLOOR = 2;
+	private static final byte DM_ROOF = 3;
+	private byte drawMode = DM_OBJECT;
 
 	private ArrayList<Point2D.Float> points;
 	
@@ -47,21 +51,29 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//Walls
 	private Wall wall = new Wall(-1, -1, -1, -1, "");
 	private WallList wallList = new WallList();
+	
+	//Floors
+	private Floor floor = new Floor();
+	private FloorList floorList = new FloorList();
+	
+	//Roofs
+	private Roof roof = new Roof();
+	private RoofList roofList = new RoofList();
 
 	/**
 	* When instantiating, a GLCanvas is added to draw the level editor. 
 	* An animator is created to continuously render the canvas.
 	*/
-	public LevelEditorFrame() {
-		super("Knight vs Aliens: Level Editor");
+	public LevelEditorFrame(GLJPanel panel) {
+		//super("Knight vs Aliens: Level Editor");
 
 		points = new ArrayList<Point2D.Float>();
 		gridpoints = new ArrayList<Point2D.Float>();
 
 		// Set the desired size and background color of the frame
-		setSize(screenWidth, screenHeight);
+		//setSize(screenWidth, screenHeight);
 		//setBackground(Color.white);
-		setBackground(new Color(0.95f, 0.95f, 0.95f));
+		//setBackground(new Color(0.95f, 0.95f, 0.95f));
 		
 		//Initialize the grid
 		initGrid();
@@ -76,13 +88,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		// The OpenGL capabilities should be set before initializing the
 		// GLCanvas. We use double buffering and hardware acceleration.
-		GLCapabilities caps = new GLCapabilities();
-		caps.setDoubleBuffered(true);
-		caps.setHardwareAccelerated(true);
+		//GLCapabilities caps = new GLCapabilities();
+		//caps.setDoubleBuffered(true);
+		//caps.setHardwareAccelerated(true);
 
 		// Create a GLCanvas with the specified capabilities and add it to this
 		// frame. Now, we have a canvas to draw on using JOGL.
-		canvas = new GLCanvas(caps);
+		canvas = panel;
 		add(canvas);
 
 		// Set the canvas' GL event listener to be this class. Doing so gives
@@ -102,7 +114,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		anim.start();
 
 		// With everything set up, the frame can now be displayed to the user.
-		setVisible(true);
+		//setVisible(true);
 		}
 
 	@Override
@@ -177,6 +189,21 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// Draw a figure based on the current draw mode and user input
 		drawFigure(gl);
 		
+		// Draw the Floor or Roof according to the drawMode
+		switch (drawMode) {
+		case DM_OBJECT:
+			drawFloors(gl);
+			break;
+		case DM_WALL:
+			drawFloors(gl);
+			break;
+		case DM_FLOOR:
+			drawFloors(gl);
+			break;
+		case DM_ROOF:
+			drawRoofs(gl);
+		}
+		
 		// Draw the Walls
 		drawWalls(gl);
 		
@@ -210,6 +237,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			
 		gl.glColor3f(0.5f, 0, 0);
 		boxOnScreen(gl, 2*buttonSize, screenHeight - buttonSize, buttonSize);
+		
+		gl.glColor3f(0.5f, 0, 0.5f);
+		boxOnScreen(gl, 3*buttonSize, screenHeight - buttonSize, buttonSize);
 
 		// Draw a point on top of the first box
 		gl.glPointSize(5.0f);
@@ -226,10 +256,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glLineWidth(3);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
 		triangleOnScreen(gl, 2.5f*buttonSize, screenHeight - 4.0f, 3*buttonSize -4.0f, screenHeight -buttonSize + 4.0f, 2*buttonSize +4.0f, screenHeight - buttonSize + 4.0f);
-			
+		
+		//Draw a triangle on top of the fourth box
+		gl.glLineWidth(3);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		triangleOnScreen(gl, 3.5f*buttonSize, screenHeight - 4.0f, 4*buttonSize -4.0f, screenHeight -buttonSize + 4.0f, 3*buttonSize +4.0f, screenHeight - buttonSize + 4.0f);
 		}
 		
 	public void drawGrid(GL gl){
+		Point2D.Float p1 = new Point2D.Float();
 		for(int i = 0; i < grid.size();i++){
 			if(gridHighlight.equals(grid.get(i))){
 				gl.glColor3f(0, 0.5f, 0f);
@@ -237,8 +272,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			else{
 				gl.glColor3f(0.0f, 0.0f, 0.0f);
 			}
-			pointOnScreen(gl,grid.get(i).x*gridDistance, screenHeight - grid.get(i).y*gridDistance);
+			p1.x = gridOffsetX + (grid.get(i).x-1)*gridDistance;
+			p1.y = screenHeight - gridOffsetY - (grid.get(i).y-1)*gridDistance;
+			pointOnScreen(gl,p1.x,p1.y);
 		}
+	}
+	
+	public void setDrawMode(){
+		drawMode = DM_WALL;
 	}
 
 	/**
@@ -254,12 +295,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glColor3f(0.0f, 0.0f, 0.0f);
 
 		//Screen points
-		Point2D.Float p1, p2, p3;
+		Point2D.Float p1, p2, p3, p4;
 		
 		//Grid points
-		Point2D.Float g1, g2;
+		Point2D.Float g1, g2, g3, g4;
 		switch (drawMode) {
-		case DM_POINT:
+		case DM_OBJECT:
 			if (points.size() >= 1) {
 				// If the draw mode is "point" and the user has supplied at
 				// least one point, draw that point.
@@ -270,62 +311,82 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			if (points.size() >= 2) {
 				// If the draw mode is "line" and the user has supplied at least
 				// two points, draw a line between those points
-				p1 = points.get(0);
 				g1 = gridpoints.get(0);
-				p2 = points.get(1);
 				g2 = gridpoints.get(1);
 				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,"brick.png");
 				wallList.addWall(wall);
 			}
 			break;
-		case DM_KOCH:
-			if (points.size() >= 3) {
-				// If the draw mode is "koch" and the user has supplied at least
+		case DM_FLOOR:
+			if (points.size() >= 4) {
+				// If the draw mode is "floor" and the user has supplied at least
 				// three points, draw a line between those points
-				p1 = points.get(0);
-				p2 = points.get(1);
-				p3 = points.get(2);
-				drawKoch(gl, p1.x, p1.y, p2.x, p2.y,3);
-				drawKoch(gl, p2.x, p2.y, p3.x, p3.y,3);
-				drawKoch(gl, p3.x, p3.y, p1.x, p1.y,3);
+				g1 = gridpoints.get(0);
+				g2 = gridpoints.get(1);
+				g3 = gridpoints.get(2);
+				g4 = gridpoints.get(3);
+				ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+				p.add(g1);
+				p.add(g2);
+				p.add(g3);
+				p.add(g4);
+				floor = new Floor(p,"brick.png");
+				floorList.addFloor(floor);
+				}
+			break;
+		case DM_ROOF:
+			if (points.size() >= 4) {
+				// If the draw mode is "roof" and the user has supplied at least
+				// three points, draw a line between those points
+				g1 = gridpoints.get(0);
+				g2 = gridpoints.get(1);
+				g3 = gridpoints.get(2);
+				g4 = gridpoints.get(3);
+				ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+				p.add(g1);
+				p.add(g2);
+				p.add(g3);
+				p.add(g4);
+				roof = new Roof(p,"brick.png");
+				roofList.addRoof(roof);
 				}
 			break;
 			}
 		}
-	private void drawKoch(GL gl, float x1, float y1, float x2, float y2, int n){
-		if(n == 0){
-			wallOnScreen(gl, x1, y1, x2, y2);
-		}
-		else if(n > 0){
-		float angle = -60.0f/360.0f*2.0f* (float) Math.PI;	
-		float x3 = x1 + (x2-x1)/3;
-		float y3 = y1 + (y2-y1)/3;
-		float x5 = x2 - (x2-x1)/3;
-		float y5 = y2 - (y2-y1)/3;
-		float x4 = x3 + (x5-x3)*(float)Math.cos(angle) - (y5-y3)*(float)Math.sin(angle);
-		float y4 = y3 + (x5-x3)*(float)Math.sin(angle) + (y5-y3)*(float)Math.cos(angle);
-		drawKoch(gl, x1 , y1, x3, y3, n-1);
-		drawKoch(gl, x3 , y3, x4, y4, n-1);
-		drawKoch(gl, x4 , y4, x5, y5, n-1);
-		drawKoch(gl, x5, y5, x2, y2, n-1);
-		}
-		else if(n < 0){
-			System.out.println("Koch curve can't drawn with n smaller than 0");
-			System.exit(1);
-		}
-	}
 	
 	private void drawWalls(GL gl){
 		//Screen points
 		Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
 		for(int i = 0;i<wallList.getWalls().size();i++){
-			p1.x = wallList.getWalls().get(i).getStartx()*gridDistance;
-			p1.y = screenHeight - wallList.getWalls().get(i).getStarty()*gridDistance;
-			p2.x = wallList.getWalls().get(i).getEndx()*gridDistance;
-			p2.y = screenHeight - wallList.getWalls().get(i).getEndy()*gridDistance;
+			p1.x = gridOffsetX + (wallList.getWalls().get(i).getStartx()-1)*gridDistance;
+			p1.y = screenHeight -gridOffsetY - (wallList.getWalls().get(i).getStarty()-1)*gridDistance;
+			p2.x = gridOffsetX + (wallList.getWalls().get(i).getEndx()-1)*gridDistance;
+			p2.y = screenHeight - gridOffsetY - (wallList.getWalls().get(i).getEndy()-1)*gridDistance;
 			wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
 		}
 	}
+	
+	private void drawFloors(GL gl){
+		//Screen points
+		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+		Point2D.Float p1 = new Point2D.Float();
+		for(int i = 0; i < floorList.getFloors().size();i++){
+			for(int j =0; j < floorList.getFloors().get(i).getPoints().size();j++){
+				p1.x = gridOffsetX + (floorList.getFloors().get(i).getPoints().get(j).x-1)*gridDistance;
+				p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
+				p.add(p1);
+			}
+			System.out.println(p.toString());
+			floorOnScreen(gl,p);
+			p.clear();
+		}
+	}
+	
+	private void drawRoofs(GL gl){
+		
+	}
+	
+	
 	
 	
 	/**
@@ -345,6 +406,16 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glVertex2f(x1, y1);
 		gl.glVertex2f(x2, y2);
 		gl.glEnd();
+	}
+	
+	private void floorOnScreen(GL gl, ArrayList<Point2D.Float> p){
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+		gl.glBegin(GL.GL_POLYGON);
+		for(int i =0; i<p.size();i++){
+			gl.glVertex2f(p.get(i).x, p.get(i).y);
+		}
+		gl.glEnd();
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 	}
 		
 	/**
@@ -413,7 +484,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				// The first button is clicked
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_POINT;
+				drawMode = DM_OBJECT;
 				System.out.println("Draw mode: DRAW_POINT");
 				buttonPressed = true;
 			} else if (me.getX() < 2 * buttonSize) {
@@ -427,25 +498,40 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				// The Third button is clicked
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_KOCH;
-				System.out.println("Draw mode: DRAW_KOCH");
+				drawMode = DM_FLOOR;
+				System.out.println("Draw mode: DRAW_FLOOR");
+				buttonPressed = true;
+			}	else if(me.getX() < 4 * buttonSize) {
+				// The Third button is clicked
+				points.clear();
+				gridpoints.clear();
+				drawMode = DM_ROOF;
+				System.out.println("Draw mode: DRAW_ROOF");
 				buttonPressed = true;
 			}
+			
 		}
 
 		// Only register a new point if the click hit a grid point
 		if (!buttonPressed) {
-			if(((gridHighlight.x) >= (me.getX()/gridDistance-0.1) && gridHighlight.x <= me.getX()/gridDistance+0.1)&&((gridHighlight.y) >= (me.getY()/gridDistance-0.1) && gridHighlight.y <= me.getY()/gridDistance+0.1)){	
-				if (drawMode == DM_POINT && points.size() >= 1) {
-					// If we're drawing points and one point was stored, reset the points list
+			if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
+					&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
+					&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
+					&& (gridHighlight.y <= ((me.getY()-gridOffsetY)/gridDistance+1)+0.1)){	
+				if (drawMode == DM_OBJECT && points.size() >= 1) {
+					// If we're placing objects and one point was stored, reset the points list
 					points.clear();
 					gridpoints.clear();
 				} else if (drawMode == DM_WALL && points.size() >= 2) {
 					// If we're drawing lines and two points were already stored, reset the points list
 					points.clear();
 					gridpoints.clear();
-				} else if (drawMode == DM_KOCH && points.size() >= 3) {
-					// If we're drawing koch and three points were already stored, reset the points list
+				} else if (drawMode == DM_FLOOR && points.size() >= 4) {
+					// If we're drawing Floors and four points were already stored, reset the points list
+					points.clear();
+					gridpoints.clear();
+				} else if (drawMode == DM_ROOF && points.size() >= 4) {
+					// If we're drawing Roofs and four points were already stored, reset the points list
 					points.clear();
 					gridpoints.clear();
 				}
@@ -473,8 +559,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// Not needed.
+	public void mousePressed(MouseEvent me) {
+		gridDragX = me.getX();
+		gridDragY = me.getY();
 	}
 	
 	@Override
@@ -484,15 +571,22 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		p1.y = me.getY();
 		gridHighlight = new Point2D.Float();
 		for(int i = 0; i<grid.size();i++){
-			if(((grid.get(i).x) >= (p1.x/gridDistance-0.1) && grid.get(i).x <= p1.x/gridDistance+0.1)&&((grid.get(i).y) >= (p1.y/gridDistance-0.1) && grid.get(i).y <= p1.y/gridDistance+0.1)){
+			if(((grid.get(i).x) >= (((p1.x-gridOffsetX)/gridDistance+1)-0.1) 
+					&& grid.get(i).x <= ((p1.x-gridOffsetX)/gridDistance+1)+0.1)
+					&&((grid.get(i).y) >= (((p1.y-gridOffsetY)/gridDistance+1)-0.1)
+					&& grid.get(i).y <= ((p1.y-gridOffsetY)/gridDistance+1)+0.1)){
 				gridHighlight = grid.get(i);
 			}	
 		}
 	}
 	
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// Not needed.
+	public void mouseDragged(MouseEvent me) {
+		gridOffsetX += me.getX()- gridDragX;
+		gridOffsetY += me.getY()- gridDragY;
+		gridDragX = me.getX();
+		gridDragY = me.getY();
+		
 	}
 	
 

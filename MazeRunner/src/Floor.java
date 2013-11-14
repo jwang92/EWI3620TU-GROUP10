@@ -1,18 +1,12 @@
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class Floor {
 
-	private int x1;
-	private int y1;
-	private int x2;
-	private int y2;
-	private int x3;
-	private int y3;
-	private int x4;
-	private int y4;
-	
-	String texture;
+	private ArrayList<Point2D.Float> points;
+	private String texture;
 	
 	/**
 	 * Creates a new Floor with the given coordinates
@@ -26,20 +20,25 @@ public class Floor {
 	 * @param yy4 y of coordinate 4
 	 * @param tex Name of the texture
 	 */
-	public Floor(int xx1, int yy1, int xx2, int yy2, int xx3, int yy3, int xx4, int yy4, String tex)
+	public Floor(ArrayList<Point2D.Float> p, String tex)
 	{
-		
-		x1 = xx1;
-		y1 = yy1;
-		x2 = xx2;
-		y2 = yy2;
-		x3 = xx3;
-		y3 = yy3;
-		x4 = xx4;
-		y4 = yy4;
-		
-		texture = tex;
-		
+		if(p.size() >=4){
+			points = p;
+			texture = tex;
+		}	
+	}
+	
+	public Floor(){
+		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+		texture = "";
+	}
+	
+	public ArrayList<Point2D.Float> getPoints(){
+		return points;
+	}
+	
+	public String getTexture(){
+		return texture;
 	}
 	
 	/**
@@ -48,9 +47,12 @@ public class Floor {
 	 */
 	public String toFileFormat()
 	{
-		
-		return x1 + " " + y1 + "; " + x2 + " " + y2 + "; " + x3 + " " + y3 + "; " + x4 + " " + y4 + "; " + texture + ";\r\n";
-		
+		String res = "";
+		for(int i =0; i<points.size();i++){
+			res = res + points.get(i).x + " " + points.get(i).y + "; ";
+		}
+		res = res + texture + ";\r\n";
+		return res;
 	}
 	
 	
@@ -61,21 +63,17 @@ public class Floor {
 	 */
 	public static Floor Read(Scanner s)
 	{
-		
 		s.useDelimiter(" |; |;\r\n");
-		
-		int x1 = s.nextInt();
-		int y1 = s.nextInt();
-		int x2 = s.nextInt();
-		int y2 = s.nextInt();
-		int x3 = s.nextInt();
-		int y3 = s.nextInt();
-		int x4 = s.nextInt();
-		int y4 = s.nextInt();
+		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+		Point2D.Float p1 = new Point2D.Float();
+		for(int i =0; i<4; i++){
+			p1.x = s.nextInt();
+			p1.y = s.nextInt();
+			p.add(p1);
+		}
 		String tex = s.next();
 
-		return new Floor(x1, y1, x2, y2, x3, y3, x4, y4, tex);	
-		
+		return new Floor(p, tex);	
 	}
 	
 }
