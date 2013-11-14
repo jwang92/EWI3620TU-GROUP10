@@ -20,10 +20,17 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MainMenu extends Frame implements GLEventListener, MouseListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private GLCanvas canvas;
 	private int screenWidth = 600, screenHeight = 600;		// Screen size.
 	private int buttonSizeX = 250;
 	private int buttonSizeY = 100;
+	private float b1PosX =screenWidth/2.0f-buttonSizeX/2.0f;
+	private float b1PosY=screenHeight-2.0f*buttonSizeY;
+	public MazeRunner MazeRunner;
 
 	public MainMenu(){
 		super("Main Menu");
@@ -79,7 +86,7 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 		drawButtons(gl);
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2f(screenWidth/2.0f-buttonSizeX/2.0f, screenHeight-2.0f*buttonSizeY );
+		gl.glRasterPos2f(b1PosX,b1PosY );
 		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Start Game");
 		gl.glFlush();
 	}
@@ -87,7 +94,7 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		gl.glColor3f(0, 1.0f, 0f);
-		boxOnScreen(gl, screenWidth/2.0f-buttonSizeX/2.0f, screenHeight-2.0f*buttonSizeY , buttonSizeX, buttonSizeY);
+		boxOnScreen(gl, b1PosX, b1PosY, buttonSizeX, buttonSizeY);
 	}
 	
 	private void boxOnScreen(GL gl, float x, float y, float sizeX, float sizeY) {
@@ -106,7 +113,7 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
  * **********************************************
  */
 
-	@Override
+	//@Override
 	//public void display(GLAutoDrawable arg0) {
 	//	// TODO Auto-generated method stub
 	//	
@@ -122,6 +129,7 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	public void init(GLAutoDrawable arg0) {
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
+		
 
 		// Set the matrix mode to GL_PROJECTION, allowing us to manipulate the
 		// projection matrix
@@ -190,9 +198,12 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseReleased(MouseEvent me) {
 		
+		if (me.getY() >100 && me.getY() <200 && me.getX() > b1PosX && me.getX() < b1PosX+buttonSizeX) {
+				MazeRunner = new MazeRunner();
+				this.dispose();
+			} 
 	}
 
 	public static void main(String[] args) {
