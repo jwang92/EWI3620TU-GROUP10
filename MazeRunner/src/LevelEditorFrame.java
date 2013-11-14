@@ -202,6 +202,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			break;
 		case DM_ROOF:
 			drawRoofs(gl);
+			break;
 		}
 		
 		// Draw the Walls
@@ -278,8 +279,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
-	public void setDrawMode(){
-		drawMode = DM_WALL;
+	public void setDrawMode(int i){
+		if(i == 1)
+			drawMode = DM_WALL;
+		else if(i == 2)
+			drawMode = DM_ROOF;
+		else if(i == 3)
+			drawMode = DM_FLOOR;
+		else if(i == 4){}
+			// Texture inbouwen
 	}
 
 	/**
