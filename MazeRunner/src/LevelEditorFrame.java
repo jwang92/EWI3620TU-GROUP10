@@ -369,21 +369,31 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private void drawFloors(GL gl){
 		//Screen points
 		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
-		Point2D.Float p1 = new Point2D.Float();
 		for(int i = 0; i < floorList.getFloors().size();i++){
 			for(int j =0; j < floorList.getFloors().get(i).getPoints().size();j++){
+				Point2D.Float p1 = new Point2D.Float();
 				p1.x = gridOffsetX + (floorList.getFloors().get(i).getPoints().get(j).x-1)*gridDistance;
 				p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
 				p.add(p1);
 			}
-			System.out.println(p.toString());
 			floorOnScreen(gl,p);
 			p.clear();
 		}
 	}
 	
 	private void drawRoofs(GL gl){
-		
+		//Screen points
+		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+		for(int i = 0; i < roofList.getRoofs().size();i++){
+			for(int j =0; j < roofList.getRoofs().get(i).getPoints().size();j++){
+				Point2D.Float p1 = new Point2D.Float();
+				p1.x = gridOffsetX + (roofList.getRoofs().get(i).getPoints().get(j).x-1)*gridDistance;
+				p1.y = screenHeight - gridOffsetY - (roofList.getRoofs().get(i).getPoints().get(j).y-1)*gridDistance;
+				p.add(p1);
+			}
+			roofOnScreen(gl,p);
+			p.clear();
+		}
 	}
 	
 	
@@ -409,6 +419,16 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	private void floorOnScreen(GL gl, ArrayList<Point2D.Float> p){
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+		gl.glBegin(GL.GL_POLYGON);
+		for(int i =0; i<p.size();i++){
+			gl.glVertex2f(p.get(i).x, p.get(i).y);
+		}
+		gl.glEnd();
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+	}
+	
+	private void roofOnScreen(GL gl, ArrayList<Point2D.Float> p){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
 		gl.glBegin(GL.GL_POLYGON);
 		for(int i =0; i<p.size();i++){
