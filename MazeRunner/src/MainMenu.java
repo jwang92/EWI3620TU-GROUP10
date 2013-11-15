@@ -19,76 +19,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainMenu extends Frame implements GLEventListener, MouseListener{
+public class MainMenu extends MainClass{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private GLCanvas canvas;
-	private int screenWidth = 600, screenHeight = 600;		// Screen size.
-	private int buttonSizeX = 250;
-	private int buttonSizeY = 100;
-	private float b1PosX =screenWidth/2.0f-buttonSizeX/2.0f;
-	private float b1PosY=screenHeight-2.0f*buttonSizeY;
-	public MazeRunner MazeRunner;
-	public GameStateManager State = new GameStateManager();
-	public int teller=0; 
 	
 	public MainMenu(){
-		super("Main Menu");
-		
-		// Let's change the window to our liking.
-		setSize( screenWidth, screenHeight);
-		setBackground(new Color(1.0f, 0.0f, 0.0f, 1));
-		
-		// The window also has to close when we want to.
-		this.addWindowListener( new WindowAdapter()
-		{
-			public void windowClosing( WindowEvent e )
-			{
-				System.exit(0);
-			}
-		});
-		
-		// The OpenGL capabilities should be set before initializing the
-		// GLCanvas. We use double buffering and hardware acceleration.
-		GLCapabilities caps = new GLCapabilities();
-		caps.setDoubleBuffered(true);
-		caps.setHardwareAccelerated(true);
-
-		// Create a GLCanvas with the specified capabilities and add it to this
-		// frame. Now, we have a canvas to draw on using JOGL.
-		canvas = new GLCanvas(caps);
-		add(canvas);
-
-		// Set the canvas' GL event listener to be this class. Doing so gives
-		// this class control over what is rendered on the GL canvas.
-		canvas.addGLEventListener(this);
-
-		// Also add this class as mouse listener, allowing this class to react
-		// to mouse events that happen inside the GLCanvas.
-		canvas.addMouseListener(this);
-		
-//		initJOGL();							// Initialize JOGL.
-
-//		initObjects();						// Initialize all the objects!
-		
-		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
-		setVisible(true);
 	}
 	
 	public void display(GLAutoDrawable drawable) {
-		int tel = State.getState();
-		if(tel==0)
-			render(drawable);
-		else if (tel==1)
-			MazeRunner.display(drawable);
+		render(drawable);
 	}
 	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -167,7 +112,7 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
-		gl.glDisable(GL.GL_DEPTH_TEST);
+		gl.glDisable(GL.GL_DEPTH_TEST); 
 		
 	}
 
@@ -212,14 +157,9 @@ public class MainMenu extends Frame implements GLEventListener, MouseListener{
 	public void mouseReleased(MouseEvent me) {
 		
 		if (me.getY() >100 && me.getY() <200 && me.getX() > b1PosX && me.getX() < b1PosX+buttonSizeX) {
-				//MazeRunner = new MazeRunner();
-				//this.dispose();
+			
 				State.GameStateUpdate(GameState.MAINGAME_STATE);
 			} 
 	}
 	
-	public void setTeller(int d){
-		teller=d;
-	}
-
 }
