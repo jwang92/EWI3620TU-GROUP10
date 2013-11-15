@@ -69,8 +69,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private RoofList roofList = new RoofList();
 	
 	//Texture
-	private int[] texNamesArray = new int[10];
+	private ArrayList<Texture> textures;
+	private ArrayList<String> textureNames;
 	private Texture brickTexture;
+	private Texture woodTexture;
 	private String textureFileName = "brick.png";
 	private String textureFileType = ".png";
 	private float textureTop, textureBottom, textureLeft, textureRight;
@@ -82,11 +84,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	*/
 	public LevelEditorFrame(GLJPanel panel) {
 		//super("Knight vs Aliens: Level Editor");
-
+		
+		//Screen points
 		points = new ArrayList<Point2D.Float>();
+		
+		//Grid points
 		gridpoints = new ArrayList<Point2D.Float>();
+		
+		//Textures
+		textures = new ArrayList<Texture>();
+		textureNames = new ArrayList<String>();
+		
 
-		// Set the desired size and background color of the frame
+		//Set the desired size and background color of the frame
 		//setSize(screenWidth, screenHeight);
 		//setBackground(Color.white);
 		//setBackground(new Color(0.95f, 0.95f, 0.95f));
@@ -169,14 +179,32 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST);
+		
+		loadTextures();
+			
+	}
+
+	
+	/**
+	 * Initialize the grid
+	 */
+	public void initGrid(){
+		for(int x = 1; x < worldSizeX; x++){
+			for(int y = 1; y < worldSizeY; y++){
+				grid.add(new Point2D.Float((float)(x),(float)(y)));
+			}
+		}
+	}
+	
+	public void loadTextures(){
 		try {
 //			gl.glGenTextures(10, texNamesArray, 0);
 //			gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
             
 			//Load texture image	
 			//URL stream = getClass().getClassLoader().getResource("brick.png");
+			textureFileName = "textures/brick.png";
 			File file = new File("textures/brick.png");
-			System.out.println(file.toString());
 			TextureData data;
 			data = TextureIO.newTextureData(file, false, "png");
 			brickTexture = TextureIO.newTexture(data);
@@ -184,6 +212,21 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
 			brickTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 			brickTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+			
+			textures.add(brickTexture);
+			textureNames.add("textures/brick.png");
+			
+			textureFileName = "textures/wood.png";
+			file = new File("textures/wood.png");
+			data = TextureIO.newTextureData(file, false, "png");
+			woodTexture = TextureIO.newTexture(data);
+			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			woodTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			woodTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+			
+			textures.add(woodTexture);
+			textureNames.add("textures/wood.png");
 			
 			//GenerateMipmap
 			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
@@ -207,18 +250,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-	}
-
-	
-	/**
-	 * Initialize the grid
-	 */
-	public void initGrid(){
-		for(int x = 1; x < worldSizeX; x++){
-			for(int y = 1; y < worldSizeY; y++){
-				grid.add(new Point2D.Float((float)(x),(float)(y)));
-			}
-		}
 	}
 	
 	@Override
@@ -268,6 +299,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				e.printStackTrace();
 			}
 		}
+		
+		//Delete the old points if neccesary
+		deletePoints();
 		
 
 		// Flush the OpenGL buffer, outputting the result to the screen.
@@ -353,7 +387,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g2);
 				p.add(g3);
 				p.add(g4);
-				floor = new Floor(p,"brick.png");
+				if(floorList.getFloors().size()==0){
+					floor = new Floor(p,"textures/brick.png");
+				}
+				else{
+					floor = new Floor(p,"textures/wood.png");
+				}
 				floorList.addFloor(floor);
 				}
 			break;
@@ -370,7 +409,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g2);
 				p.add(g3);
 				p.add(g4);
-				roof = new Roof(p,"brick.png");
+				roof = new Roof(p,"textures/brick.png");
 				roofList.addRoof(roof);
 				}
 			break;
@@ -399,7 +438,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
 				p.add(p1);
 			}
-			floorOnScreen(gl,p);
+			int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
+			polygonOnScreen(gl,p,textureID);
 			p.clear();
 		}
 	}
@@ -414,7 +454,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p1.y = screenHeight - gridOffsetY - (roofList.getRoofs().get(i).getPoints().get(j).y-1)*gridDistance;
 				p.add(p1);
 			}
-			roofOnScreen(gl,p);
+			int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
+			polygonOnScreen(gl,p,textureID);
 			p.clear();
 		}
 	}
@@ -444,7 +485,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glEnd();
 	}
 	
-	private void floorOnScreen(GL gl, ArrayList<Point2D.Float> p){
+	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_TEXTURE);
 		
 		//Enable textures
@@ -454,9 +495,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		//Apply texture
 		//gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
-		gl.glEnable(brickTexture.getTarget());
+		textures.get(textureID).getTarget();
 		//brickTexture.enable();
-		brickTexture.bind();		
+		textures.get(textureID).bind();		
 		gl.glBegin(GL.GL_POLYGON);
 //		for(int i =0; i<p.size();i++){
 //			if(i ==0){
@@ -482,21 +523,21 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glEnd();
 		
 		//Disable texture
-		brickTexture.disable();
+		textures.get(textureID).disable();
 		
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 	}
 	
-	private void roofOnScreen(GL gl, ArrayList<Point2D.Float> p){
-		gl.glColor3f(0.0f, 0.0f, 1.0f);
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-		gl.glBegin(GL.GL_POLYGON);
-		for(int i =0; i<p.size();i++){
-			gl.glVertex2f(p.get(i).x, p.get(i).y);
-		}
-		gl.glEnd();
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
-	}
+//	private void roofOnScreen(GL gl, ArrayList<Point2D.Float> p){
+//		gl.glColor3f(0.0f, 0.0f, 1.0f);
+//		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+//		gl.glBegin(GL.GL_POLYGON);
+//		for(int i =0; i<p.size();i++){
+//			gl.glVertex2f(p.get(i).x, p.get(i).y);
+//		}
+//		gl.glEnd();
+//		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+//	}
 		
 	/**
 	 * Help method that uses Gl calls to draw a triangle
@@ -519,6 +560,26 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glVertex2f(x + size, y + size);
 		gl.glVertex2f(x, y + size);
 		gl.glEnd();
+	}
+	
+	private void deletePoints(){
+		if (drawMode == DM_OBJECT && points.size() >= 1) {
+			// If we're placing objects and one point was stored, reset the points list
+			points.clear();
+			gridpoints.clear();
+		} else if (drawMode == DM_WALL && points.size() >= 2) {
+			// If we're drawing lines and two points were already stored, reset the points list
+			points.clear();
+			gridpoints.clear();
+		} else if (drawMode == DM_FLOOR && points.size() >= 4) {
+			// If we're drawing Floors and four points were already stored, reset the points list
+			points.clear();
+			gridpoints.clear();
+		} else if (drawMode == DM_ROOF && points.size() >= 4) {
+			// If we're drawing Roofs and four points were already stored, reset the points list
+			points.clear();
+			gridpoints.clear();
+		}
 	}
 
 	@Override
