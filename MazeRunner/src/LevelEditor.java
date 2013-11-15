@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLJPanel;
@@ -54,14 +56,45 @@ public class LevelEditor implements ActionListener{
 	    option4.setActionCommand("Texture");
 	    option4.addActionListener(this);
 	    
+	    //System.out.println();
+	    
+	    File folder = new File("textures/");
+	    File[] tList = folder.listFiles();
+	    String[] textures = new String[tList.length-1];
+	    
+	    int i = 0;
+	    for (File file : tList)
+	    {
+	    	
+            if(!file.getName().equals("Thumbs.db"))
+            {
+            	
+            	textures[i] = file.getName();
+            	i++;
+            }
+            	
+        }
+	    
 	    JPanel opties2 = new JPanel(new GridLayout(4, 1));
 	    opties2.setBorder(BorderFactory.createTitledBorder("Texture:"));
-	    String[] textures = {"brick.png", "wood.png", "trees.png", "water.png"};
+	    //String[] textures = {"brick.png", "wood.png", "trees.png", "water.png"};
 	    
 		JComboBox c = new JComboBox(textures);
 		opties2.add(c);
 		
 		controlArea.add(opties2);
+		
+		JPanel opties3 = new JPanel(new GridLayout(4,1));
+	    opties2.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
+	    JButton b = new JButton("Sla map op");
+	    b.setActionCommand("save");
+	    b.addActionListener(this);
+	    opties3.add(b);
+	    b = new JButton("Laad map");
+	    opties3.add(b);
+	    
+	    controlArea.add(opties3);
+	    
 	
 		content.add(controlArea, BorderLayout.WEST);
 		
@@ -99,6 +132,23 @@ public class LevelEditor implements ActionListener{
 		}
 		else if(cmd.equals("Texture")){
 			le.setDrawMode(4);
+		}
+		else if(cmd.equals("save")){
+			JFileChooser fc = new JFileChooser();
+			fc.setDialogTitle("Map opslaan");
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int retrival = fc.showSaveDialog(null);
+			
+			 if (retrival == JFileChooser.APPROVE_OPTION) {
+		        try {
+		            FileWriter fw = new FileWriter(fc.getSelectedFile()+".txt");
+		            fw.write("");
+		            fw.close();
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		        }
+		    }
+			
 		}
 		
 		
