@@ -80,8 +80,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				             player.getHorAngle(), player.getVerAngle() );
 		
 		input = new UserInput(canvas);
-		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		
+		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 	}
 	
 	public void display(GLAutoDrawable drawable) {
@@ -99,8 +99,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		if(tel==0){
 			mainMenu.render(drawable);
 		}
-		else if (tel==1)
+		else if (tel==1){
 			mazeRunner.render(drawable);
+			setVisible(true);
+		}
 	}
 	
 /*
@@ -171,7 +173,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	@Override
 	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
 			int arg4) {
-		// TODO Auto-generated method stub
+		int tel = state.getState();
+		if(tel == 1){
+			mazeRunner.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
 		
 	}
 

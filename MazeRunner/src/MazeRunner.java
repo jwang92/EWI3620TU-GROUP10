@@ -34,6 +34,7 @@ public class MazeRunner implements GLEventListener{
 	//private GLCanvas canvas;
 
 	private int screenWidth, screenHeight;					// Screen size.
+	int stop =0;
 	
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
 //	private Player player;									// The player object.
@@ -104,8 +105,8 @@ public class MazeRunner implements GLEventListener{
 		// displayed by MazeRunner.
 		visibleObjects = new ArrayList<VisibleObject>();
 		// Add the maze that we will be using.
-		//maze = new Maze();
-		visibleObjects.add( MainClass.maze );
+		//maze2 = new Maze();
+		visibleObjects.add(MainClass.maze);
 
 		// Initialize the player.
 //		//player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
@@ -183,7 +184,7 @@ public class MazeRunner implements GLEventListener{
 	public void render(GLAutoDrawable drawable){
 		//System.out.print("2");
 		GL gl = drawable.getGL();
-		gl.glClearColor(0.0f, 0.0f, 1.0f, 1);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		GLU glu = new GLU();
 		
@@ -206,11 +207,16 @@ public class MazeRunner implements GLEventListener{
         // Display all the visible objects of MazeRunner.
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
+        	
         }
 
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.
         gl.glFlush();
+        if(stop ==0){
+        	init(drawable);
+        	stop+=1;
+        }
 	}
 	
 	/**
