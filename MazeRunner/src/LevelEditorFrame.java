@@ -6,7 +6,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
@@ -14,9 +17,14 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 import javax.media.opengl.GLJPanel;
 
 import com.sun.opengl.util.Animator;
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureCoords;
+import com.sun.opengl.util.texture.TextureData;
+import com.sun.opengl.util.texture.TextureIO;
 
 public class LevelEditorFrame extends Frame implements GLEventListener, MouseListener,MouseMotionListener {
 	static final long serialVersionUID = 7526471155622776147L;
@@ -59,6 +67,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//Roofs
 	private Roof roof = new Roof();
 	private RoofList roofList = new RoofList();
+	
+	//Texture
+	private int[] texNamesArray = new int[10];
+	private Texture brickTexture;
+	private String textureFileName = "brick.png";
+	private String textureFileType = ".png";
+	private float textureTop, textureBottom, textureLeft, textureRight;
+	//private int textureID;
 
 	/**
 	* When instantiating, a GLCanvas is added to draw the level editor. 
@@ -153,7 +169,45 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST);
-		}
+		try {
+//			gl.glGenTextures(10, texNamesArray, 0);
+//			gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
+            
+			//Load texture image	
+			//URL stream = getClass().getClassLoader().getResource("brick.png");
+			File file = new File("textures/brick.png");
+			System.out.println(file.toString());
+			TextureData data;
+			data = TextureIO.newTextureData(file, false, "png");
+			brickTexture = TextureIO.newTexture(data);
+			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+			brickTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			brickTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+			
+			//GenerateMipmap
+			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+			
+			// Use linear filter for texture if image is larger than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			// Use linear filter for texture if image is smaller than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			//Select the texture coordinates
+			TextureCoords textureCoords = brickTexture.getImageTexCoords();
+			textureTop = textureCoords.top();
+			textureBottom = textureCoords.bottom();
+			textureLeft = textureCoords.left();
+			textureRight = textureCoords.right();
+		} catch (GLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 
 	
 	/**
@@ -391,13 +445,45 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	private void floorOnScreen(GL gl, ArrayList<Point2D.Float> p){
-		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
-		gl.glColor3f(0.0f, 1.0f, 0.0f);
+		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_TEXTURE);
+		
+		//Enable textures
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		//gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
+		
+		//Apply texture
+		//gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
+		gl.glEnable(brickTexture.getTarget());
+		//brickTexture.enable();
+		brickTexture.bind();		
 		gl.glBegin(GL.GL_POLYGON);
-		for(int i =0; i<p.size();i++){
-			gl.glVertex2f(p.get(i).x, p.get(i).y);
-		}
+//		for(int i =0; i<p.size();i++){
+//			if(i ==0){
+//				gl.glTexCoord2f(0.0f,1.0f);
+//			} else if(i == 1){
+//				gl.glTexCoord2f(0.0f,1.0f);
+//			} else if(i == 2){
+//				gl.glTexCoord2f(1.0f,1.0f);
+//			} else if(i == 3){
+//				gl.glTexCoord2f(1.0f,0.0f);
+//			}
+//			gl.glVertex2f(p.get(i).x, p.get(i).y);
+//		}
+		gl.glTexCoord2f(textureTop,textureLeft);
+		gl.glVertex2f(p.get(0).x, p.get(0).y);
+		gl.glTexCoord2f(textureBottom,textureLeft);
+		gl.glVertex2f(p.get(1).x, p.get(1).y);
+		gl.glTexCoord2f(textureBottom,textureRight);
+		gl.glVertex2f(p.get(2).x, p.get(2).y);
+		gl.glTexCoord2f(textureTop,textureRight);
+		gl.glVertex2f(p.get(3).x, p.get(3).y);
+		
 		gl.glEnd();
+		
+		//Disable texture
+		brickTexture.disable();
+		
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 	}
 	
