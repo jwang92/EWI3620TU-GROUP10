@@ -76,7 +76,8 @@ public class LevelEditor implements ActionListener{
 	    drawingArea.setBorder(BorderFactory.createLineBorder (Color.white, 2));
 
 	    le = new LevelEditorFrame(drawingArea);
-	  
+	    le.setDrawMode(1);
+	    
 	    content.add(drawingArea, BorderLayout.EAST);
 	    f.pack();
 	    f.setVisible(true);

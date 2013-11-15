@@ -183,9 +183,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		drawGrid(gl);
 
-		// Draw the buttons.
-		drawButtons(gl);
-
 		// Draw a figure based on the current draw mode and user input
 		drawFigure(gl);
 		
@@ -223,46 +220,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glFlush();
 		}
 
-	/**
-	 * A method that draws the top left buttons on the screen.
-	 * 
-	 * @param gl
-	 */
-	private void drawButtons(GL gl) {
-		// Draw the background boxes
-		gl.glColor3f(0, 0.5f, 0f);
-		boxOnScreen(gl, 0.0f, screenHeight - buttonSize, buttonSize);
-
-		gl.glColor3f(0, 0, 0.5f);
-		boxOnScreen(gl, buttonSize, screenHeight - buttonSize, buttonSize);
-			
-		gl.glColor3f(0.5f, 0, 0);
-		boxOnScreen(gl, 2*buttonSize, screenHeight - buttonSize, buttonSize);
-		
-		gl.glColor3f(0.5f, 0, 0.5f);
-		boxOnScreen(gl, 3*buttonSize, screenHeight - buttonSize, buttonSize);
-
-		// Draw a point on top of the first box
-		gl.glPointSize(5.0f);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		pointOnScreen(gl, buttonSize / 2.0f, screenHeight - buttonSize / 2.0f);
-
-		// Draw a line on top of the second box.
-		gl.glLineWidth(3);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		wallOnScreen(gl, buttonSize + 4.0f, screenHeight - 4.0f,
-				2 * buttonSize - 4.0f, screenHeight - buttonSize + 4.0f);
-			
-		//Draw a triangle on top of the third box
-		gl.glLineWidth(3);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		triangleOnScreen(gl, 2.5f*buttonSize, screenHeight - 4.0f, 3*buttonSize -4.0f, screenHeight -buttonSize + 4.0f, 2*buttonSize +4.0f, screenHeight - buttonSize + 4.0f);
-		
-		//Draw a triangle on top of the fourth box
-		gl.glLineWidth(3);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		triangleOnScreen(gl, 3.5f*buttonSize, screenHeight - 4.0f, 4*buttonSize -4.0f, screenHeight -buttonSize + 4.0f, 3*buttonSize +4.0f, screenHeight - buttonSize + 4.0f);
-		}
 		
 	public void drawGrid(GL gl){
 		Point2D.Float p1 = new Point2D.Float();
@@ -280,6 +237,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	public void setDrawMode(int i){
+		
+		points.clear();
+		gridpoints.clear();
+		
 		if(i == 1)
 			drawMode = DM_WALL;
 		else if(i == 2)
@@ -411,6 +372,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Help method that uses GL calls to draw a point.
 	 */
 	private void pointOnScreen(GL gl, float x, float y) {
+		// Aanpassen van de grootte van de punten hier
+		//gl.glPointSize(5.0f);
 		gl.glBegin(GL.GL_POINTS);
 		gl.glVertex2f(x, y);
 		gl.glEnd();
@@ -420,6 +383,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Help method that uses GL calls to draw a line.
 	 */
 	private void wallOnScreen(GL gl, float x1, float y1, float x2, float y2) {
+		gl.glColor3f(1.0f, 0.0f, 0.0f);
 		gl.glBegin(GL.GL_LINES);
 		gl.glVertex2f(x1, y1);
 		gl.glVertex2f(x2, y2);
@@ -428,6 +392,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	private void floorOnScreen(GL gl, ArrayList<Point2D.Float> p){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
+		gl.glColor3f(0.0f, 1.0f, 0.0f);
 		gl.glBegin(GL.GL_POLYGON);
 		for(int i =0; i<p.size();i++){
 			gl.glVertex2f(p.get(i).x, p.get(i).y);
@@ -437,6 +402,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	private void roofOnScreen(GL gl, ArrayList<Point2D.Float> p){
+		gl.glColor3f(0.0f, 0.0f, 1.0f);
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE);
 		gl.glBegin(GL.GL_POLYGON);
 		for(int i =0; i<p.size();i++){
@@ -505,70 +471,34 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * A function defined in MouseListener. Is called when the pointer is in the GLCanvas, and a mouse button is released.
 	 */
 	public void mouseReleased(MouseEvent me) {
-		// Check if the coordinates correspond to any of the top left buttons
-		boolean buttonPressed = false;
-		if (me.getY() < buttonSize) {
-			if (me.getX() < buttonSize) {
-				// The first button is clicked
+	
+		if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
+				&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
+				&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
+				&& (gridHighlight.y <= ((me.getY()-gridOffsetY)/gridDistance+1)+0.1)){	
+			if (drawMode == DM_OBJECT && points.size() >= 1) {
+				// If we're placing objects and one point was stored, reset the points list
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_OBJECT;
-				System.out.println("Draw mode: DRAW_POINT");
-				buttonPressed = true;
-			} else if (me.getX() < 2 * buttonSize) {
-				// The second button is clicked
+			} else if (drawMode == DM_WALL && points.size() >= 2) {
+				// If we're drawing lines and two points were already stored, reset the points list
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_WALL;
-				System.out.println("Draw mode: DRAW_WALL");
-				buttonPressed = true;
-			} else if(me.getX() < 3 * buttonSize) {
-				// The Third button is clicked
+			} else if (drawMode == DM_FLOOR && points.size() >= 4) {
+				// If we're drawing Floors and four points were already stored, reset the points list
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_FLOOR;
-				System.out.println("Draw mode: DRAW_FLOOR");
-				buttonPressed = true;
-			}	else if(me.getX() < 4 * buttonSize) {
-				// The Third button is clicked
+			} else if (drawMode == DM_ROOF && points.size() >= 4) {
+				// If we're drawing Roofs and four points were already stored, reset the points list
 				points.clear();
 				gridpoints.clear();
-				drawMode = DM_ROOF;
-				System.out.println("Draw mode: DRAW_ROOF");
-				buttonPressed = true;
 			}
-			
+			// Add a new point to the points list.
+			points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
+			gridpoints.add(gridHighlight);
+			System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
 		}
-
-		// Only register a new point if the click hit a grid point
-		if (!buttonPressed) {
-			if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
-					&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
-					&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
-					&& (gridHighlight.y <= ((me.getY()-gridOffsetY)/gridDistance+1)+0.1)){	
-				if (drawMode == DM_OBJECT && points.size() >= 1) {
-					// If we're placing objects and one point was stored, reset the points list
-					points.clear();
-					gridpoints.clear();
-				} else if (drawMode == DM_WALL && points.size() >= 2) {
-					// If we're drawing lines and two points were already stored, reset the points list
-					points.clear();
-					gridpoints.clear();
-				} else if (drawMode == DM_FLOOR && points.size() >= 4) {
-					// If we're drawing Floors and four points were already stored, reset the points list
-					points.clear();
-					gridpoints.clear();
-				} else if (drawMode == DM_ROOF && points.size() >= 4) {
-					// If we're drawing Roofs and four points were already stored, reset the points list
-					points.clear();
-					gridpoints.clear();
-				}
-				// Add a new point to the points list.
-				points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
-				gridpoints.add(gridHighlight);
-				System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
-			}
-		}
+		
 	}
 
 	@Override
