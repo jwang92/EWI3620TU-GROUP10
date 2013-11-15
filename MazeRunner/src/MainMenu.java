@@ -19,17 +19,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainMenu extends MainClass{
+public class MainMenu implements GLEventListener, MouseListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public int buttonSizeX;
+	public int buttonSizeY;
+	public float b1PosX;
+	public float b1PosY;
+	public int ScreenWidth, ScreenHeight;
+	private UserInput input;
 	
-	public MainMenu(){
-	}
-	
-	public void display(GLAutoDrawable drawable) {
-		render(drawable);
+	public MainMenu(int screenHeight, int screenWidth){
+		buttonSizeX = 250;
+		buttonSizeY = 100;
+		ScreenWidth= screenWidth;
+		ScreenHeight = screenHeight;
+		b1PosX =ScreenWidth/2.0f-buttonSizeX/2.0f;
+		b1PosY=ScreenHeight-2.0f*buttonSizeY;
 	}
 	
 	public void render (GLAutoDrawable drawable){
@@ -69,11 +77,11 @@ public class MainMenu extends MainClass{
  * **********************************************
  */
 
-	//@Override
-	//public void display(GLAutoDrawable arg0) {
-	//	// TODO Auto-generated method stub
-	//	
-	//}
+	@Override
+	public void display(GLAutoDrawable arg0) {
+		// TODO Auto-generated method stub
+		render(arg0);
+	}
 
 	@Override
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
@@ -100,7 +108,7 @@ public class MainMenu extends MainClass{
 		 * active matrix. In this case, a simple 2D projection is performed,
 		 * matching the viewing frustum to the screen size.
 		 */
-		gl.glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
+		gl.glOrtho(0, ScreenWidth, 0, ScreenHeight, -1, 1);
 
 		// Set the matrix mode to GL_MODELVIEW, allowing us to manipulate the
 		// model-view matrix.
@@ -158,8 +166,10 @@ public class MainMenu extends MainClass{
 		
 		if (me.getY() >100 && me.getY() <200 && me.getX() > b1PosX && me.getX() < b1PosX+buttonSizeX) {
 			
-				State.GameStateUpdate(GameState.MAINGAME_STATE);
+				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
 			} 
 	}
+
+
 	
 }

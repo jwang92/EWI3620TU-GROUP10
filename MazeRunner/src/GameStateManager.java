@@ -1,7 +1,7 @@
 
 public class GameStateManager {
 	
-	private int gamestate = 0;
+	protected int gamestate = 0;
 	
 	void GameStateUpdate(GameState m_curSTATE) {
 	     // handle update
@@ -18,6 +18,7 @@ public class GameStateManager {
 	          break;
 	       case PAUSE_STATE:
 	           //
+	    	   gamestate = 2;
 	    	   //MainMenu.setTeller(2);
 	           break;
 	    }

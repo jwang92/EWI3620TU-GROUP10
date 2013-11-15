@@ -18,23 +18,25 @@ import com.sun.opengl.util.GLUT;
 public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	private static final long serialVersionUID = 1L;
-	public GLCanvas canvas;
+	public static GLCanvas canvas;
 	public int screenWidth = 600, screenHeight = 600;		// Screen size.
-	public int buttonSizeX = 250;
-	public int buttonSizeY = 100;
-	public float b1PosX =screenWidth/2.0f-buttonSizeX/2.0f;
-	public float b1PosY=screenHeight-2.0f*buttonSizeY;
+
 	
-	public MazeRunner MazeRunner;
-	public GameStateManager State;
-	public MainMenu MainMenu;
+	public static MazeRunner mazeRunner;
+	public static GameStateManager state;
+	public static MainMenu mainMenu;
+	public static Maze maze;
+	public static Player player;
+	public static Camera camera;
+	public static UserInput input;
 	
 	public MainClass(){
-		super("MainClass");
+		super("Medieval Invasion");
 		
 		// Let's change the window to our liking.
 		setSize( screenWidth, screenHeight);
-		setBackground(new Color(1.0f, 0.0f, 0.0f, 1));
+		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
+		
 		
 		// The window also has to close when we want to.
 		this.addWindowListener( new WindowAdapter()
@@ -66,6 +68,19 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
 		setVisible(true);
+		mainMenu = new MainMenu(screenHeight, screenWidth);
+		state = new GameStateManager();
+		maze = new Maze();
+		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+							 maze.SQUARE_SIZE / 2,							// y-position
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+							 90, 0 );										// horizontal and vertical angle
+
+		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
+				             player.getHorAngle(), player.getVerAngle() );
+		
+		input = new UserInput(canvas);
+		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		
 	}
 	
@@ -80,12 +95,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		
-		int tel = State.getState();
+		int tel = state.getState();
 		if(tel==0){
-			MainMenu.render(drawable);
+			mainMenu.render(drawable);
 		}
-		//else if (tel==1)
-			//MazeRunner.render(drawable);
+		else if (tel==1)
+			mazeRunner.render(drawable);
 	}
 	
 /*
@@ -150,10 +165,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		 */
 		Animator anim = new Animator( canvas );
 		anim.start();
-		
-		State = new GameStateManager();
-		MainMenu = new MainMenu();
-		MazeRunner = new MazeRunner();
 				
 	}
 
@@ -196,13 +207,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
-		
-	}
-	
-	
-	public static void main(String[] args) {
-
-		new MainClass();
+		int tel = state.getState();
+		if(tel==0){
+			mainMenu.mouseReleased(me);
+		}		
 	}
 
 }

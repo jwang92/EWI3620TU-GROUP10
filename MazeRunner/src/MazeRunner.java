@@ -23,7 +23,7 @@ import java.util.Iterator;
  * @author Bruno Scheele, revised by Mattijs Driel
  * 
  */
-public class MazeRunner extends MainClass{
+public class MazeRunner implements GLEventListener{
 	static final long serialVersionUID = 7526471155622776147L;
 
 	/*
@@ -31,14 +31,15 @@ public class MazeRunner extends MainClass{
  * *			Local variables					*
  * **********************************************
  */
-	private GLCanvas canvas;
+	//private GLCanvas canvas;
 
-	private int screenWidth = 600, screenHeight = 600;		// Screen size.
+	private int screenWidth, screenHeight;					// Screen size.
+	
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
-	private Player player;									// The player object.
-	private Camera camera;									// The camera object.
-	private UserInput input;								// The user input object that controls the player.
-	private Maze maze; 										// The maze.
+//	private Player player;									// The player object.
+//	private Camera camera;									// The camera object.
+//	private UserInput input;								// The user input object that controls the player.
+//	private Maze maze; 										// The maze.
 	private long previousTime = Calendar.getInstance().getTimeInMillis(); // Used to calculate elapsed time.
 
 /*
@@ -55,7 +56,9 @@ public class MazeRunner extends MainClass{
 	 * display MazeRunner. Finally, it adds itself as the OpenGL event listener, to be able 
 	 * to function as the view controller.
 	 */
-	public MazeRunner() {
+	public MazeRunner(int screenHeight, int screenWidth) {
+		this.screenHeight = screenHeight;
+		this.screenWidth =screenWidth; 
 		initJOGL();							// Initialize JOGL.
 		initObjects();						// Initialize all the objects!
 	}
@@ -77,7 +80,7 @@ public class MazeRunner extends MainClass{
 		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
 		 * The Animator class handles that for JOGL.
 		 */
-		Animator anim = new Animator( canvas );
+		Animator anim = new Animator( MainClass.canvas );
 		anim.start();
 	}
 	
@@ -101,21 +104,21 @@ public class MazeRunner extends MainClass{
 		// displayed by MazeRunner.
 		visibleObjects = new ArrayList<VisibleObject>();
 		// Add the maze that we will be using.
-		maze = new Maze();
-		visibleObjects.add( maze );
+		//maze = new Maze();
+		visibleObjects.add( MainClass.maze );
 
 		// Initialize the player.
-		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
-							 maze.SQUARE_SIZE / 2,							// y-position
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
-							 90, 0 );										// horizontal and vertical angle
-
-		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
-				             player.getHorAngle(), player.getVerAngle() );
-		
-		input = new UserInput(canvas);
-		player.setControl(input);
-		player.getMaze(maze);
+//		//player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+//							 maze.SQUARE_SIZE / 2,							// y-position
+//							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+//							 90, 0 );										// horizontal and vertical angle
+//
+//		//camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
+//				             player.getHorAngle(), player.getVerAngle() );
+//		
+//		//input = new UserInput(canvas);
+		MainClass.player.setControl(MainClass.input);
+		MainClass.player.getMaze(MainClass.maze);
 	}
 
 /*
@@ -180,6 +183,7 @@ public class MazeRunner extends MainClass{
 	public void render(GLAutoDrawable drawable){
 		//System.out.print("2");
 		GL gl = drawable.getGL();
+		gl.glClearColor(0.0f, 0.0f, 1.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		GLU glu = new GLU();
 		
@@ -195,9 +199,9 @@ public class MazeRunner extends MainClass{
 		 
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
 		gl.glLoadIdentity();
-        glu.gluLookAt( camera.getLocationX(), camera.getLocationY(), camera.getLocationZ(), 
- 			   camera.getVrpX(), camera.getVrpY(), camera.getVrpZ(),
- 			   camera.getVuvX(), camera.getVuvY(), camera.getVuvZ() );
+        glu.gluLookAt( MainClass.camera.getLocationX(), MainClass.camera.getLocationY(), MainClass.camera.getLocationZ(), 
+        		MainClass.camera.getVrpX(), MainClass.camera.getVrpY(), MainClass.camera.getVrpZ(),
+        		MainClass.camera.getVuvX(), MainClass.camera.getVuvY(), MainClass.camera.getVuvZ() );
 
         // Display all the visible objects of MazeRunner.
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
@@ -254,7 +258,7 @@ public class MazeRunner extends MainClass{
 	 */
 	private void updateMovement(int deltaTime)
 	{
-		player.update(deltaTime);
+		MainClass.player.update(deltaTime);
 		
 	}
 
@@ -267,12 +271,12 @@ public class MazeRunner extends MainClass{
 		
 		
 		
-		camera.setLocationX( player.getLocationX() );
-		camera.setLocationY( player.getLocationY() );  
-		camera.setLocationZ( player.getLocationZ() );
-		camera.setHorAngle( player.getHorAngle() );
-		camera.setVerAngle( player.getVerAngle() );
-		camera.calculateVRP();
+		MainClass.camera.setLocationX( MainClass.player.getLocationX() );
+		MainClass.camera.setLocationY( MainClass.player.getLocationY() );  
+		MainClass.camera.setLocationZ( MainClass.player.getLocationZ() );
+		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() );
+		MainClass.camera.setVerAngle( MainClass.player.getVerAngle() );
+		MainClass.camera.calculateVRP();
 	}
 	
 /*
