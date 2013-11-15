@@ -29,7 +29,7 @@ public class Roof {
 	}
 	
 	public Roof(){
-		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+		points = new ArrayList<Point2D.Float>();
 		texture = "";
 	}
 	
@@ -67,8 +67,8 @@ public class Roof {
 		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
 		Point2D.Float p1 = new Point2D.Float();
 		for(int i =0; i<4; i++){
-			p1.x = s.nextInt();
-			p1.y = s.nextInt();
+			p1.x = s.nextFloat();
+			p1.y = s.nextFloat();
 			p.add(p1);
 		}
 		String tex = s.next();

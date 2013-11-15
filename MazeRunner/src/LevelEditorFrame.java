@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -306,7 +307,34 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 
 		// Flush the OpenGL buffer, outputting the result to the screen.
 		gl.glFlush();
-		}
+	
+	}
+	
+	public WallList getWallList(){
+		
+		return wallList;
+		
+	}
+	
+	public FloorList getFloorList(){
+			
+		return floorList;
+		
+	}
+	
+	public RoofList getRoofList(){
+		
+		return roofList;
+		
+	}
+	
+	public void loadFromFolder(String folder) throws FileNotFoundException{
+		
+		wallList.Read(folder + "/Walls.txt");
+		floorList.Read(folder + "/Floor.txt");
+		roofList.Read(folder + "/Roof.txt");
+		
+	}
 
 		
 	public void drawGrid(GL gl){

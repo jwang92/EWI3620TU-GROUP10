@@ -91,6 +91,8 @@ public class LevelEditor implements ActionListener{
 	    b.addActionListener(this);
 	    opties3.add(b);
 	    b = new JButton("Laad map");
+	    b.setActionCommand("load");
+	    b.addActionListener(this);
 	    opties3.add(b);
 	    
 	    controlArea.add(opties3);
@@ -134,19 +136,43 @@ public class LevelEditor implements ActionListener{
 			le.setDrawMode(4);
 		}
 		else if(cmd.equals("save")){
+			
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle("Map opslaan");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int retrival = fc.showSaveDialog(null);
 			
-			 if (retrival == JFileChooser.APPROVE_OPTION) {
-		        try {
-		            FileWriter fw = new FileWriter(fc.getSelectedFile()+".txt");
-		            fw.write("");
-		            fw.close();
-		        } catch (Exception ex) {
-		            ex.printStackTrace();
-		        }
+			if (retrival == JFileChooser.APPROVE_OPTION) {
+				try {            
+					le.getWallList().WriteToFile(fc.getSelectedFile()+"/Walls.txt");
+					le.getRoofList().WriteToFile(fc.getSelectedFile()+"/Roof.txt");
+					le.getFloorList().WriteToFile(fc.getSelectedFile()+"/Floor.txt");
+					
+					FileWriter fw = new FileWriter(fc.getSelectedFile()+"/World.txt");
+					fw.write("Moet nog gedaan worden");
+					fw.close();
+					    
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+		    }
+			
+		}
+		else if(cmd.equals("load")){
+			
+			JFileChooser fc = new JFileChooser();
+			fc.setDialogTitle("Map opslaan");
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int retrival = fc.showSaveDialog(null);
+			
+			if (retrival == JFileChooser.APPROVE_OPTION) {
+				try {     
+					
+					le.loadFromFolder(fc.getSelectedFile().getPath());
+					    
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 		    }
 			
 		}
