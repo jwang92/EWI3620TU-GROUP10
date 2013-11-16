@@ -19,25 +19,39 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainMenu implements GLEventListener, MouseListener {
-	/**
-	 * 
+public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionListener*/ {
+	/*
+	 * **********************************************
+	 * *			Local Variables					*
+	 * **********************************************
 	 */
+	
 	private static final long serialVersionUID = 1L;
-	public int buttonSizeX;
-	public int buttonSizeY;
-	public float b1PosX;
-	public float b1PosY;
+	
+	//frame setup
 	public int ScreenWidth, ScreenHeight;
+	//input setup
 	private UserInput input;
+	//buttons setup
+	private int buttonSizeX = 250, buttonSizeY = 100;
+	private int bPosX;
+	private int b1PosY, b2PosY, b3PosY;
+	private int mouseOnBox = 0;
+
 	
 	public MainMenu(int screenHeight, int screenWidth){
-		buttonSizeX = 250;
-		buttonSizeY = 100;
 		ScreenWidth= screenWidth;
 		ScreenHeight = screenHeight;
-		b1PosX =ScreenWidth/2.0f-buttonSizeX/2.0f;
-		b1PosY=ScreenHeight-2.0f*buttonSizeY;
+		
+		setButtonSize();
+	
+	}
+	
+	public void setButtonSize(){
+		bPosX = (int) (ScreenWidth/2.0f-buttonSizeX/2.0f);
+		b1PosY = (int) (ScreenHeight-2.0f*buttonSizeY);
+		b2PosY = (int) (ScreenHeight-3.0f*buttonSizeY);
+		b3PosY = (int) (ScreenHeight-4.0f*buttonSizeY);
 	}
 	
 	public void render (GLAutoDrawable drawable){
@@ -48,26 +62,55 @@ public class MainMenu implements GLEventListener, MouseListener {
 
 		// Draw the buttons.
 		drawButtons(gl);
-		GLUT glut = new GLUT();
-		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2f(b1PosX,b1PosY );
-		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "Start Game");
 		gl.glFlush();
+	
+//		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
+//		 * The Animator class handles that for JOGL.
+//		 */
+//		Animator anim = new Animator( MainClass.canvas );
+//		anim.start();
+	}
+	
+	private GL BoxColor(GL gl, int boxnum){
+		if(mouseOnBox == boxnum)
+			gl.glColor3f(0, 1.0f, 0);
+		else
+			gl.glColor3f(1.0f, 0, 0);
+		return gl;
 	}
 	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
-		gl.glColor3f(0, 1.0f, 0f);
-		boxOnScreen(gl, b1PosX, b1PosY, buttonSizeX, buttonSizeY);
+		gl = BoxColor(gl, 1);
+		boxOnScreen(gl, bPosX, b1PosY, "Start");
+		
+		gl = BoxColor(gl, 2);
+		boxOnScreen(gl, bPosX, b2PosY, "Editor");
+		
+		gl = BoxColor(gl, 3);
+		boxOnScreen(gl, bPosX, b3PosY, "Stop");
+		
 	}
 	
-	private void boxOnScreen(GL gl, float x, float y, float sizeX, float sizeY) {
+	private void boxOnScreen(GL gl, float x, float y, String text) {
 		gl.glBegin(GL.GL_QUADS);
 		gl.glVertex2f(x, y);
-		gl.glVertex2f(x + sizeX, y);
-		gl.glVertex2f(x + sizeX, y + sizeY);
-		gl.glVertex2f(x, y + sizeY);
+		gl.glVertex2f(x + buttonSizeX, y);
+		gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
+		gl.glVertex2f(x, y + buttonSizeY);
 		gl.glEnd();
+		
+		GLUT glut = new GLUT();
+		gl.glColor3f(1.0f,  1.0f, 1.0f);
+		gl.glRasterPos2d(x + buttonSizeX/5.0, y + buttonSizeY/3.0);
+		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
+
+	}
+	
+	public boolean ButtonPressed(int buttonX, int buttonY, int xin, int yin){
+		yin = ScreenHeight - yin;
+
+		return buttonX < xin && xin < buttonX+buttonSizeX && buttonY < yin && yin < buttonY+buttonSizeY;
 	}
 	
 	
@@ -163,13 +206,43 @@ public class MainMenu implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
+		int Xin = me.getX();
+		int Yin = me.getY();
 		
-		if (me.getY() >100 && me.getY() <200 && me.getX() > b1PosX && me.getX() < b1PosX+buttonSizeX) {
-			
+		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
 				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-			} 
+		} 
 	}
 
-
+//	/*
+//	 * **********************************************
+//	 * *		Mouse Motion event handlers			*
+//	 * **********************************************
+//	 */
+//		
+//		@Override
+//		public void mouseMoved(MouseEvent me){
+//			int Xin = me.getXOnScreen();
+//			int Yin = me.getYOnScreen();
+////			System.out.println(Xin + " " + Yin);
+//			
+//			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
+//				mouseOnBox = 1;
+//			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
+//				mouseOnBox = 2;
+//			else if(ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin))
+//				mouseOnBox = 3;
+//			else
+//				mouseOnBox = 0;
+//		
+////			System.out.println(mouseOnBox);
+//		}
+//
+//		@Override
+//		public void mouseDragged(MouseEvent arg0) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//		
 	
 }
