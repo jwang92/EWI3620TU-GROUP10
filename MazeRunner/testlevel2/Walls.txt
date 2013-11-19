@@ -1,0 +1,6 @@
+NumberOfWalls: 4;
+5 1; 8 4; brick.png;
+2 3; 3 2; brick.png;
+8 9; 9 8; brick.png;
+3 9; 2 4; brick.png;
+End;
