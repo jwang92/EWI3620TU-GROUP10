@@ -4,15 +4,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureCoords;
+import com.sun.opengl.util.texture.TextureData;
+import com.sun.opengl.util.texture.TextureIO;
 
 
 public class MainClass extends Frame implements GLEventListener, MouseListener {
@@ -30,6 +38,14 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Camera camera;
 	public static UserInput input;
 	public static Pause pause;
+	
+	//Load the textures
+	protected static ArrayList<Texture> textures;
+	protected static ArrayList<String> textureNames;
+	private Texture tempTexture;
+	private String textureFileName = "";
+	private String textureFileType = "png";
+	private float textureTop, textureBottom, textureLeft, textureRight;
 	
 	public MainClass(){
 		super("Medieval Invasion");
@@ -84,6 +100,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
+		
+		//Textures
+		textures = new ArrayList<Texture>();
+		textureNames = new ArrayList<String>();
 	}
 	
 	public void display(GLAutoDrawable drawable) {
@@ -166,6 +186,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		
+		loadTextures();
+		
 		// First, we set up JOGL. We start with the default settings.
 		GLCapabilities caps = new GLCapabilities();
 		// Then we make sure that JOGL is hardware accelerated and uses double buffering.
@@ -177,6 +199,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		 */
 		Animator anim = new Animator( canvas );
 		anim.start();
+		
 				
 	}
 
@@ -239,6 +262,67 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel==2){
 			pause.init(drawable);
 		}
+	}
+	
+	public void loadTextures(){
+		try {
+		    File folder = new File("textures/");
+		    File[] tList = folder.listFiles();
+		    textureNames = new ArrayList<String>(tList.length-1);
+		    
+		    int i = 0;
+		    for (File file : tList)
+		    {
+	            if(!file.getName().equals("Thumbs.db"))
+	            {
+	            	//Get the name of the texture
+	            	textureFileName = "textures/" + file.getName();
+	            	
+	            	//Load the texture
+	            	File filetexture = new File(textureFileName);
+	    			TextureData data;
+	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
+	    			tempTexture = TextureIO.newTexture(data);
+	    			
+	    			//Set the the texture parameters
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    			
+	    			//Add the texture to the arraylist
+	    			textures.add(tempTexture);
+	            	textureNames.add(textureFileName);
+	            	System.out.println(textureNames.toString());
+	            	//Load the texture coordinates
+	    			TextureCoords textureCoords = tempTexture.getImageTexCoords();
+	    			textureTop = textureCoords.top();
+	    			textureBottom = textureCoords.bottom();
+	    			textureLeft = textureCoords.left();
+	    			textureRight = textureCoords.right();
+	            	i++;
+	            	textureFileName = textureNames.get(0);
+	            }	
+	        }
+			
+			//GenerateMipmap
+			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+			
+			// Use linear filter for texture if image is larger than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			// Use linear filter for texture if image is smaller than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			//Select the texture coordinates
+
+		} catch (GLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 
 }

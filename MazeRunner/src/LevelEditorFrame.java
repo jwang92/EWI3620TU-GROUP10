@@ -74,9 +74,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private ArrayList<String> textureNames;
 
 	private Texture tempTexture;
-	//private Texture brickTexture;
-	//private Texture woodTexture;
-
 	
 	private String textureFileName = "";
 	private String textureFileType = "png";
@@ -219,7 +216,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	            	//Load the texture
 	            	File filetexture = new File(textureFileName);
 	    			TextureData data;
-	    			data = TextureIO.newTextureData(file, false, textureFileType);
+	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
 	    			tempTexture = TextureIO.newTexture(data);
 	    			
 	    			//Set the the texture parameters
@@ -242,35 +239,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	            	textureFileName = textureNames.get(0);
 	            }	
 	        }
-//			gl.glGenTextures(10, texNamesArray, 0);
-//			gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
-            
-			//Load texture image	
-			//URL stream = getClass().getClassLoader().getResource("brick.png");
-//			textureFileName = "textures/brick.png";
-//			File file = new File("textures/brick.png");
-//			TextureData data;
-//			data = TextureIO.newTextureData(file, false, "png");
-//			brickTexture = TextureIO.newTexture(data);
-//			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-//			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-//			brickTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-//			brickTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-//			
-//			textures.add(brickTexture);
-//			textureNames.add("textures/brick.png");
-//			
-//			textureFileName = "textures/wood.png";
-//			file = new File("textures/wood.png");
-//			data = TextureIO.newTextureData(file, false, "png");
-//			woodTexture = TextureIO.newTexture(data);
-//			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-//			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-//			woodTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-//			woodTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-//			
-//			textures.add(woodTexture);
-//			textureNames.add("textures/wood.png");
 			
 			//GenerateMipmap
 			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
@@ -439,7 +407,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				// two points, draw a line between those points
 				g1 = gridpoints.get(0);
 				g2 = gridpoints.get(1);
-				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,"brick.png");
+				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,textureFileName);
 				wallList.addWall(wall);
 			}
 			break;

@@ -61,6 +61,14 @@ public class Wall {
 	}
 	
 	/**
+	 * Returns the texture of this wall
+	 * @return Returns the name of this texture
+	 */
+	public String getTexture(){
+		return texture;
+	}
+	
+	/**
 	 * Creates format for filewriting
 	 * @return String with correct format
 	 */
