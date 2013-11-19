@@ -73,21 +73,26 @@ public class Maze  implements VisibleObject {
 		
 		
 		float wallColour[] = { 1.0f, 1.0f, 1.0f};				
-        //gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, wallColour, 0);	// Set the materials used by the floor.
+        gl.glMaterialfv( GL.GL_FRONT, GL.GL_DIFFUSE, wallColour, 0);	// Set the materials used by the floor.
         
         gl.glNormal3d(0, 1, 0);
-        gl.glEnable(GL.GL_TEXTURE_3D);
+        gl.glEnable(GL.GL_TEXTURE_2D);
         
         woodTexture.bind();
-            
+        
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+        
+
+        
 		gl.glBegin(GL.GL_QUADS);
-        	gl.glTexCoord2f(coords.left(), coords.bottom());
+        	gl.glTexCoord2f(0, 0);
 	        gl.glVertex3d(0, 0, 0);
-	        gl.glTexCoord2f(coords.left(), coords.top());
+	        gl.glTexCoord2f(0, 10);
 	        gl.glVertex3d(0, 0, 50);
-	        gl.glTexCoord2f(coords.right(), coords.top());
+	        gl.glTexCoord2f(10, 10);
 	        gl.glVertex3d(50, 0, 50);
-	        gl.glTexCoord2f(coords.right(), coords.bottom());
+	        gl.glTexCoord2f(10, 0);
 	        gl.glVertex3d(50, 0, 0);
 		gl.glEnd();	
 		
