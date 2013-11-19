@@ -370,12 +370,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		wallList.Read(folder + "/Walls.txt");
 		floorList.Read(folder + "/Floor.txt");
-		roofList.Read(folder + "/Roof.txt");
-		
-		System.out.println(wallList.getWalls().toString());
-		System.out.println(floorList.getFloors().toString());
-		System.out.println(roofList.getRoofs().toString());
-		
+		roofList.Read(folder + "/Roof.txt");		
 	}
 
 		

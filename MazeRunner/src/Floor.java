@@ -49,7 +49,7 @@ public class Floor {
 	{
 		String res = "";
 		for(int i =0; i<points.size();i++){
-			res = res + points.get(i).x + " " + points.get(i).y + "; ";
+			res = res + (int) points.get(i).x + " " + (int) points.get(i).y + "; ";
 		}
 		res = res + texture + ";\r\n";
 		return res;
@@ -65,10 +65,10 @@ public class Floor {
 	{
 		s.useDelimiter(" |; |;\r\n");
 		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
-		Point2D.Float p1 = new Point2D.Float();
 		for(int i =0; i<4; i++){
-			p1.x = s.nextFloat();
-			p1.y = s.nextFloat();
+			Point2D.Float p1 = new Point2D.Float();
+			p1.x = (float)s.nextInt();
+			p1.y = (float)s.nextInt();
 			p.add(p1);
 		}
 		String tex = s.next();
