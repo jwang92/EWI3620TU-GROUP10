@@ -101,7 +101,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if (tel==1){
 			mazeRunner.render(drawable);
-			setVisible(true);
+			mazeRunner.mazeInit(drawable,0,0, screenWidth, screenHeight);
 		}
 	}
 	
