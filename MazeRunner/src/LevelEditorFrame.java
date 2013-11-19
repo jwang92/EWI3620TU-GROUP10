@@ -72,10 +72,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//Texture
 	private ArrayList<Texture> textures;
 	private ArrayList<String> textureNames;
-	private Texture brickTexture;
-	private Texture woodTexture;
-	private String textureFileName = "brick.png";
-	private String textureFileType = ".png";
+
+	private Texture tempTexture;
+	//private Texture brickTexture;
+	//private Texture woodTexture;
+
+	
+	private String textureFileName = "";
+	private String textureFileType = "png";
 	private float textureTop, textureBottom, textureLeft, textureRight;
 	//private int textureID;
 
@@ -199,35 +203,74 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void loadTextures(){
 		try {
+		    File folder = new File("textures/");
+		    File[] tList = folder.listFiles();
+		    textureNames = new ArrayList<String>(tList.length-1);
+		    
+		    int i = 0;
+		    for (File file : tList)
+		    {
+		    	
+	            if(!file.getName().equals("Thumbs.db"))
+	            {
+	            	//Get the name of the texture
+	            	textureFileName = "textures/" + file.getName();
+	            	
+	            	//Load the texture
+	            	File filetexture = new File(textureFileName);
+	    			TextureData data;
+	    			data = TextureIO.newTextureData(file, false, textureFileType);
+	    			tempTexture = TextureIO.newTexture(data);
+	    			
+	    			//Set the the texture parameters
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    			
+	    			//Add the texture to the arraylist
+	    			textures.add(tempTexture);
+	            	textureNames.add(textureFileName);
+	            	
+	            	//Load the texture coordinates
+	    			TextureCoords textureCoords = tempTexture.getImageTexCoords();
+	    			textureTop = textureCoords.top();
+	    			textureBottom = textureCoords.bottom();
+	    			textureLeft = textureCoords.left();
+	    			textureRight = textureCoords.right();
+	            	i++;
+	            	textureFileName = textureNames.get(0);
+	            }	
+	        }
 //			gl.glGenTextures(10, texNamesArray, 0);
 //			gl.glBindTexture(GL.GL_TEXTURE_2D, texNamesArray[0]);
             
 			//Load texture image	
 			//URL stream = getClass().getClassLoader().getResource("brick.png");
-			textureFileName = "textures/brick.png";
-			File file = new File("textures/brick.png");
-			TextureData data;
-			data = TextureIO.newTextureData(file, false, "png");
-			brickTexture = TextureIO.newTexture(data);
-			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-			brickTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			brickTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			
-			textures.add(brickTexture);
-			textureNames.add("textures/brick.png");
-			
-			textureFileName = "textures/wood.png";
-			file = new File("textures/wood.png");
-			data = TextureIO.newTextureData(file, false, "png");
-			woodTexture = TextureIO.newTexture(data);
-			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-			woodTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			woodTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			
-			textures.add(woodTexture);
-			textureNames.add("textures/wood.png");
+//			textureFileName = "textures/brick.png";
+//			File file = new File("textures/brick.png");
+//			TextureData data;
+//			data = TextureIO.newTextureData(file, false, "png");
+//			brickTexture = TextureIO.newTexture(data);
+//			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+//			brickTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+//			brickTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+//			brickTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+//			
+//			textures.add(brickTexture);
+//			textureNames.add("textures/brick.png");
+//			
+//			textureFileName = "textures/wood.png";
+//			file = new File("textures/wood.png");
+//			data = TextureIO.newTextureData(file, false, "png");
+//			woodTexture = TextureIO.newTexture(data);
+//			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+//			woodTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+//			woodTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+//			woodTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+//			
+//			textures.add(woodTexture);
+//			textureNames.add("textures/wood.png");
 			
 			//GenerateMipmap
 			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
@@ -239,11 +282,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
 			
 			//Select the texture coordinates
-			TextureCoords textureCoords = brickTexture.getImageTexCoords();
-			textureTop = textureCoords.top();
-			textureBottom = textureCoords.bottom();
-			textureLeft = textureCoords.left();
-			textureRight = textureCoords.right();
+
 		} catch (GLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -303,7 +342,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		//Delete the old points if neccesary
 		deletePoints();
-		
 
 		// Flush the OpenGL buffer, outputting the result to the screen.
 		gl.glFlush();
@@ -333,6 +371,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		wallList.Read(folder + "/Walls.txt");
 		floorList.Read(folder + "/Floor.txt");
 		roofList.Read(folder + "/Roof.txt");
+		
+		System.out.println(wallList.getWalls().toString());
+		System.out.println(floorList.getFloors().toString());
+		System.out.println(roofList.getRoofs().toString());
 		
 	}
 
@@ -365,6 +407,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			drawMode = DM_FLOOR;
 		else if(i == 4){}
 			// Texture inbouwen
+	}
+	
+	public void setTexture(String textureName){
+		textureFileName = "textures/" + textureName;
 	}
 
 	/**
@@ -415,12 +461,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g2);
 				p.add(g3);
 				p.add(g4);
-				if(floorList.getFloors().size()==0){
-					floor = new Floor(p,"textures/brick.png");
-				}
-				else{
-					floor = new Floor(p,"textures/wood.png");
-				}
+				floor = new Floor(p,textureFileName);
 				floorList.addFloor(floor);
 				}
 			break;
@@ -437,7 +478,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g2);
 				p.add(g3);
 				p.add(g4);
-				roof = new Roof(p,"textures/brick.png");
+				roof = new Roof(p,textureFileName);
 				roofList.addRoof(roof);
 				}
 			break;
@@ -482,7 +523,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p1.y = screenHeight - gridOffsetY - (roofList.getRoofs().get(i).getPoints().get(j).y-1)*gridDistance;
 				p.add(p1);
 			}
-			int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
+			int textureID = textureNames.lastIndexOf(roofList.getRoofs().get(i).getTexture());
 			polygonOnScreen(gl,p,textureID);
 			p.clear();
 		}

@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -27,7 +29,7 @@ public class LevelEditor implements ActionListener{
 		JPanel controlArea = new JPanel(new GridLayout(5, 1));		
 		
 		JPanel opties1 = new JPanel(new GridLayout(2, 2));
-		opties1.setBorder(BorderFactory.createTitledBorder("Tekenmodus"));
+		opties1.setBorder(BorderFactory.createTitledBorder("Tekenmodus:"));
 	    ButtonGroup bg = new ButtonGroup();
 		JRadioButton  option1 = new JRadioButton("Muur");
 	    bg.add(option1);
@@ -87,7 +89,7 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties2);
 		
 		JPanel opties3 = new JPanel(new GridLayout(4,1));
-	    opties2.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
+	    opties3.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
 	    JButton b = new JButton("Sla map op");
 	    b.setActionCommand("save");
 	    b.addActionListener(this);
@@ -118,6 +120,19 @@ public class LevelEditor implements ActionListener{
 	    content.add(drawingArea, BorderLayout.EAST);
 	    f.pack();
 	    f.setVisible(true);
+	    
+	    f.addWindowListener(new WindowAdapter() {
+	    	@Override
+	    	  public void windowClosing(WindowEvent e) {
+	    	    int confirmed = JOptionPane.showConfirmDialog(null, 
+	    	        "Are you sure you want to exit the program?", "Exit Program Message Box",
+	    	        JOptionPane.YES_NO_OPTION);
+
+	    	    if (confirmed == JOptionPane.YES_OPTION) {
+	    	    	System.exit(0);
+	    	    }
+	    	  }
+	    	});
 		
 	}
 
@@ -163,7 +178,7 @@ public class LevelEditor implements ActionListener{
 		else if(cmd.equals("load")){
 			
 			JFileChooser fc = new JFileChooser();
-			fc.setDialogTitle("Map opslaan");
+			fc.setDialogTitle("Map openen");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int retrival = fc.showSaveDialog(null);
 			
@@ -180,9 +195,8 @@ public class LevelEditor implements ActionListener{
 		}
 		else if(cmd.equals("textures"))
 		{
-			
 			JComboBox type = (JComboBox) evt.getSource();
-			le.setTexture(type.getSelectedItem()));
+			le.setTexture((String)type.getSelectedItem());
 			
 		}
 		
