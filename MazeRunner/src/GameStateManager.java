@@ -24,6 +24,12 @@ public class GameStateManager {
 	    	   gamestate = 2;
 	    	   //MainMenu.setTeller(2);
 	           break;
+	       case STOP_STATE:
+	           //
+	    	   gamestate = 3;
+	    	   //MainMenu.setTeller(3);
+	           break;
+	    	   
 	    }
 	}
 	
@@ -60,7 +66,8 @@ public class GameStateManager {
 enum GameState {
     TITLE_STATE,
     MAINGAME_STATE,
-    PAUSE_STATE
+    PAUSE_STATE,
+    STOP_STATE
 }
 
 

@@ -19,7 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionListener*/ {
+public class MainMenu implements GLEventListener, MouseListener , MouseMotionListener {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
@@ -42,7 +42,17 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 		ScreenHeight = screenHeight;
 		
 		setButtonSize();
-	
+		
+		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
+		 * The Animator class handles that for JOGL.
+		 */
+		Animator anim = new Animator( MainClass.canvas );
+		anim.start();
+		
+		// Also add this class as mouse motion listener, allowing this class to
+		// react to mouse events that happen inside the GLCanvas.
+		MainClass.canvas.addMouseMotionListener(this);
+
 	}
 	
 	public void setButtonSize(){
@@ -62,41 +72,30 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 		drawButtons(gl);
 		gl.glFlush();
 	
-//		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
-//		 * The Animator class handles that for JOGL.
-//		 */
-//		Animator anim = new Animator( MainClass.canvas );
-//		anim.start();
-	}
-	
-	private GL BoxColor(GL gl, int boxnum){
-		if(mouseOnBox == boxnum)
-			gl.glColor3f(0, 1.0f, 0);
-		else
-			gl.glColor3f(1.0f, 0, 0);
-		return gl;
+
 	}
 	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
-		gl = BoxColor(gl, 1);
-		boxOnScreen(gl, bPosX, b1PosY, "Start");
+		boxOnScreen(gl, bPosX, b1PosY, "Start", 1);
 		
-		gl = BoxColor(gl, 2);
-		boxOnScreen(gl, bPosX, b2PosY, "Editor");
+		boxOnScreen(gl, bPosX, b2PosY, "Editor", 2);
 		
-		gl = BoxColor(gl, 3);
-		boxOnScreen(gl, bPosX, b3PosY, "Stop");
+		boxOnScreen(gl, bPosX, b3PosY, "Stop", 3);
 		
 	}
 	
-	private void boxOnScreen(GL gl, float x, float y, String text) {
-		gl.glBegin(GL.GL_QUADS);
-		gl.glVertex2f(x, y);
-		gl.glVertex2f(x + buttonSizeX, y);
-		gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
-		gl.glVertex2f(x, y + buttonSizeY);
-		gl.glEnd();
+	private void boxOnScreen(GL gl, float x, float y, String text, int boxnum) {
+		if(mouseOnBox == boxnum){
+			gl.glColor3f(0, 1.0f, 0);
+			gl.glLineWidth(5);
+			gl.glBegin(GL.GL_LINE_LOOP);
+			gl.glVertex2f(x, y);
+			gl.glVertex2f(x + buttonSizeX, y);
+			gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
+			gl.glVertex2f(x, y + buttonSizeY);
+			gl.glEnd();
+		}
 		
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
@@ -207,42 +206,46 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 		int Xin = me.getX();
 		int Yin = me.getY();
 		
+//		System.out.println("HIER");
+		
 		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
-				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-				MainClass.state.setStopTitle(true);
-				MainClass.state.setStopMainGame(false);
+			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
+			MainClass.state.setStopTitle(true);
+			MainClass.state.setStopMainGame(false);
 		} 
+		else if (ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin)) {
+			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
+		}
 	}
 
-//	/*
-//	 * **********************************************
-//	 * *		Mouse Motion event handlers			*
-//	 * **********************************************
-//	 */
-//		
-//		@Override
-//		public void mouseMoved(MouseEvent me){
-//			int Xin = me.getXOnScreen();
-//			int Yin = me.getYOnScreen();
-////			System.out.println(Xin + " " + Yin);
-//			
-//			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
-//				mouseOnBox = 1;
-//			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
-//				mouseOnBox = 2;
-//			else if(ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin))
-//				mouseOnBox = 3;
-//			else
-//				mouseOnBox = 0;
-//		
-////			System.out.println(mouseOnBox);
-//		}
-//
-//		@Override
-//		public void mouseDragged(MouseEvent arg0) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//		
+	/*
+	 * **********************************************
+	 * *		Mouse Motion event handlers			*
+	 * **********************************************
+	 */
+		
+		@Override
+		public void mouseMoved(MouseEvent me){
+			int Xin = me.getX();
+			int Yin = me.getY();
+			
+			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
+				mouseOnBox = 1;
+			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
+				mouseOnBox = 2;
+			else if(ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin))
+				mouseOnBox = 3;
+			else
+				mouseOnBox = 0;
+		
+//			System.out.println(mouseOnBox);
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	
 }

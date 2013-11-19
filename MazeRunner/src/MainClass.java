@@ -109,6 +109,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			pause.render(drawable);
 			pause.init(drawable);
 		}
+		else if (tel==3){
+			System.exit(0);
+		}
+
 	}
 	
 /*
