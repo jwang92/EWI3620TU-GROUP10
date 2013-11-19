@@ -34,7 +34,7 @@ public class MazeRunner implements GLEventListener{
 	//private GLCanvas canvas;
 
 	private int screenWidth, screenHeight;					// Screen size.
-	int stop =0;
+	boolean stop =false;
 	
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
 //	private Player player;									// The player object.
@@ -182,7 +182,6 @@ public class MazeRunner implements GLEventListener{
 	}
 
 	public void render(GLAutoDrawable drawable){
-		//System.out.print("2");
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -213,10 +212,6 @@ public class MazeRunner implements GLEventListener{
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.
         gl.glFlush();
-        if(stop ==0){
-        	init(drawable);
-        	stop+=1;
-        }
 	}
 	
 	/**
@@ -283,6 +278,15 @@ public class MazeRunner implements GLEventListener{
 		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() );
 		MainClass.camera.setVerAngle( MainClass.player.getVerAngle() );
 		MainClass.camera.calculateVRP();
+	}
+	
+	//initializer which is called upon by MainClass
+	public void mazeInit(GLAutoDrawable drawable, int x, int y, int width, int height){
+        if(!stop){
+        	init(drawable);
+        	reshape(drawable, 0, 0, screenWidth, screenHeight);
+        	stop=true;
+        }
 	}
 	
 /*
