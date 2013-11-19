@@ -80,6 +80,8 @@ public class LevelEditor implements ActionListener{
 	    //String[] textures = {"brick.png", "wood.png", "trees.png", "water.png"};
 	    
 		JComboBox c = new JComboBox(textures);
+		c.addActionListener(this);
+		c.setActionCommand("textures");
 		opties2.add(c);
 		
 		controlArea.add(opties2);
@@ -122,7 +124,7 @@ public class LevelEditor implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 
 		String cmd = evt.getActionCommand();
-		System.out.println(cmd);
+		
 		if(cmd.equals("Muur")){
 			le.setDrawMode(1);
 		}
@@ -176,7 +178,13 @@ public class LevelEditor implements ActionListener{
 		    }
 			
 		}
-		
+		else if(cmd.equals("textures"))
+		{
+			
+			JComboBox type = (JComboBox) evt.getSource();
+			le.setTexture(type.getSelectedItem()));
+			
+		}
 		
 	}
 
