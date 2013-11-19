@@ -19,14 +19,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionListener*/ {
+public class Pause implements GLEventListener, MouseListener /*, MouseMotionListener*/ {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
 	 * **********************************************
 	 */
-	
-	private static final long serialVersionUID = 1L;
 	
 	//frame setup
 	public int ScreenWidth, ScreenHeight;
@@ -35,9 +33,10 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 	private int bPosX;
 	private int b1PosY, b2PosY, b3PosY;
 	private int mouseOnBox = 0;
+	boolean stop = false;
 
 	
-	public MainMenu(int screenHeight, int screenWidth){
+	public Pause(int screenHeight, int screenWidth){
 		ScreenWidth= screenWidth;
 		ScreenHeight = screenHeight;
 		
@@ -55,7 +54,7 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
-		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
+		gl.glClearColor(0.0f, 0.0f, 1.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 		// Draw the buttons.
@@ -78,12 +77,13 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 	}
 	
 	private void drawButtons(GL gl) {
+	
 		// Draw the background boxes
 		gl = BoxColor(gl, 1);
 		boxOnScreen(gl, bPosX, b1PosY, "Start");
 		
-		gl = BoxColor(gl, 2);
-		boxOnScreen(gl, bPosX, b2PosY, "Editor");
+		//gl = BoxColor(gl, 2);
+		//boxOnScreen(gl, bPosX, b2PosY, "Editor");
 		
 		gl = BoxColor(gl, 3);
 		boxOnScreen(gl, bPosX, b3PosY, "Stop");
@@ -132,6 +132,7 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 
 	@Override
 	public void init(GLAutoDrawable arg0) {
+		if(MainClass.state.getStopPause()==false){
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
 		
@@ -162,6 +163,8 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST); 
+		}
+		MainClass.state.setStopMainGame(true);
 		
 	}
 
@@ -209,7 +212,7 @@ public class MainMenu implements GLEventListener, MouseListener /*, MouseMotionL
 		
 		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
 				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-				MainClass.state.setStopTitle(true);
+				MainClass.state.setStopPause(true);
 				MainClass.state.setStopMainGame(false);
 		} 
 	}

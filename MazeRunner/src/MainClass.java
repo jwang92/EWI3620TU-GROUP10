@@ -29,6 +29,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Player player;
 	public static Camera camera;
 	public static UserInput input;
+	public static Pause pause;
 	
 	public MainClass(){
 		super("Medieval Invasion");
@@ -82,6 +83,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		input = new UserInput(canvas);
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
+		pause = new Pause(screenHeight, screenWidth);
 	}
 	
 	public void display(GLAutoDrawable drawable) {
@@ -101,7 +103,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if (tel==1){
 			mazeRunner.render(drawable);
-			mazeRunner.mazeInit(drawable,0,0, screenWidth, screenHeight);
+			initUpdater(drawable,0,0, screenWidth, screenHeight);
+		}
+		else if (tel==2){
+			pause.render(drawable);
+			pause.init(drawable);
 		}
 	}
 	
@@ -215,7 +221,20 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		int tel = state.getState();
 		if(tel==0){
 			mainMenu.mouseReleased(me);
-		}		
+		}
+		else if(tel==2){
+			pause.mouseReleased(me);
+		}
+	}
+	
+	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
+		int tel=state.getState();
+		if(tel==1){
+			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
+		}
+		else if(tel==2){
+			pause.init(drawable);
+		}
 	}
 
 }

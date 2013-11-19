@@ -117,10 +117,13 @@ public class UserInput extends Control
 			left =true;
 			right =false;
 		}
-			
-		
+		if(event.getKeyCode()==KeyEvent.VK_P){
+			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
+			MainClass.state.setStopMainGame(true);
+			MainClass.state.setStopPause(false);
+		}
 	}
-
+	
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
@@ -141,6 +144,7 @@ public class UserInput extends Control
 		{
 			left=false;
 		}
+
 	}
 
 	/*
