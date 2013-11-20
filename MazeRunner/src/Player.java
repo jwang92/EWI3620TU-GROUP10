@@ -18,6 +18,7 @@
 public class Player extends GameObject {	
 	private double horAngle, verAngle;
 	private double speed;
+	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 
@@ -44,6 +45,7 @@ public class Player extends GameObject {
 		horAngle = h;
 		verAngle = v;
 		speed = 0.01;
+		speedadjust = 1;
 	}
 	
 	/**
@@ -127,7 +129,7 @@ public class Player extends GameObject {
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 45)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , z+d*Math.cos(i*Math.PI/180) ))
+			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , z+d*Math.cos(i*Math.PI/180) , locationY ))
 				res = true;
 		
 		return res;
@@ -175,6 +177,8 @@ public class Player extends GameObject {
 //			setVerAngle( verAngle + control.getdY() * speed/3.0);
 			
 			// TODO: Move the player, according to control
+			double speed = this.speed * speedadjust;
+			
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.cos(horAngle*Math.PI/180);

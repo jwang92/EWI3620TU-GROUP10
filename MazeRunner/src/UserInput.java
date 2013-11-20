@@ -95,7 +95,13 @@ public class UserInput extends Control
 		
 		pressed.add(event.getKeyChar());
         if (pressed.size() > 0) {
-
+        	
+        	if( 1 < pressed.size() && pressed.size() < 3 && Player.speedadjust == 1)
+        		Player.speedadjust = 1/(Math.sqrt(2));
+        	else
+        		Player.speedadjust = 1;
+			System.out.println("speed " + Player.speedadjust);
+        	
         	for (Character keyCode : pressed) {
         		
         		if(keyCode== 'w')
