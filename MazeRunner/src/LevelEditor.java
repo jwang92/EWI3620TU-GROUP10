@@ -185,11 +185,20 @@ public class LevelEditor implements ActionListener{
 			
 			if (retrival == JFileChooser.APPROVE_OPTION) {
 				try {            
-					le.getWallList().WriteToFile(fc.getSelectedFile()+"/Walls.txt");
-					le.getRoofList().WriteToFile(fc.getSelectedFile()+"/Roof.txt");
-					le.getFloorList().WriteToFile(fc.getSelectedFile()+"/Floor.txt");
+					le.getWallList().WriteToFile(fc.getSelectedFile()+"/Floor 1/Walls.txt");
+					le.getRoofList().WriteToFile(fc.getSelectedFile()+"/Floor 1/Roof.txt");
+					le.getFloorList().WriteToFile(fc.getSelectedFile()+"/Floor 1/Floor.txt");
 					
-					FileWriter fw = new FileWriter(fc.getSelectedFile()+"/World.txt");
+					FileWriter fw = new FileWriter(fc.getSelectedFile()+"/Floor 1/World.txt");
+					fw.write(le.getWorldFileFormat());
+					fw.close();
+					
+					// Dummy files voor de 2de verdieping
+					le.getWallList().WriteToFile(fc.getSelectedFile()+"/Floor 2/Walls.txt");
+					le.getRoofList().WriteToFile(fc.getSelectedFile()+"/Floor 2/Roof.txt");
+					le.getFloorList().WriteToFile(fc.getSelectedFile()+"/Floor 2/Floor.txt");
+					
+					fw = new FileWriter(fc.getSelectedFile()+"/Floor 2/World.txt");
 					fw.write(le.getWorldFileFormat());
 					fw.close();
 					    
