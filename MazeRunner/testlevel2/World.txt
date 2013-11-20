@@ -1,1 +1,2 @@
-Moet nog gedaan worden
+Size: 10 10;
+End;
