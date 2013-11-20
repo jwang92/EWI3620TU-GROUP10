@@ -35,9 +35,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private float buttonSize = screenHeight / 10.0f;
 	
 	//Grid distances
-	private int worldSizeX = 10, worldSizeY = 10; 
+	//private int worldSizeX = 10, worldSizeY = 10; 
 	private float gridDistance = 50.0f;
-	private float gridOffsetX = 10, gridOffsetY = 10 + buttonSize;
+	private float gridOffsetX = 10, gridOffsetY = 10;
 	private float gridDragX = 0, gridDragY = 0;
 
 	// A GLCanvas is a component that can be added to a frame. The drawing
@@ -56,6 +56,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private ArrayList<Point2D.Float> gridpoints;
 	private ArrayList<Point2D.Float> grid = new ArrayList<Point2D.Float>();
 	private Point2D.Float gridHighlight = new Point2D.Float();
+	
+	// World
+	private World world = new World();
 	
 	//Walls
 	private Wall wall = new Wall(-1, -1, -1, -1, "");
@@ -84,11 +87,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	* When instantiating, a GLCanvas is added to draw the level editor. 
 	* An animator is created to continuously render the canvas.
 	*/
-	public LevelEditorFrame(GLJPanel panel) {
+	public LevelEditorFrame(GLJPanel panel, int xMap, int yMap) {
 		//super("Knight vs Aliens: Level Editor");
 		
 		//Screen points
 		points = new ArrayList<Point2D.Float>();
+		
+		//Size Map
+		world.setSizeX(xMap);
+		world.setSizeY(yMap);
 		
 		//Grid points
 		gridpoints = new ArrayList<Point2D.Float>();
@@ -191,8 +198,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Initialize the grid
 	 */
 	public void initGrid(){
-		for(int x = 1; x < worldSizeX; x++){
-			for(int y = 1; y < worldSizeY; y++){
+		for(int x = 1; x < world.getSizeX(); x++){
+			for(int y = 1; y < world.getSizeY(); y++){
 				grid.add(new Point2D.Float((float)(x),(float)(y)));
 			}
 		}
@@ -334,11 +341,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	public String getWorldFileFormat(){
+		
+		return "Size: " + world.getSizeX() + " " + world.getSizeY() + ";\r\nEnd;";
+		
+	}
+	
 	public void loadFromFolder(String folder) throws FileNotFoundException{
 		
 		wallList.Read(folder + "/Walls.txt");
 		floorList.Read(folder + "/Floor.txt");
-		roofList.Read(folder + "/Roof.txt");		
+		roofList.Read(folder + "/Roof.txt");
+		world.Read(folder + "/World.txt");
+		
 	}
 
 		

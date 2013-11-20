@@ -72,6 +72,7 @@ public class Maze  implements VisibleObject {
 			p4.z = (float) (sy * SQUARE_SIZE);
 			p.add(p4);
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
+	
 		polygonOnScreen(gl,p,textureID);
 	}
 	
@@ -146,7 +147,6 @@ public class Maze  implements VisibleObject {
 			distance = distToSegment(x / SQUARE_SIZE, z / SQUARE_SIZE, w.get(i).getStartx(), w.get(i).getStarty(), w.get(i).getEndx(), w.get(i).getEndy());
 		
 			if(distance < 0.1){
-				System.out.println(distance);
 				return true;
 			}
 			

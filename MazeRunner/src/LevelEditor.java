@@ -26,6 +26,30 @@ public class LevelEditor implements ActionListener{
 		
 		Container content = f.getContentPane();
 		
+		String xMap = (String)JOptionPane.showInputDialog(
+                f,
+                "Hoe breed moet de map zijn?",
+                "Breedte map",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "10");
+		
+		String yMap = (String)JOptionPane.showInputDialog(
+                f,
+                "Hoe lang moet de map zijn?",
+                "Lengte map",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "10");
+		
+		int xMapInt = 10;
+		int yMapInt = 10;
+		
+		xMapInt = Integer.parseInt(xMap);
+		yMapInt = Integer.parseInt(yMap);
+		
 		JPanel controlArea = new JPanel(new GridLayout(5, 1));		
 		
 		JPanel opties1 = new JPanel(new GridLayout(2, 2));
@@ -114,7 +138,7 @@ public class LevelEditor implements ActionListener{
 		drawingArea.setPreferredSize(new Dimension(700, 700));
 	    drawingArea.setBorder(BorderFactory.createLineBorder (Color.white, 2));
 
-	    le = new LevelEditorFrame(drawingArea);
+	    le = new LevelEditorFrame(drawingArea, xMapInt, yMapInt);
 	    le.setDrawMode(1);
 	    
 	    content.add(drawingArea, BorderLayout.EAST);
@@ -125,7 +149,7 @@ public class LevelEditor implements ActionListener{
 	    	@Override
 	    	  public void windowClosing(WindowEvent e) {
 	    	    int confirmed = JOptionPane.showConfirmDialog(null, 
-	    	        "Are you sure you want to exit the program?", "Exit Program Message Box",
+	    	        "Weet je zeker dat je de editor wilt verlaten?", "LevelEditor verlaten",
 	    	        JOptionPane.YES_NO_OPTION);
 
 	    	    if (confirmed == JOptionPane.YES_OPTION) {
@@ -166,7 +190,7 @@ public class LevelEditor implements ActionListener{
 					le.getFloorList().WriteToFile(fc.getSelectedFile()+"/Floor.txt");
 					
 					FileWriter fw = new FileWriter(fc.getSelectedFile()+"/World.txt");
-					fw.write("Moet nog gedaan worden");
+					fw.write(le.getWorldFileFormat());
 					fw.close();
 					    
 				} catch (Exception ex) {

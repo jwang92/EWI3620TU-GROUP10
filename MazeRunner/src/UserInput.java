@@ -1,4 +1,6 @@
 import java.awt.event.*;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.media.opengl.GLCanvas;
 
@@ -29,6 +31,8 @@ public class UserInput extends Control
 	int sx=0;
 	int sy=0;
 	
+    private final Set<Character> pressed = new HashSet<Character>(); // Currently pressed keys
+    
 	/**
 	 * UserInput constructor.
 	 * <p>
@@ -88,46 +92,62 @@ public class UserInput extends Control
 	@Override
 	public void keyPressed(KeyEvent event)
 	{
-		// TODO: Set forward, back, left and right to corresponding key presses
-		if(event.getKeyCode()==KeyEvent.VK_W)
-		{
-			forward= true;
-			back= false;
-			left =false;
-			right =false;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_S)
-		{
-			forward= false;
-			back= true;
-			left =false;
-			right =false;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_D)
-		{
-			forward= false;
-			back= false;
-			left =false;
-			right =true;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_A)
-		{
-			forward= false;
-			back= false;
-			left =true;
-			right =false;
-		}
-		if(event.getKeyCode()==KeyEvent.VK_P){
-			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
-			MainClass.state.setStopMainGame(true);
-			MainClass.state.setStopPause(false);
-		}
+		
+		pressed.add(event.getKeyChar());
+        if (pressed.size() > 0) {
+
+        	for (Character keyCode : pressed) {
+        		
+        		if(keyCode== 'w')
+        		{
+        			forward = true;
+        		//	back = false;
+        		//	left = false;
+        		//	right = false;
+        		}
+        		else if(keyCode=='s')
+        		{
+        		//	forward = false;
+        			back = true;
+        		//	left = false;
+        		//	right = false;
+        		}
+        		else if(keyCode=='d')
+        		{
+        			//forward = false;
+        		//	back = false;
+        			//left = false;
+        			right = true;
+        		}
+        		else if(keyCode=='a')
+        		{
+        			//forward = false;
+        			//back= false;
+        			left = true;
+        			//right = false;
+        		}
+        		if(keyCode=='p'){
+        			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
+        			MainClass.state.setStopMainGame(true);
+        			MainClass.state.setStopPause(false);
+        		}
+        		
+        	}
+ 
+        	
+        }
+		
+		
+		
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
-		// TODO: Set forward, back, left and right to corresponding key presses
+				
+		pressed.remove(event.getKeyChar());
+		
+		
 		if(event.getKeyCode()==KeyEvent.VK_W)
 		{
 			forward= false;
@@ -144,7 +164,7 @@ public class UserInput extends Control
 		{
 			left=false;
 		}
-
+		
 	}
 
 	/*
