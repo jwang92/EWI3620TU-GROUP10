@@ -3,6 +3,8 @@ import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
@@ -27,7 +29,7 @@ import com.sun.opengl.util.texture.TextureCoords;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
-public class LevelEditorFrame extends Frame implements GLEventListener, MouseListener,MouseMotionListener {
+public class LevelEditorFrame extends Frame implements GLEventListener, MouseListener,MouseMotionListener, MouseWheelListener {
 	static final long serialVersionUID = 7526471155622776147L;
 	
 	// Screen size.
@@ -39,6 +41,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private float gridDistance = 50.0f;
 	private float gridOffsetX = 10, gridOffsetY = 10;
 	private float gridDragX = 0, gridDragY = 0;
+	
+	//Sizes
+	private float pointSize = 5.0f;
+	private float lineWidth = 3.0f;
 
 	// A GLCanvas is a component that can be added to a frame. The drawing
 	// happens on this component.
@@ -141,6 +147,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		canvas.addMouseListener(this);
 		
 		canvas.addMouseMotionListener(this);
+		
+		canvas.addMouseWheelListener(this);
 
 		// An Animator is a JOGL help class that can be used to make sure our
 		// GLCanvas is continuously being re-rendered. The animator is run on a
@@ -188,6 +196,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST);
+		
+		//Set the width
+		gl.glLineWidth(lineWidth);
+		gl.glPointSize(pointSize);
 		
 		loadTextures();
 			
@@ -279,10 +291,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glClearColor(0.95f, 0.95f, 0.95f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		
-		//Draw the grid
+		//Set the size of the line and points
+		gl.glLineWidth(lineWidth);
+		gl.glPointSize(pointSize);
 		
-		drawGrid(gl);
-
 		// Draw a figure based on the current draw mode and user input
 		drawFigure(gl);
 		
@@ -315,11 +327,16 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			}
 		}
 		
+		//Draw the grid
+		
+		drawGrid(gl);
+		
 		//Delete the old points if neccesary
 		deletePoints();
 
 		// Flush the OpenGL buffer, outputting the result to the screen.
 		gl.glFlush();
+		
 	
 	}
 	
@@ -341,19 +358,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
-	public String getWorldFileFormat(){
+	public World getWorld(){
 		
-		return "Size: " + world.getSizeX() + " " + world.getSizeY() + ";\r\nEnd;";
+		return world;
 		
 	}
 	
 	public void loadFromFolder(String folder) throws FileNotFoundException{
-		
+		grid.clear();
 		wallList.Read(folder + "/Walls.txt");
 		floorList.Read(folder + "/Floor.txt");
 		roofList.Read(folder + "/Roof.txt");
 		world.Read(folder + "/World.txt");
-		
+		initGrid();
 	}
 
 		
@@ -399,8 +416,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 */
 	private void drawFigure(GL gl) {
 		// Set line and point size, and set color to black.
-		gl.glLineWidth(3);
-		gl.glPointSize(10.0f);
 		gl.glColor3f(0.0f, 0.0f, 0.0f);
 
 		//Screen points
@@ -514,7 +529,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Help method that uses GL calls to draw a point.
 	 */
 	private void pointOnScreen(GL gl, float x, float y) {
-		// Aanpassen van de grootte van de punten hier
+		//Aanpassen van de grootte van de punten hier
 		//gl.glPointSize(5.0f);
 		gl.glBegin(GL.GL_POINTS);
 		gl.glVertex2f(x, y);
@@ -739,6 +754,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gridDragX = me.getX();
 		gridDragY = me.getY();
 		
+	}
+	
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent me) {
+		gridDistance += gridDistance*0.05*me.getWheelRotation();
+		lineWidth += lineWidth*0.05*me.getWheelRotation();
+		pointSize += pointSize*0.05*me.getWheelRotation();
 	}
 	
 

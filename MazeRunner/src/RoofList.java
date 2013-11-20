@@ -34,7 +34,7 @@ public class RoofList {
 	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
-		
+		roofs.clear();
 		Scanner s = new Scanner(new File(FileName));
 		
 		String tempNumber = s.nextLine();

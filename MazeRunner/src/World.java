@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -41,6 +43,26 @@ public class World {
 	
 	public void setSizeY(int y){
 		ySize = y;
+	}
+	
+	public void WriteToFile(String FileName) throws IOException{
+		
+		String r = "Size: " + xSize + " " + ySize + ";\r\nEnd;";
+
+		File f = new File(FileName);
+		
+		// Create new file with the given name if it doesn't exist yet
+		if(!f.exists())
+		{
+			
+			f.createNewFile();
+			
+		}
+		
+		FileWriter w = new FileWriter(f);
+		w.write(r);
+		w.close();
+		
 	}
 
 }

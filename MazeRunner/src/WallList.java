@@ -33,7 +33,7 @@ public class WallList {
 	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
-		
+		walls.clear();
 		Scanner s = new Scanner(new File(FileName));
 		
 		String tempNumber = s.nextLine();
@@ -55,7 +55,6 @@ public class WallList {
 	 */
 	public void addWall(Wall w)
 	{
-		
 		if(!walls.contains(w)){
 			walls.add(w);
 		}

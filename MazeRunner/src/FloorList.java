@@ -34,7 +34,7 @@ public class FloorList {
 	 */
 	public void Read(String FileName) throws FileNotFoundException
 	{
-		
+		floors.clear();
 		Scanner s = new Scanner(new File(FileName));
 		
 		String tempNumber = s.nextLine();
