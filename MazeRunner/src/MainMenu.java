@@ -161,7 +161,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST); 
-		
+		gl.glDisable(GL.GL_LIGHTING);
 	}
 
 	@Override
@@ -212,7 +212,11 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
 			MainClass.state.setStopTitle(true);
 			MainClass.state.setStopMainGame(false);
-		} 
+			
+		}
+		else if (ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)) {
+			new LevelEditor();
+		}
 		else if (ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin)) {
 			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
 		}

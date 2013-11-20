@@ -80,13 +80,13 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 	
 		// Draw the background boxes
 		gl = BoxColor(gl, 1);
-		boxOnScreen(gl, bPosX, b1PosY, "Start");
+		boxOnScreen(gl, bPosX, b1PosY, "Resume Game");
 		
-		//gl = BoxColor(gl, 2);
-		//boxOnScreen(gl, bPosX, b2PosY, "Editor");
+		gl = BoxColor(gl, 2);
+		boxOnScreen(gl, bPosX, b2PosY, "Exit");
 		
-		gl = BoxColor(gl, 3);
-		boxOnScreen(gl, bPosX, b3PosY, "Stop");
+		//gl = BoxColor(gl, 3);
+		//boxOnScreen(gl, bPosX, b3PosY, "Stop");
 		
 	}
 	
@@ -163,6 +163,7 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 		// We have a simple 2D application, so we do not need to check for depth
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST); 
+		gl.glDisable(GL.GL_LIGHTING);
 		}
 		MainClass.state.setStopMainGame(true);
 		
@@ -214,7 +215,13 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
 				MainClass.state.setStopPause(true);
 				MainClass.state.setStopMainGame(false);
-		} 
+		}
+		else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)){
+			MainClass.initObjects();
+			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
+			MainClass.state.setStopPause(true);
+			MainClass.state.setStopTitle(false);
+		}
 	}
 
 //	/*

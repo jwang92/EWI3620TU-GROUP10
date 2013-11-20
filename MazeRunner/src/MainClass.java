@@ -27,7 +27,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	private static final long serialVersionUID = 1L;
 	public static GLCanvas canvas;
-	public int screenWidth = 600, screenHeight = 600;		// Screen size.
+	public static int screenWidth = 600, screenHeight = 600;		// Screen size.
 
 	
 	public static MazeRunner mazeRunner;
@@ -85,21 +85,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
 		setVisible(true);
-		mainMenu = new MainMenu(screenHeight, screenWidth);
-		state = new GameStateManager();
-		maze = new Maze();
-		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
-							 maze.SQUARE_SIZE / 2,							// y-position
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
-							 90, 0 );										// horizontal and vertical angle
-
-		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
-				             player.getHorAngle(), player.getVerAngle() );
-		
-		input = new UserInput(canvas);
-		
-		mazeRunner = new MazeRunner(screenHeight, screenWidth);
-		pause = new Pause(screenHeight, screenWidth);
+		initObjects();
 		
 		//Textures
 		textures = new ArrayList<Texture>();
@@ -323,6 +309,24 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+	}
+	
+	public static void initObjects(){
+		mainMenu = new MainMenu(screenHeight, screenWidth);
+		state = new GameStateManager();
+		maze = new Maze();
+		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+							 maze.SQUARE_SIZE / 2,							// y-position
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+							 90, 0 );										// horizontal and vertical angle
+
+		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
+				             player.getHorAngle(), player.getVerAngle() );
+		
+		input = new UserInput(canvas);
+		
+		mazeRunner = new MazeRunner(screenHeight, screenWidth);
+		pause = new Pause(screenHeight, screenWidth);
 	}
 
 }
