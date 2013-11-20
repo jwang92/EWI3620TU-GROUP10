@@ -21,6 +21,7 @@ public class Maze  implements VisibleObject {
 	private WallList walls1;
 	private FloorList floors1;
 	private RoofList roofs1;
+	private ObjectList objects1;
 	
 	private WallList walls2;
 	private FloorList floors2;
@@ -30,6 +31,7 @@ public class Maze  implements VisibleObject {
 		walls1 = new WallList();
 		roofs1 = new RoofList();
 		floors1 = new FloorList();
+		objects1 = new ObjectList();
 		
 		walls2 = new WallList();
 		roofs2 = new RoofList();
@@ -38,6 +40,7 @@ public class Maze  implements VisibleObject {
 			walls1.Read("grootlevel/Floor 1/Walls.txt");
 			roofs1.Read("grootlevel/Floor 1/Roof.txt");
 			floors1.Read("grootlevel/Floor 1/Floor.txt");
+			objects1.Read("grootlevel/Floor 1/Objects.txt");
 			
 			walls2.Read("grootlevel/Floor 2/Walls.txt");
 			roofs2.Read("grootlevel/Floor 2/Roof.txt");
@@ -52,6 +55,7 @@ public class Maze  implements VisibleObject {
 		ArrayList<Wall> w1 = walls1.getWalls();
 		ArrayList<Floor> f1 = floors1.getFloors();
 		ArrayList<Roof> r1 = roofs1.getRoofs();
+		ArrayList<Object> o1 = objects1.getObjects();
 		
 		ArrayList<Wall> w2 = walls2.getWalls();
 		ArrayList<Floor> f2 = floors2.getFloors();
@@ -68,6 +72,17 @@ public class Maze  implements VisibleObject {
 		for(int i = 0; i <r1.size(); i++){
 			drawRoof(gl,r1.get(i).getPoints(),r1.get(i).getTexture(), 0);
 		}
+		for(int i = 0; i < o1.size(); i++){
+			
+			if(o1.get(i) instanceof ObjectRamp){
+				
+				ObjectRamp t = (ObjectRamp) o1.get(i);
+							 
+				drawRamp(gl, t.getPoints(), 0);
+				
+			}
+			
+		}
 		
 		for(int i = 0; i < w2.size(); i++){
 			drawWall(gl, w2.get(i).getStartx(), w2.get(i).getStarty(), w2.get(i).getEndx(), w2.get(i).getEndy(),w2.get(i).getTexture(), height);
@@ -78,6 +93,27 @@ public class Maze  implements VisibleObject {
 		for(int i = 0; i <r2.size(); i++){
 			drawRoof(gl,r2.get(i).getPoints(),r2.get(i).getTexture(), height);
 		}
+		
+	}
+	
+	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int z){
+		
+		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
+		
+		for(int i = 0; i < points.size(); i++){
+			
+			Point3D point = new Point3D();
+			point.x = (float) (points.get(i).x * SQUARE_SIZE);
+			point.z = (float) (points.get(i).y * SQUARE_SIZE);
+			point.y = (float) z;
+			if(i > 1)
+				point.y = (float) z + 5;
+			
+			p3D.add(point);
+			
+		}
+		//int textureID = MainClass.textureNames.lastIndexOf(texture);
+		polygonOnScreen(gl,p3D, 1);	
 		
 	}
 	
@@ -186,6 +222,27 @@ public class Maze  implements VisibleObject {
 		}
 		
 		return false;		
+		
+	}
+	
+	public void isRamp(double x, double z, double y){
+		
+		ArrayList<Object> o;
+		o = objects1.getObjects();
+				
+		for(int i = 0; i < o.size(); i++){
+			
+			if(o.get(i) instanceof ObjectRamp){
+				
+				ObjectRamp tempRamp = (ObjectRamp) o.get(i);
+				ArrayList<Point2D.Float> points = tempRamp.getPoints();
+				
+				
+				
+			}
+			
+		}
+		
 		
 	}
 		
