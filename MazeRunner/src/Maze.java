@@ -46,6 +46,7 @@ public class Maze  implements VisibleObject {
 			ArrayList<Wall> w1 = storey.getWallList().getWalls();
 			ArrayList<Floor> f1 = storey.getFloorList().getFloors();
 			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
+			ArrayList<Object> o1 = storey.getObjectList().getObjects();
 			for(int j = 0; j < w1.size(); j++){
 				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
 			}
@@ -55,6 +56,18 @@ public class Maze  implements VisibleObject {
 			for(int j = 0; j <r1.size(); j++){
 				drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
 			}
+			for(int j = 0; j < o1.size(); j++){
+					
+				if(o1.get(j) instanceof ObjectRamp){
+						
+					ObjectRamp t = (ObjectRamp) o1.get(j);
+									 
+					drawRamp(gl, t.getPoints(), storey.getFloorHeight());
+						
+				}
+				
+			}
+
 		}
 	}
 	
@@ -169,6 +182,131 @@ public class Maze  implements VisibleObject {
 		return false;		
 		
 	}
+	
+public double isRamp(double x, double z, double y){
+		
+		ArrayList<Object> o;
+		
+		if(y < 7.3){
+			storey = storeys.get(0);
+			o = storey.getObjectList().getObjects();
+		}
+		else{
+			storey = storeys.get(1);
+			o = storey.getObjectList().getObjects();
+		}	
+		
+		//System.out.println("X: "+x+" Z: "+z+" Y: "+y);
+		
+		for(int i = 0; i < o.size(); i++){
+			
+			if(o.get(i) instanceof ObjectRamp){
+				
+				
+				ObjectRamp tempRamp = (ObjectRamp) o.get(i);
+				ArrayList<Point2D.Float> points = tempRamp.getPoints();
+				
+				float hiX = Integer.MIN_VALUE;
+				float hiZ = Integer.MIN_VALUE;
+				
+				float loX = Integer.MAX_VALUE;
+				float loZ = Integer.MAX_VALUE;
+				
+				for(int j = 0; j < points.size(); j++){
+					
+					if(points.get(j).x > hiX)
+						hiX = points.get(j).x;
+					
+					if(points.get(j).y > hiZ)
+						hiZ = points.get(j).y;
+					
+					if(points.get(j).x < loX)
+						loX = points.get(j).x;
+					
+					if(points.get(j).y < loZ)
+						loZ = points.get(j).y;
+						
+				}
+				
+				//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
+				
+				hiX = hiX * (float) SQUARE_SIZE;
+				loX = loX * (float) SQUARE_SIZE;
+				hiZ = hiZ * (float) SQUARE_SIZE;
+				loZ = loZ * (float) SQUARE_SIZE;
+				
+				// Check if on ramp
+				if(hiX > x && x > loX && hiZ > z && z > loZ){
+					
+					if(points.get(0).x == points.get(3).x){
+						
+						// Hij gaat omhoog over de z
+						double onRamp = 0;
+						
+						if(points.get(0).y < points.get(3).y){
+							onRamp = z - loZ;
+						}
+						else if(points.get(0).y > points.get(3).y){
+							onRamp = hiZ - z;
+						}
+						
+						double dY = Math.tan(0.25*Math.PI) * onRamp + 2.5;
+						System.out.println(dY - y);
+						return dY - y;
+						
+						
+					}
+					else if(points.get(0).y == points.get(3).y){
+						
+						// Hij gaat omhoog over de x
+						double onRamp = 0;
+						
+						if(points.get(0).x < points.get(3).x){
+							onRamp = x - loX;
+						}
+						else if(points.get(0).x > points.get(3).x){
+							System.out.println("loX: "+loX+" hiX: "+hiX+" loZ: "+loZ+" hiZ: "+hiZ+" z: "+z+" x: "+x+" y:"+y);
+							onRamp = hiX - x;
+						}
+						
+						double dY = Math.tan(0.25*Math.PI) * onRamp + 2.5;
+						System.out.println(dY - y);
+						return dY - y;
+						
+					}
+						
+					
+				}
+				
+			}
+			
+		}
+		return 0;
+		
+		
+	}
+
+	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int z){
+		
+		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
+		
+		for(int i = 0; i < points.size(); i++){
+			
+			Point3D point = new Point3D();
+			point.x = (float) (points.get(i).x * SQUARE_SIZE);
+			point.z = (float) (points.get(i).y * SQUARE_SIZE);
+			point.y = (float) z;
+			if(i > 1)
+				point.y = (float) z + 5;
+			
+			p3D.add(point);
+			
+		}
+		//int textureID = MainClass.textureNames.lastIndexOf(texture);
+		polygonOnScreen(gl,p3D, 1);	
+		
+	}
+
 		
 	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
 	

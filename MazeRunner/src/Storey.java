@@ -13,8 +13,9 @@ public class Storey {
 	private WallList walls;
 	private FloorList floors;
 	private RoofList roofs;
+	private ObjectList objects;
 	
-	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof){
+	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof, ObjectList object){
 		xSize = sizeX;
 		ySize = sizeY;
 		floorHeight = floorh;
@@ -22,6 +23,7 @@ public class Storey {
 		walls = wall;
 		floors = floor;
 		roofs = roof;
+		objects = object;
 	}
 	
 	public Storey(){
@@ -62,6 +64,10 @@ public class Storey {
 		return floors;
 	}
 	
+	public ObjectList getObjectList(){
+		return objects;
+	}
+	
 	public RoofList getRoofList(){
 		return roofs;
 	}
@@ -94,6 +100,10 @@ public class Storey {
 		roofs = r;
 	}
 	
+	public void setObjects(ObjectList o){
+		objects = o;
+	}
+	
 	public static Storey Read(String FileName) throws FileNotFoundException{
 		Scanner s = new Scanner(new File(FileName + "/Storey.txt"));
 		s.next();
@@ -110,10 +120,12 @@ public class Storey {
 		WallList w = new WallList();
 		FloorList f = new FloorList();
 		RoofList r = new RoofList();
+		ObjectList o = new ObjectList();
 		w.Read(FileName+"/Walls.txt");
 		f.Read(FileName+"/Floor.txt");
 		r.Read(FileName+"/Roof.txt");
-		Storey res = new Storey(sizeX, sizeY,floorh,storeyh,w,f,r);
+		o.Read(FileName+"/Objects.txt");
+		Storey res = new Storey(sizeX, sizeY,floorh,storeyh,w,f,r,o);
 		return res; 
 	}
 	

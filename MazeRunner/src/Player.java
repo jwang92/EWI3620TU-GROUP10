@@ -179,6 +179,9 @@ public class Player extends GameObject {
 			// TODO: Move the player, according to control
 			double speed = this.speed * speedadjust;
 			
+			
+			locationY = locationY + maze.isRamp(locationX, locationZ, locationY);
+			
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.cos(horAngle*Math.PI/180);
