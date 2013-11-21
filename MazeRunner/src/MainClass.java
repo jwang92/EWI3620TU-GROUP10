@@ -193,8 +193,14 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
 			int arg4) {
 		int tel = state.getState();
-		if(tel == 1){
+		if(tel == 0){
+			mainMenu.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
+		else if(tel == 1){
 			mazeRunner.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
+		else if(tel == 2){
+			pause.reshape(arg0, arg1, arg2, arg3, arg4);
 		}
 		
 	}
