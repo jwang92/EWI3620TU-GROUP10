@@ -28,6 +28,17 @@ public class Wall {
 		
 	}
 	
+	public Wall()
+	{
+		
+		startx = -1;
+		starty = -1;
+		endx = -1;
+		endy = -1;
+		texture = "";
+		
+	}
+	
 	/**
 	 * Returns the x of the starting point of this wall
 	 * @return Returns the starting x of the wall

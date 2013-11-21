@@ -8,132 +8,73 @@ import java.util.ArrayList;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLException;
 
-import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureCoords;
-import com.sun.opengl.util.texture.TextureData;
-import com.sun.opengl.util.texture.TextureIO;
 
 
 public class Maze  implements VisibleObject {
 	
 	public final double SQUARE_SIZE = 5;
 	private int height = 5;
-	private WallList walls1;
-	private FloorList floors1;
-	private RoofList roofs1;
-	private ObjectList objects1;
-	
-	private WallList walls2;
-	private FloorList floors2;
-	private RoofList roofs2;
+	private Storey storey;
+	private ArrayList<Storey> storeys;
+	private String loadfolder = "MazeLevel";
+	private int numberOfStoreys;
 	
 	public Maze(){
-		walls1 = new WallList();
-		roofs1 = new RoofList();
-		floors1 = new FloorList();
-		objects1 = new ObjectList();
-		
-		walls2 = new WallList();
-		roofs2 = new RoofList();
-		floors2 = new FloorList();
+		storeys = new ArrayList<Storey>();
 		try {
-			walls1.Read("grootlevel/Floor 1/Walls.txt");
-			roofs1.Read("grootlevel/Floor 1/Roof.txt");
-			floors1.Read("grootlevel/Floor 1/Floor.txt");
-			objects1.Read("grootlevel/Floor 1/Objects.txt");
-			
-			walls2.Read("grootlevel/Floor 2/Walls.txt");
-			roofs2.Read("grootlevel/Floor 2/Roof.txt");
-			floors2.Read("grootlevel/Floor 2/Floor.txt");
-			
+		    File folder = new File(loadfolder);
+		    File[] tList = folder.listFiles();
+		    numberOfStoreys = tList.length;
+		    for(int i = 0; i<tList.length;i++){
+			    if(tList[i].getName().equals("Thumbs.db")){
+			    	numberOfStoreys -= 1;
+			    }  
+		    }
+			for(int i =1;i<numberOfStoreys+1;i++){
+				storey = Storey.Read(loadfolder + "/Floor " + i);
+				storeys.add(storey);
+			}			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void display(GL gl){
-		ArrayList<Wall> w1 = walls1.getWalls();
-		ArrayList<Floor> f1 = floors1.getFloors();
-		ArrayList<Roof> r1 = roofs1.getRoofs();
-		ArrayList<Object> o1 = objects1.getObjects();
-		
-		ArrayList<Wall> w2 = walls2.getWalls();
-		ArrayList<Floor> f2 = floors2.getFloors();
-		ArrayList<Roof> r2 = roofs2.getRoofs();
-		
 		gl.glDisable(GL.GL_CULL_FACE);
-		
-		for(int i = 0; i < w1.size(); i++){
-			drawWall(gl, w1.get(i).getStartx(), w1.get(i).getStarty(), w1.get(i).getEndx(), w1.get(i).getEndy(),w1.get(i).getTexture(), 0);
-		}
-		for(int i = 0; i< f1.size(); i++){
-			drawFloor(gl,f1.get(i).getPoints(),f1.get(i).getTexture(), 0);
-		}
-		for(int i = 0; i <r1.size(); i++){
-			drawRoof(gl,r1.get(i).getPoints(),r1.get(i).getTexture(), 0);
-		}
-		for(int i = 0; i < o1.size(); i++){
-			
-			if(o1.get(i) instanceof ObjectRamp){
-				
-				ObjectRamp t = (ObjectRamp) o1.get(i);
-							 
-				drawRamp(gl, t.getPoints(), 0);
-				
+		for(int i = 0; i<numberOfStoreys;i++){
+			storey = storeys.get(i);
+			ArrayList<Wall> w1 = storey.getWallList().getWalls();
+			ArrayList<Floor> f1 = storey.getFloorList().getFloors();
+			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
+			for(int j = 0; j < w1.size(); j++){
+				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
 			}
-			
+			for(int j = 0; j< f1.size(); j++){
+				drawFloor(gl,f1.get(j).getPoints(),f1.get(j).getTexture(), storey.getFloorHeight());
+			}
+			for(int j = 0; j <r1.size(); j++){
+				drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
+			}
 		}
-		
-		for(int i = 0; i < w2.size(); i++){
-			drawWall(gl, w2.get(i).getStartx(), w2.get(i).getStarty(), w2.get(i).getEndx(), w2.get(i).getEndy(),w2.get(i).getTexture(), height);
-		}
-		for(int i = 0; i< f2.size(); i++){
-			drawFloor(gl,f2.get(i).getPoints(),f2.get(i).getTexture(), height);
-		}
-		for(int i = 0; i <r2.size(); i++){
-			drawRoof(gl,r2.get(i).getPoints(),r2.get(i).getTexture(), height);
-		}
-		
 	}
 	
-	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int z){
-		
-		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
-		
-		for(int i = 0; i < points.size(); i++){
-			
-			Point3D point = new Point3D();
-			point.x = (float) (points.get(i).x * SQUARE_SIZE);
-			point.z = (float) (points.get(i).y * SQUARE_SIZE);
-			point.y = (float) z;
-			if(i > 1)
-				point.y = (float) z + 5;
-			
-			p3D.add(point);
-			
-		}
-		//int textureID = MainClass.textureNames.lastIndexOf(texture);
-		polygonOnScreen(gl,p3D, 1);	
-		
-	}
-	
-	public void drawWall(GL gl, int sx, int sy, int ex, int ey,String texture, int z){
+	public void drawWall(GL gl, int sx, int sy, int ex, int ey,String texture, int zfloor, int zroof){
 		ArrayList<Point3D> p = new ArrayList<Point3D>();
 		Point3D p1 = new Point3D(); Point3D p2 = new Point3D(); Point3D p3 = new Point3D(); Point3D p4 = new Point3D();
 			p1.x = (float) (sx * SQUARE_SIZE);
-			p1.y = (float) (z + height);
+			p1.y = (float) (zroof);
 			p1.z = (float) (sy * SQUARE_SIZE);
 			p.add(p1);
 			p2.x = (float) (ex * SQUARE_SIZE);
-			p2.y = (float) (z + height);
+			p2.y = (float) (zroof);
 			p2.z = (float) (ey * SQUARE_SIZE);
 			p.add(p2);
 			p3.x = (float) (ex * SQUARE_SIZE);
-			p3.y = (float) z;
+			p3.y = (float) zfloor;
 			p3.z = (float) (ey * SQUARE_SIZE);
 			p.add(p3);
 			p4.x = (float) (sx * SQUARE_SIZE);
-			p4.y = (float) z;
+			p4.y = (float) zfloor;
 			p4.z = (float) (sy * SQUARE_SIZE);
 			p.add(p4);
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
@@ -159,7 +100,7 @@ public class Maze  implements VisibleObject {
 		for(int i =0; i<p2D.size();i++){
 			Point3D point = new Point3D();
 			point.x = (float) (p2D.get(i).x * SQUARE_SIZE);
-			point.y = (float) z + 5;
+			point.y = (float) z;
 			point.z = (float) (p2D.get(i).y * SQUARE_SIZE);
 			p3D.add(point);
 		}
@@ -204,11 +145,15 @@ public class Maze  implements VisibleObject {
 	{
 		
 		ArrayList<Wall> w;
-		if(y < 5)
-			w = walls1.getWalls();
-		else
-			w = walls2.getWalls();
-						
+		
+		if(y < 5){
+			storey = storeys.get(0);
+			w = storey.getWallList().getWalls();
+		}
+		else{
+			storey = storeys.get(1);
+			w = storey.getWallList().getWalls();
+		}			
 		double distance;
 		
 		for(int i = 0; i < w.size(); i++){
@@ -222,27 +167,6 @@ public class Maze  implements VisibleObject {
 		}
 		
 		return false;		
-		
-	}
-	
-	public void isRamp(double x, double z, double y){
-		
-		ArrayList<Object> o;
-		o = objects1.getObjects();
-				
-		for(int i = 0; i < o.size(); i++){
-			
-			if(o.get(i) instanceof ObjectRamp){
-				
-				ObjectRamp tempRamp = (ObjectRamp) o.get(i);
-				ArrayList<Point2D.Float> points = tempRamp.getPoints();
-				
-				
-				
-			}
-			
-		}
-		
 		
 	}
 		
