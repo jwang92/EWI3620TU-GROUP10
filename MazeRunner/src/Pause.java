@@ -132,7 +132,6 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 
 	@Override
 	public void init(GLAutoDrawable arg0) {
-		if(MainClass.state.getStopPause()==false){
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
 		
@@ -164,9 +163,8 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
-		}
-		MainClass.state.setStopMainGame(true);
 		
+		MainClass.state.setStopMainGame(true);
 	}
 
 	@Override

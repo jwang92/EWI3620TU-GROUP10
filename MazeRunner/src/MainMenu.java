@@ -72,7 +72,6 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		drawButtons(gl);
 		gl.glFlush();
 	
-
 	}
 	
 	private void drawButtons(GL gl) {
@@ -162,6 +161,8 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// when rendering.
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
+		
+		MainClass.state.setStopTitle(true);
 	}
 
 	@Override

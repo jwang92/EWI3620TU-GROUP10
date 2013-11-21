@@ -109,7 +109,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if (tel==1){
 			mazeRunner.render(drawable);
-			initUpdater(drawable,0,0, screenWidth, screenHeight);
 		}
 		else if (tel==2){
 			pause.render(drawable);
@@ -118,6 +117,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if (tel==3){
 			System.exit(0);
 		}
+		initUpdater(drawable,0,0, screenWidth, screenHeight);
 
 	}
 	
@@ -242,10 +242,13 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
 		int tel=state.getState();
-		if(tel==1){
+		if(tel==0 && state.getStopTitle()==false){
+			mainMenu.init(drawable);
+		}
+		if(tel==1 && state.getStopMainGame()==false ){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
 		}
-		else if(tel==2){
+		else if(tel==2 && state.getStopPause()==false){
 			pause.init(drawable);
 		}
 	}

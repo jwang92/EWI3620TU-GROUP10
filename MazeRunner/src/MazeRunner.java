@@ -282,11 +282,10 @@ public class MazeRunner implements GLEventListener{
 	
 	//initializer which is called upon by MainClass
 	public void mazeInit(GLAutoDrawable drawable, int x, int y, int width, int height){
-        if(MainClass.state.getStopMainGame()==false){
-        	init(drawable);
-        	reshape(drawable, 0, 0, screenWidth, screenHeight);
-        	MainClass.state.setStopMainGame(true);
-        }
+    	init(drawable);
+    	reshape(drawable, 0, 0, screenWidth, screenHeight);
+    	MainClass.state.setStopMainGame(true);
+        
 	}
 	
 /*
