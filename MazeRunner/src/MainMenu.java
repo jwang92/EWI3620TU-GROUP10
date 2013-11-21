@@ -121,15 +121,13 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2d(x + drawbuttonSizeX/5.0, y + drawbuttonSizeY/3.0);
+		gl.glRasterPos2d(x + drawbuttonSizeX/6.0, y + drawbuttonSizeY/3.0);
 		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
 
 	}
 	
 	public boolean ButtonPressed(int buttonX, int buttonY, int xin, int yin){
 		yin = ScreenHeight - yin;
-
-//		return buttonX < xin && xin < buttonX+buttonSizeX && buttonY < yin && yin < buttonY+buttonSizeY;
 
 		boolean withinX = buttonX < xin && xin < buttonX+buttonSizeX;
 		boolean withinY = buttonY < yin && yin < buttonY+buttonSizeY;

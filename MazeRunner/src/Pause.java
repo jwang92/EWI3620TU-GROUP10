@@ -19,7 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Pause implements GLEventListener, MouseListener /*, MouseMotionListener*/ {
+public class Pause implements GLEventListener, MouseListener, MouseMotionListener {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
@@ -29,28 +29,58 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 	//frame setup
 	public int ScreenWidth, ScreenHeight;
 	//buttons setup
-	private int buttonSizeX = 250, buttonSizeY = 100;
+	private int buttonSizeX, buttonSizeY;
 	private int bPosX;
-	private int b1PosY, b2PosY, b3PosY;
+	private int b1PosY, b2PosY;
+	private int drawbuttonSizeX, drawbuttonSizeY;
+	private int drawPosX;
+	private int draw1PosY, draw2PosY;
 	private int mouseOnBox = 0;
 	boolean stop = false;
 
 	
 	public Pause(int screenHeight, int screenWidth){
-		ScreenWidth= screenWidth;
-		ScreenHeight = screenHeight;
+		initWindowSize(screenHeight, screenWidth);
 		
 		setButtonSize();
+				
+		setDrawButtons();
 	
+//		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
+//		 * The Animator class handles that for JOGL.
+//		 */
+//		Animator anim = new Animator( MainClass.canvas );
+//		anim.start();
+		
+		// Also add this class as mouse motion listener, allowing this class to
+		// react to mouse events that happen inside the GLCanvas.
+		MainClass.canvas.addMouseMotionListener(this);
+//		MainClass.canvas.addGLEventListener(this);
+
+	}
+	
+	public void initWindowSize(int screenHeight, int screenWidth){
+		ScreenWidth = screenWidth;
+		ScreenHeight = screenHeight;
+		buttonSizeX = (int) (ScreenWidth/3);
+		buttonSizeY = (int) (ScreenHeight/6);
+//		System.out.println("Screen: " + ScreenWidth + " " + ScreenHeight + " " + buttonSizeX + " " + buttonSizeY);
 	}
 	
 	public void setButtonSize(){
 		bPosX = (int) (ScreenWidth/2.0f-buttonSizeX/2.0f);
 		b1PosY = (int) (ScreenHeight-2.0f*buttonSizeY);
 		b2PosY = (int) (ScreenHeight-3.0f*buttonSizeY);
-		b3PosY = (int) (ScreenHeight-4.0f*buttonSizeY);
 	}
-	
+
+	public void setDrawButtons(){
+		drawPosX = bPosX;
+		draw1PosY = b1PosY;
+		draw2PosY = b2PosY;
+		drawbuttonSizeX = buttonSizeX;
+		drawbuttonSizeY = buttonSizeY;
+	}
+
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
@@ -61,42 +91,38 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 		drawButtons(gl);
 		gl.glFlush();
 	
-//		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
-//		 * The Animator class handles that for JOGL.
-//		 */
-//		Animator anim = new Animator( MainClass.canvas );
-//		anim.start();
 	}
 	
-	private GL BoxColor(GL gl, int boxnum){
-		if(mouseOnBox == boxnum)
-			gl.glColor3f(0, 1.0f, 0);
-		else
-			gl.glColor3f(1.0f, 0, 0);
-		return gl;
-	}
+//	private GL BoxColor(GL gl, int boxnum){
+//		if(mouseOnBox == boxnum)
+//			gl.glColor3f(0, 1.0f, 0);
+//		else
+//			gl.glColor3f(1.0f, 0, 0);
+//		return gl;
+//	}
 	
 	private void drawButtons(GL gl) {
 	
 		// Draw the background boxes
-		gl = BoxColor(gl, 1);
-		boxOnScreen(gl, bPosX, b1PosY, "Resume Game");
+//		gl = BoxColor(gl, 1);
+		boxOnScreen(gl, bPosX, b1PosY, "Resume Game", 1);
 		
-		gl = BoxColor(gl, 2);
-		boxOnScreen(gl, bPosX, b2PosY, "Exit");
-		
-		//gl = BoxColor(gl, 3);
-		//boxOnScreen(gl, bPosX, b3PosY, "Stop");
+//		gl = BoxColor(gl, 2);
+		boxOnScreen(gl, bPosX, b2PosY, "Exit", 2);
 		
 	}
 	
-	private void boxOnScreen(GL gl, float x, float y, String text) {
-		gl.glBegin(GL.GL_QUADS);
-		gl.glVertex2f(x, y);
-		gl.glVertex2f(x + buttonSizeX, y);
-		gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
-		gl.glVertex2f(x, y + buttonSizeY);
-		gl.glEnd();
+	private void boxOnScreen(GL gl, float x, float y, String text, int boxnum) {
+		if(mouseOnBox == boxnum){
+			gl.glColor3f(0, 1.0f, 0);
+			gl.glLineWidth(5);
+			gl.glBegin(GL.GL_LINE_LOOP);
+			gl.glVertex2f(x, y);
+			gl.glVertex2f(x + buttonSizeX, y);
+			gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
+			gl.glVertex2f(x, y + buttonSizeY);
+			gl.glEnd();
+		}
 		
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
@@ -108,7 +134,10 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 	public boolean ButtonPressed(int buttonX, int buttonY, int xin, int yin){
 		yin = ScreenHeight - yin;
 
-		return buttonX < xin && xin < buttonX+buttonSizeX && buttonY < yin && yin < buttonY+buttonSizeY;
+		boolean withinX = buttonX < xin && xin < buttonX+buttonSizeX;
+		boolean withinY = buttonY < yin && yin < buttonY+buttonSizeY;
+		
+		return withinX && withinY;
 	}
 	
 	
@@ -168,9 +197,16 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
-			int arg4) {
-		// TODO Auto-generated method stub
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		GL gl = drawable.getGL();
+
+		// Set the new screen size and adjusting the sizes
+		initWindowSize(height, width);
+		setButtonSize();
+		
+//		System.out.println(x + " " + y);
+		
+		gl.glViewport(0, 0, ScreenWidth, ScreenHeight);
 		
 	}
 
@@ -209,12 +245,14 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 		int Xin = me.getX();
 		int Yin = me.getY();
 		
-		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
-				MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-				MainClass.state.setStopPause(true);
-				MainClass.state.setStopMainGame(false);
+		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)){
+			MainClass.canvas.removeGLEventListener(this);
+			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
+			MainClass.state.setStopPause(true);
+			MainClass.state.setStopMainGame(false);
 		}
 		else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)){
+			MainClass.canvas.removeGLEventListener(this);
 			MainClass.initObjects();
 			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
 			MainClass.state.setStopPause(true);
@@ -222,35 +260,32 @@ public class Pause implements GLEventListener, MouseListener /*, MouseMotionList
 		}
 	}
 
-//	/*
-//	 * **********************************************
-//	 * *		Mouse Motion event handlers			*
-//	 * **********************************************
-//	 */
-//		
-//		@Override
-//		public void mouseMoved(MouseEvent me){
-//			int Xin = me.getXOnScreen();
-//			int Yin = me.getYOnScreen();
-////			System.out.println(Xin + " " + Yin);
-//			
-//			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
-//				mouseOnBox = 1;
-//			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
-//				mouseOnBox = 2;
-//			else if(ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin))
-//				mouseOnBox = 3;
-//			else
-//				mouseOnBox = 0;
-//		
-////			System.out.println(mouseOnBox);
-//		}
-//
-//		@Override
-//		public void mouseDragged(MouseEvent arg0) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//		
+	/*
+	 * **********************************************
+	 * *		Mouse Motion event handlers			*
+	 * **********************************************
+	 */
+		
+		@Override
+		public void mouseMoved(MouseEvent me){
+			int Xin = me.getX();
+			int Yin = me.getY();
+			
+			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
+				mouseOnBox = 1;
+			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
+				mouseOnBox = 2;
+			else
+				mouseOnBox = 0;
+		
+//			System.out.println(mouseOnBox);
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	
 }

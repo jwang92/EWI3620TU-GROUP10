@@ -28,7 +28,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	public static GLCanvas canvas;
 	public static int screenWidth = 600, screenHeight = 600;		// Screen size.
-	public static int screenX = 0, screenY = 0;
+//	public static int screenX = 0, screenY = 0;
 	public int tel;
 	
 	public static MazeRunner mazeRunner;

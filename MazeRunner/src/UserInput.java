@@ -131,7 +131,7 @@ public class UserInput extends Control
         			left = true;
         			//right = false;
         		}
-        		if(keyCode=='p'){
+        		if(keyCode=='p' && MainClass.state.getState() == 1){
         			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
         			MainClass.state.setStopMainGame(true);
         			MainClass.state.setStopPause(false);
