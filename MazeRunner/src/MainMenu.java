@@ -30,18 +30,20 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	
 	//frame setup
 	public int ScreenWidth, ScreenHeight;
+//	public int screenX, screenY;
 	//buttons setup
-	private int buttonSizeX = 250, buttonSizeY = 100;
-	private int bPosX;
-	private int b1PosY, b2PosY, b3PosY;
+	private int buttonSizeX, buttonSizeY, drawbuttonSizeX, drawbuttonSizeY;
+	private int bPosX, drawPosX;
+	private int b1PosY, b2PosY, b3PosY, draw1PosY, draw2PosY, draw3PosY;
 	private int mouseOnBox = 0;
 
 	
 	public MainMenu(int screenHeight, int screenWidth){
-		ScreenWidth= screenWidth;
-		ScreenHeight = screenHeight;
+		initWindowSize(screenHeight, screenWidth);
 		
 		setButtonSize();
+				
+		setDrawButtons();
 		
 		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
 		 * The Animator class handles that for JOGL.
@@ -52,14 +54,34 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
 		MainClass.canvas.addMouseMotionListener(this);
+		MainClass.canvas.addGLEventListener(this);
 
+	}
+
+	public void initWindowSize(int screenHeight, int screenWidth){
+		ScreenWidth = screenWidth;
+		ScreenHeight = screenHeight;
+		buttonSizeX = (int) (ScreenWidth/3);
+		buttonSizeY = (int) (ScreenHeight/6);
+//		System.out.println("Screen: " + ScreenWidth + " " + ScreenHeight + " " + buttonSizeX + " " + buttonSizeY);
 	}
 	
 	public void setButtonSize(){
-		bPosX = (int) (ScreenWidth/2.0f-buttonSizeX/2.0f);
-		b1PosY = (int) (ScreenHeight-2.0f*buttonSizeY);
-		b2PosY = (int) (ScreenHeight-3.0f*buttonSizeY);
-		b3PosY = (int) (ScreenHeight-4.0f*buttonSizeY);
+		bPosX = (int) (ScreenWidth/2.0f - buttonSizeX/2.0f);
+		b1PosY = (int) (ScreenHeight/2.0f + 0.5f*buttonSizeY);
+		b2PosY = (int) (ScreenHeight/2.0f - 0.5f*buttonSizeY);
+		b3PosY = (int) (ScreenHeight/2.0f - 1.5f*buttonSizeY);
+		
+//		System.out.println("BottomLeft buttons (x,y1,y2,y3): " + bPosX + " , " + b1PosY + " , " + b2PosY + " , " + b3PosY);
+	}
+	
+	public void setDrawButtons(){
+		drawPosX = bPosX;
+		draw1PosY = b1PosY;
+		draw2PosY = b2PosY;
+		draw3PosY = b3PosY;
+		drawbuttonSizeX = buttonSizeX;
+		drawbuttonSizeY = buttonSizeY;
 	}
 	
 	public void render (GLAutoDrawable drawable){
@@ -72,15 +94,16 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		drawButtons(gl);
 		gl.glFlush();
 	
+
 	}
 	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
-		boxOnScreen(gl, bPosX, b1PosY, "Start", 1);
+		boxOnScreen(gl, drawPosX, draw1PosY, "Start", 1);
 		
-		boxOnScreen(gl, bPosX, b2PosY, "Editor", 2);
+		boxOnScreen(gl, drawPosX, draw2PosY, "Editor", 2);
 		
-		boxOnScreen(gl, bPosX, b3PosY, "Stop", 3);
+		boxOnScreen(gl, drawPosX, draw3PosY, "Stop", 3);
 		
 	}
 	
@@ -90,15 +113,15 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			gl.glLineWidth(5);
 			gl.glBegin(GL.GL_LINE_LOOP);
 			gl.glVertex2f(x, y);
-			gl.glVertex2f(x + buttonSizeX, y);
-			gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
-			gl.glVertex2f(x, y + buttonSizeY);
+			gl.glVertex2f(x + drawbuttonSizeX, y);
+			gl.glVertex2f(x + drawbuttonSizeX, y + drawbuttonSizeY);
+			gl.glVertex2f(x, y + drawbuttonSizeY);
 			gl.glEnd();
 		}
 		
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2d(x + buttonSizeX/5.0, y + buttonSizeY/3.0);
+		gl.glRasterPos2d(x + drawbuttonSizeX/5.0, y + drawbuttonSizeY/3.0);
 		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
 
 	}
@@ -106,7 +129,12 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	public boolean ButtonPressed(int buttonX, int buttonY, int xin, int yin){
 		yin = ScreenHeight - yin;
 
-		return buttonX < xin && xin < buttonX+buttonSizeX && buttonY < yin && yin < buttonY+buttonSizeY;
+//		return buttonX < xin && xin < buttonX+buttonSizeX && buttonY < yin && yin < buttonY+buttonSizeY;
+
+		boolean withinX = buttonX < xin && xin < buttonX+buttonSizeX;
+		boolean withinY = buttonY < yin && yin < buttonY+buttonSizeY;
+		
+		return withinX && withinY;
 	}
 	
 	
@@ -166,9 +194,16 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
-			int arg4) {
-		// TODO Auto-generated method stub
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		GL gl = drawable.getGL();
+
+		// Set the new screen size and adjusting the sizes
+		initWindowSize(height, width);
+		setButtonSize();
+		
+//		System.out.println(x + " " + y);
+		
+		gl.glViewport(0, 0, ScreenWidth, ScreenHeight);
 		
 	}
 
@@ -210,10 +245,11 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 //		System.out.println("HIER");
 		
 		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
+			MainClass.canvas.removeGLEventListener(this);
+			
 			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
 			MainClass.state.setStopTitle(true);
 			MainClass.state.setStopMainGame(false);
-			
 		}
 		else if (ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)) {
 			new LevelEditor();

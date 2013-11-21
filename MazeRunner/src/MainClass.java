@@ -28,7 +28,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	private static final long serialVersionUID = 1L;
 	public static GLCanvas canvas;
 	public static int screenWidth = 600, screenHeight = 600;		// Screen size.
-
+	public static int screenX = 0, screenY = 0;
+	public int tel;
 	
 	public static MazeRunner mazeRunner;
 	public static GameStateManager state;
@@ -96,6 +97,20 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		render(drawable);
 	}
 	
+	public void rendersize(GLAutoDrawable drawable, int tel){
+		switch(tel){
+		case 0: 
+			mainMenu.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
+		case 1: 
+			mazeRunner.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
+		case 2: 
+			pause.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
+		}
+	}
+	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 
@@ -103,7 +118,23 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		
-		int tel = state.getState();
+		if(tel != state.getState()){
+			switch(tel){
+			case 0: 
+				setScreenSize(mainMenu.ScreenHeight, mainMenu.ScreenWidth);
+				break;
+			case 1: 
+				setScreenSize(mazeRunner.screenHeight, mazeRunner.screenWidth); 
+				break;
+			case 2: 
+				setScreenSize(pause.ScreenHeight, pause.ScreenWidth); 
+				break;
+			}
+			rendersize(drawable, state.getState());
+		}
+		
+		tel = state.getState();
+		
 		if(tel==0){
 			mainMenu.render(drawable);
 		}
@@ -117,6 +148,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if (tel==3){
 			System.exit(0);
 		}
+		
 		initUpdater(drawable,0,0, screenWidth, screenHeight);
 
 	}
@@ -190,11 +222,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
-			int arg4) {
+	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
 		int tel = state.getState();
 		if(tel == 0){
 			mainMenu.reshape(arg0, arg1, arg2, arg3, arg4);
+//			setScreenSize(mainMenu.ScreenHeight, mainMenu.ScreenWidth);
 		}
 		else if(tel == 1){
 			mazeRunner.reshape(arg0, arg1, arg2, arg3, arg4);
@@ -202,6 +234,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel == 2){
 			pause.reshape(arg0, arg1, arg2, arg3, arg4);
 		}
+		
 		
 	}
 
@@ -338,4 +371,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		pause = new Pause(screenHeight, screenWidth);
 	}
 
+	public void setScreenSize(int ScreenHeight, int ScreenWidth){//, int y, int x){
+		screenHeight = ScreenHeight;
+		screenWidth = ScreenWidth;
+//		screenY = y;
+//		screenX = x;
+	}
+	
 }
