@@ -356,7 +356,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		grid.clear();
 		storeys = new ArrayList<Storey>();
 		try {
-			System.out.println("test");
 		    File folder = new File(loadfolder);
 		    File[] tList = folder.listFiles();
 		    int numberOfStoreys = tList.length;

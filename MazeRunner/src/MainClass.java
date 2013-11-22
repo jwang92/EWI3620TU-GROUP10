@@ -43,6 +43,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	//Load the textures
 	protected static ArrayList<Texture> textures;
 	protected static ArrayList<String> textureNames;
+	private int numberOfTextures;
 	private Texture tempTexture;
 	private String textureFileName = "";
 	private String textureFileType = "png";
@@ -296,8 +297,13 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		try {
 		    File folder = new File("textures/");
 		    File[] tList = folder.listFiles();
-		    textureNames = new ArrayList<String>(tList.length-1);
-		    
+		    numberOfTextures = tList.length;
+			for(int j = 0; j<tList.length;j++){
+			    if(tList[j].getName().equals("Thumbs.db")){
+			    	numberOfTextures -= 1;
+			    }  
+			}
+			textureNames = new ArrayList<String>(numberOfTextures);
 		    int i = 0;
 		    for (File file : tList)
 		    {

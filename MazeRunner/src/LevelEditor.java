@@ -278,7 +278,6 @@ public class LevelEditor implements ActionListener{
 	}
 	
 	private void createVerdiepingList(String loadfolder){
-		System.out.println("test");
 		File folder = new File(loadfolder);
 		File[] tList = folder.listFiles();
 		
@@ -289,7 +288,6 @@ public class LevelEditor implements ActionListener{
 		    	numberOfStoreys -= 1;
 		    }  
 		}
-		System.out.println(numberOfStoreys);
 		String[] verdiepingList = new String[numberOfStoreys];
 		
 
@@ -299,7 +297,6 @@ public class LevelEditor implements ActionListener{
 			verdiepingList[j] = verdieping;
 		}	
 		cOptie4 = new JComboBox(verdiepingList);
-		System.out.println(cOptie4.toString());
 		cOptie4.addActionListener(this);
 		cOptie4.setActionCommand("verdieping");
 		}
