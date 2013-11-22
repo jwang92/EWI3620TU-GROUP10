@@ -63,11 +63,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private ArrayList<Point2D.Float> grid = new ArrayList<Point2D.Float>();
 	private Point2D.Float gridHighlight = new Point2D.Float();
 	
-	// World
-	private World world = new World();
-	
 	//Walls
-	private Wall wall = new Wall(-1, -1, -1, -1, "");
+	private Wall wall = new Wall();
 	private WallList wallList = new WallList();
 	
 	//Floors
@@ -77,6 +74,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//Roofs
 	private Roof roof = new Roof();
 	private RoofList roofList = new RoofList();
+	
+	//Storey
+	private Storey storey = new Storey();
+	private ArrayList<Storey> storeys;
+	private int storeyNumber = 1;
+	
 	
 	//Texture
 	private ArrayList<Texture> textures;
@@ -100,8 +103,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		points = new ArrayList<Point2D.Float>();
 		
 		//Size Map
-		world.setSizeX(xMap);
-		world.setSizeY(yMap);
+		//world.setSizeX(xMap);
+		//world.setSizeY(yMap);
 		
 		//Grid points
 		gridpoints = new ArrayList<Point2D.Float>();
@@ -115,9 +118,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		//setSize(screenWidth, screenHeight);
 		//setBackground(Color.white);
 		//setBackground(new Color(0.95f, 0.95f, 0.95f));
-		
-		//Initialize the grid
-		initGrid();
 
 		// When the "X" close button is called, the application should exit.
 		this.addWindowListener(new WindowAdapter() {
@@ -210,8 +210,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Initialize the grid
 	 */
 	public void initGrid(){
-		for(int x = 1; x < world.getSizeX(); x++){
-			for(int y = 1; y < world.getSizeY(); y++){
+		for(int x = 1; x < storeys.get(storeyNumber-1).getSizeX(); x++){
+			for(int y = 1; y < storeys.get(storeyNumber-1).getSizeY(); y++){
 				grid.add(new Point2D.Float((float)(x),(float)(y)));
 			}
 		}
@@ -317,16 +317,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// Draw the Walls
 		drawWalls(gl);
 		
-		// Draw the File
-		if(wallList.getWalls().size() > 0){
-			try {
-				wallList.WriteToFile("WallsTest.txt");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 		//Draw the grid
 		
 		drawGrid(gl);
@@ -358,19 +348,37 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
-	public World getWorld(){
-		
-		return world;
-		
+	public ArrayList<Storey> getStoreys(){
+		return storeys;
 	}
 	
-	public void loadFromFolder(String folder) throws FileNotFoundException{
+	public void loadFromFolder(String loadfolder) throws FileNotFoundException{
 		grid.clear();
-		wallList.Read(folder + "/Walls.txt");
-		floorList.Read(folder + "/Floor.txt");
-		roofList.Read(folder + "/Roof.txt");
-		world.Read(folder + "/World.txt");
+		storeys = new ArrayList<Storey>();
+		try {
+			System.out.println("test");
+		    File folder = new File(loadfolder);
+		    File[] tList = folder.listFiles();
+		    int numberOfStoreys = tList.length;
+		    for(int i = 0; i<tList.length;i++){
+			    if(tList[i].getName().equals("Thumbs.db")){
+			    	numberOfStoreys -= 1;
+			    }  
+		    }
+			for(int i =1;i<numberOfStoreys+1;i++){
+				storey = Storey.Read(loadfolder + "/Floor " + i);
+				
+				storeys.add(storey);
+				
+			}			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		initGrid();
+	}
+	
+	public void changeStorey(int newStoreyNumber){
+		storeyNumber = newStoreyNumber;
 	}
 
 		
@@ -438,7 +446,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				g1 = gridpoints.get(0);
 				g2 = gridpoints.get(1);
 				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,textureFileName);
-				wallList.addWall(wall);
+				storeys.get(storeyNumber - 1).getWallList().addWall(wall);
 			}
 			break;
 		case DM_FLOOR:
@@ -455,7 +463,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g3);
 				p.add(g4);
 				floor = new Floor(p,textureFileName);
-				floorList.addFloor(floor);
+				storeys.get(storeyNumber - 1).getFloorList().addFloor(floor);
 				}
 			break;
 		case DM_ROOF:
@@ -472,14 +480,17 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p.add(g3);
 				p.add(g4);
 				roof = new Roof(p,textureFileName);
-				roofList.addRoof(roof);
+				storeys.get(storeyNumber - 1).getRoofList().addRoof(roof);
 				}
 			break;
 			}
 		}
 	
+	
+	
 	private void drawWalls(GL gl){
 		//Screen points
+		wallList = storeys.get(storeyNumber - 1).getWallList();
 		Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
 		for(int i = 0;i<wallList.getWalls().size();i++){
 			p1.x = gridOffsetX + (wallList.getWalls().get(i).getStartx()-1)*gridDistance;
@@ -492,6 +503,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	private void drawFloors(GL gl){
 		//Screen points
+		floorList = storeys.get(storeyNumber - 1).getFloorList();
 		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
 		for(int i = 0; i < floorList.getFloors().size();i++){
 			for(int j =0; j < floorList.getFloors().get(i).getPoints().size();j++){
@@ -508,6 +520,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	private void drawRoofs(GL gl){
 		//Screen points
+		roofList = storeys.get(storeyNumber - 1).getRoofList();
 		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
 		for(int i = 0; i < roofList.getRoofs().size();i++){
 			for(int j =0; j < roofList.getRoofs().get(i).getPoints().size();j++){

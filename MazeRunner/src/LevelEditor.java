@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLJPanel;
@@ -15,8 +16,17 @@ import javax.swing.*;
 public class LevelEditor implements ActionListener{
 	
 	private LevelEditorFrame le;
-	private String savefolder = "testlevel3";
+	private String savefolder = "savefiles/testlevel3";
+	private String defaultLoadFolder = "savefiles";
 	private int verdiepingNummer = 1;
+	private int numberOfStoreys = 4;
+	private JPanel opties1;
+	private JPanel opties2;
+	private JPanel opties3;
+	private JPanel opties4;
+	private JPanel controlArea;
+	private JComboBox cOptie4;
+	private JFrame f;
 	
 	
 	public static void main(String[] args) {
@@ -25,7 +35,7 @@ public class LevelEditor implements ActionListener{
 	  
 	public LevelEditor(){
 		
-		JFrame f = new JFrame("Testert");
+		f = new JFrame("Testert");
 		f.setSize(800, 700);
 		
 		Container content = f.getContentPane();
@@ -54,9 +64,9 @@ public class LevelEditor implements ActionListener{
 		xMapInt = Integer.parseInt(xMap);
 		yMapInt = Integer.parseInt(yMap);
 		
-		JPanel controlArea = new JPanel(new GridLayout(5, 1));		
+		controlArea = new JPanel(new GridLayout(5, 1));		
 		
-		JPanel opties1 = new JPanel(new GridLayout(2, 2));
+		opties1 = new JPanel(new GridLayout(2, 2));
 		opties1.setBorder(BorderFactory.createTitledBorder("Tekenmodus:"));
 	    ButtonGroup bg = new ButtonGroup();
 		JRadioButton  option1 = new JRadioButton("Muur");
@@ -105,7 +115,7 @@ public class LevelEditor implements ActionListener{
             	
         }
 	    
-	    JPanel opties2 = new JPanel(new GridLayout(4, 1));
+	    opties2 = new JPanel(new GridLayout(4, 1));
 	    opties2.setBorder(BorderFactory.createTitledBorder("Texture:"));
 	    //String[] textures = {"brick.png", "wood.png", "trees.png", "water.png"};
 	    
@@ -116,7 +126,7 @@ public class LevelEditor implements ActionListener{
 		
 		controlArea.add(opties2);
 		
-		JPanel opties3 = new JPanel(new GridLayout(4,1));
+		opties3 = new JPanel(new GridLayout(4,1));
 	    opties3.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
 	    JButton b = new JButton("Sla map op");
 	    b.setActionCommand("save");
@@ -129,16 +139,11 @@ public class LevelEditor implements ActionListener{
 	    
 	    controlArea.add(opties3);
 	    
-	    JPanel opties4 = new JPanel(new GridLayout(4, 1));
+	    opties4 = new JPanel(new GridLayout(4, 1));
 	    opties4.setBorder(BorderFactory.createTitledBorder("Verdieping:"));
-	    String[] verdieping = {"Verdieping 1", "Verdieping 2", "Verdieping 3", "Verdieping 4"};
-	    
-		JComboBox cOptie4 = new JComboBox(verdieping);
-		cOptie4.addActionListener(this);
-		cOptie4.setActionCommand("verdieping");
-		opties4.add(cOptie4);
-		
-		controlArea.add(opties4);
+	    createVerdiepingList(savefolder);
+	    opties4.add(cOptie4);
+	    controlArea.add(opties4);
 		
 	    content.add(controlArea, BorderLayout.WEST);
 		
@@ -155,12 +160,14 @@ public class LevelEditor implements ActionListener{
 	    le = new LevelEditorFrame(drawingArea, xMapInt, yMapInt);
 	    le.setDrawMode(1);
 	    try {
-			le.loadFromFolder(savefolder + "/Floor 1");
+			le.loadFromFolder(savefolder);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	    
+	    le.initGrid();
+	    	    
 	    content.add(drawingArea, BorderLayout.EAST);
 	    f.pack();
 	    f.setVisible(true);
@@ -198,7 +205,7 @@ public class LevelEditor implements ActionListener{
 		}
 		else if(cmd.equals("save")){
 			
-			JFileChooser fc = new JFileChooser();
+			JFileChooser fc = new JFileChooser(defaultLoadFolder);
 			fc.setDialogTitle("Map opslaan");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int retrival = fc.showSaveDialog(null);
@@ -214,7 +221,7 @@ public class LevelEditor implements ActionListener{
 		}
 		else if(cmd.equals("load")){
 			
-			JFileChooser fc = new JFileChooser();
+			JFileChooser fc = new JFileChooser(defaultLoadFolder);
 			fc.setDialogTitle("Map openen");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int retrival = fc.showSaveDialog(null);
@@ -222,8 +229,13 @@ public class LevelEditor implements ActionListener{
 			if (retrival == JFileChooser.APPROVE_OPTION) {
 				try {
 					savefolder = fc.getSelectedFile().getPath();
-					le.loadFromFolder(savefolder + "/Floor " + verdiepingNummer);
-					    
+					verdiepingNummer = 1;
+					changeVerdieping(verdiepingNummer);
+					opties4.remove(cOptie4);
+					createVerdiepingList(savefolder);
+					opties4.add(cOptie4);
+					controlArea.updateUI();
+					le.loadFromFolder(savefolder);					    
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -246,6 +258,7 @@ public class LevelEditor implements ActionListener{
 			if(verdiepingCheck.equals("Verdieping")){
 				if(verdiepingNummer != Integer.parseInt(newVerdiepingNummer)){
 					changeVerdieping(Integer.parseInt(newVerdiepingNummer));
+					verdiepingNummer = Integer.parseInt(newVerdiepingNummer);
 				}
 				
 			}
@@ -253,70 +266,41 @@ public class LevelEditor implements ActionListener{
 	}
 
 	private void changeVerdieping(int verdiepingChange){
-		try {
-			le.getWallList().WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Walls.txt");
-			le.getRoofList().WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Roof.txt");
-			le.getFloorList().WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Floor.txt");
-			le.getWorld().WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/World.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		verdiepingNummer = verdiepingChange;
-	    try {
-			le.loadFromFolder(savefolder + "/Floor " + verdiepingNummer);
-		} catch (FileNotFoundException e1) {
-			WallList w = new WallList();
-			RoofList r = new RoofList();
-			FloorList f = new FloorList();
-			World world = new World();
-			try {
-				w.WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Walls.txt");
-				r.WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Roof.txt");
-				f.WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/Floor.txt");
-				w.WriteToFile(savefolder + "/Floor " + verdiepingNummer +"/World.txt");
-				le.loadFromFolder(savefolder + "/Floor " + verdiepingNummer);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		le.changeStorey(verdiepingChange);
 	}
 	
-	private void saveToFile(String selectedFolder){
-		for(int i = 1;i<=4;i++){
-			if(i != verdiepingNummer){
-				try {
-					System.out.println(selectedFolder + "/Floor " + i +"/Walls.txt");
-					WallList w = new WallList();
-					w.Read(savefolder + "/Floor " + i +"/Walls.txt");
-					RoofList r = new RoofList();
-					r.Read(savefolder + "/Floor " + i +"/Roof.txt");
-					FloorList f = new FloorList();
-					f.Read(savefolder + "/Floor " + i +"/Floor.txt");
-					World world = new World();
-					world.Read(savefolder + "/Floor " + i +"/World.txt");
-					
-					w.WriteToFile(selectedFolder + "/Floor " + i +"/Walls.txt");
-					r.WriteToFile(selectedFolder + "/Floor " + i +"/Roof.txt");
-					f.WriteToFile(selectedFolder + "/Floor " + i +"/Floor.txt");
-					world.WriteToFile(selectedFolder + "/Floor " + i +"/World.txt");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			else{
-				try {            
-					le.getWallList().WriteToFile(selectedFolder + "/Floor " + i +"/Walls.txt");
-					le.getRoofList().WriteToFile(selectedFolder + "/Floor " + i +"/Roof.txt");
-					le.getFloorList().WriteToFile(selectedFolder + "/Floor " + i +"/Floor.txt");
-					le.getWorld().WriteToFile(selectedFolder + "/Floor " + i +"/World.txt");	    
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-
-		}
+	private void saveToFile(String selectedFolder) throws IOException{
+		ArrayList<Storey> storeys = le.getStoreys();
+		for(int i = 0;i<numberOfStoreys;i++){
+			storeys.get(i).WriteToFile(selectedFolder + "/Floor " + (i+1));
+		}	
 		savefolder = selectedFolder;
 	}
+	
+	private void createVerdiepingList(String loadfolder){
+		System.out.println("test");
+		File folder = new File(loadfolder);
+		File[] tList = folder.listFiles();
+		
+		numberOfStoreys = tList.length;
+
+		for(int j = 0; j<tList.length;j++){
+		    if(tList[j].getName().equals("Thumbs.db")){
+		    	numberOfStoreys -= 1;
+		    }  
+		}
+		System.out.println(numberOfStoreys);
+		String[] verdiepingList = new String[numberOfStoreys];
+		
+
+
+		for(int j =0;j<numberOfStoreys;j++){
+			String verdieping = "Verdieping " + (j+1);
+			verdiepingList[j] = verdieping;
+		}	
+		cOptie4 = new JComboBox(verdiepingList);
+		System.out.println(cOptie4.toString());
+		cOptie4.addActionListener(this);
+		cOptie4.setActionCommand("verdieping");
+		}
 }
