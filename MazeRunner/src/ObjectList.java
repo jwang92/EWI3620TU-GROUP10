@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -34,15 +36,39 @@ public class ObjectList {
 			String nextObj = s.next();
 			
 			if(nextObj.equals("Ramp:")){
-				
-				ObjectRamp temp = new ObjectRamp();
-				temp.Read(s);
-				objects.add(temp);
-				temp = null;
-				
+				objects.add(ObjectRamp.Read(s));				
 			}
 			
 		}
+		
+	}
+	
+	public void WriteToFile(String FileName) throws IOException{
+		
+		String r = "NumberOfObjects: " + objects.size() + ";\r\n";
+		
+		for(int i = 0; i < objects.size(); i++)
+		{
+			
+			r += ((ObjectRamp) objects.get(i)).toFileFormat();			
+			
+		}
+		
+		r += "End;";
+		
+		File f = new File(FileName);
+		
+		// Create new file with the given name if it doesn't exist yet
+		if(!f.exists())
+		{
+			
+			f.createNewFile();
+			
+		}
+		
+		FileWriter w = new FileWriter(f);
+		w.write(r);
+		w.close();
 		
 	}
 	

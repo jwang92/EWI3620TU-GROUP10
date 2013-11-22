@@ -133,7 +133,7 @@ public class Storey {
 		
 		String r = "Size: " + xSize + " " + ySize + ";\r\n";
 		r += "Floorheight: " + floorHeight + ";\r\n"; 
-		r += "StoreyHeight: ; " + (roofHeight - floorHeight) + ";\r\n";
+		r += "StoreyHeight: " + (roofHeight - floorHeight) + ";\r\n";
 		r += "End;";
 
 		File f = new File(FileName + "/Storey.txt");
@@ -148,6 +148,7 @@ public class Storey {
 		walls.WriteToFile(FileName + "/Walls.txt");
 		floors.WriteToFile(FileName + "/Floor.txt");
 		roofs.WriteToFile(FileName + "/Roof.txt");
+		objects.WriteToFile(FileName + "/Objects.txt");
 		
 	} 
 
