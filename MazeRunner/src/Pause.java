@@ -126,7 +126,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		
 		GLUT glut = new GLUT();
 		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2d(x + buttonSizeX/5.0, y + buttonSizeY/3.0);
+		gl.glRasterPos2d(x + buttonSizeX/10.0, y + buttonSizeY/3.0);
 		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
 
 	}

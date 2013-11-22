@@ -33,7 +33,7 @@ public class MazeRunner implements GLEventListener{
  */
 	//private GLCanvas canvas;
 
-	private int screenWidth, screenHeight;					// Screen size.
+	public int screenWidth, screenHeight;					// Screen size.
 	boolean stop =false;
 	
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
