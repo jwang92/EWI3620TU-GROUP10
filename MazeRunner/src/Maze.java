@@ -183,102 +183,139 @@ public class Maze  implements VisibleObject {
 		
 	}
 	
-public double isRamp(double x, double z, double y){
+	public double isRamp(double x, double z, double y){
 		
-		ArrayList<Object> o;
+		ArrayList<ObjectRamp> o = new ArrayList<ObjectRamp>();
+		ArrayList<Integer> oFloor = new ArrayList<Integer>();
+		ArrayList<Object> tempo;
 		
-		if(y < 7.3){
-			storey = storeys.get(0);
-			o = storey.getObjectList().getObjects();
-		}
-		else{
-			storey = storeys.get(1);
-			o = storey.getObjectList().getObjects();
-		}	
-		
-		//System.out.println("X: "+x+" Z: "+z+" Y: "+y);
-		
-		for(int i = 0; i < o.size(); i++){
+		for(int i = 0; i < storeys.size(); i++){
 			
-			if(o.get(i) instanceof ObjectRamp){
+			tempo = storeys.get(i).getObjectList().getObjects();
+			
+			for(int j = 0; j < tempo.size(); j++){
 				
+				if(tempo.get(j) instanceof ObjectRamp){
 				
-				ObjectRamp tempRamp = (ObjectRamp) o.get(i);
-				ArrayList<Point2D.Float> points = tempRamp.getPoints();
-				
-				float hiX = Integer.MIN_VALUE;
-				float hiZ = Integer.MIN_VALUE;
-				
-				float loX = Integer.MAX_VALUE;
-				float loZ = Integer.MAX_VALUE;
-				
-				for(int j = 0; j < points.size(); j++){
-					
-					if(points.get(j).x > hiX)
-						hiX = points.get(j).x;
-					
-					if(points.get(j).y > hiZ)
-						hiZ = points.get(j).y;
-					
-					if(points.get(j).x < loX)
-						loX = points.get(j).x;
-					
-					if(points.get(j).y < loZ)
-						loZ = points.get(j).y;
-						
-				}
-				
-				//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
-				
-				hiX = hiX * (float) SQUARE_SIZE;
-				loX = loX * (float) SQUARE_SIZE;
-				hiZ = hiZ * (float) SQUARE_SIZE;
-				loZ = loZ * (float) SQUARE_SIZE;
-				
-				// Check if on ramp
-				if(hiX > x && x > loX && hiZ > z && z > loZ){
-					
-					if(points.get(0).x == points.get(3).x){
-						
-						// Hij gaat omhoog over de z
-						double onRamp = 0;
-						
-						if(points.get(0).y < points.get(3).y){
-							onRamp = z - loZ;
-						}
-						else if(points.get(0).y > points.get(3).y){
-							onRamp = hiZ - z;
-						}
-						
-						double dY = Math.tan(0.25*Math.PI) * onRamp + 2.5;
-						System.out.println(dY - y);
-						return dY - y;
-						
-						
-					}
-					else if(points.get(0).y == points.get(3).y){
-						
-						// Hij gaat omhoog over de x
-						double onRamp = 0;
-						
-						if(points.get(0).x < points.get(3).x){
-							onRamp = x - loX;
-						}
-						else if(points.get(0).x > points.get(3).x){
-							System.out.println("loX: "+loX+" hiX: "+hiX+" loZ: "+loZ+" hiZ: "+hiZ+" z: "+z+" x: "+x+" y:"+y);
-							onRamp = hiX - x;
-						}
-						
-						double dY = Math.tan(0.25*Math.PI) * onRamp + 2.5;
-						System.out.println(dY - y);
-						return dY - y;
-						
-					}
-						
+					o.add((ObjectRamp) tempo.get(j));
+					oFloor.add(i * 5);
 					
 				}
 				
 			}
+			
+		}
+		
+		//System.out.println("X: "+x+" Z: "+z+" Y: "+y);
+		
+		for(int i = 0; i < o.size(); i++){
+				
+			ArrayList<Point2D.Float> points = o.get(i).getPoints();
+			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
+			
+			for(int k = 0; k < points.size(); k++){
+				
+				p3d.add(new Point3D(points.get(k).x, points.get(k).y, oFloor.get(k)));
+				
+			}
+			
+			float hiX = Integer.MIN_VALUE;
+			float hiZ = Integer.MIN_VALUE;
+			
+			float loX = Integer.MAX_VALUE;
+			float loZ = Integer.MAX_VALUE;
+			
+			for(int j = 0; j < points.size(); j++){
+				
+				if(points.get(j).x > hiX)
+					hiX = points.get(j).x;
+				
+				if(points.get(j).y > hiZ)
+					hiZ = points.get(j).y;
+				
+				if(points.get(j).x < loX)
+					loX = points.get(j).x;
+				
+				if(points.get(j).y < loZ)
+					loZ = points.get(j).y;
+					
+			}
+			
+			//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
+			
+			hiX = hiX * (float) SQUARE_SIZE;
+			loX = loX * (float) SQUARE_SIZE;
+			hiZ = hiZ * (float) SQUARE_SIZE;
+			loZ = loZ * (float) SQUARE_SIZE;
+			
+			// Check if on ramp
+			if(hiX > x && x > loX && hiZ > z && z > loZ){
+				
+				//System.out.println(" OnRamp: "+ y);
+				
+				if(points.get(0).x == points.get(3).x){
+					
+					// Hij gaat omhoog over de z
+					double onRamp = 0;
+					
+					if(points.get(0).y < points.get(3).y){
+						onRamp = z - loZ;
+					}
+					else if(points.get(0).y > points.get(3).y){
+						onRamp = hiZ - z;
+					}
+					
+					double dY = Math.floor(onRamp / 0.05);
+					
+					//System.out.println(oFloor.get(i));
+					
+					if(onRamp < 5 && (oFloor.get(i) + 2.5) == y){
+						
+						dY = (dY * 0.05) + 2.5;
+						System.out.println("dY: "+dY+" F: "+oFloor.get(i)+ " y: "+y);
+						dY = dY + oFloor.get(i) - y;
+						System.out.println(dY);
+						dY = dY * 100;
+						dY = Math.round(dY);
+						dY = dY / 100;
+						
+					}
+					else
+						dY = 0;
+					
+					
+
+					return dY;
+					
+					
+				}
+				else if(points.get(0).y == points.get(3).y){
+					
+					// Hij gaat omhoog over de x
+					double onRamp = 0;
+							
+					if(points.get(0).x < points.get(3).x){
+						onRamp = x - loX;
+					}
+					else if(points.get(0).x > points.get(3).x){
+						System.out.println("loX: "+loX+" hiX: "+hiX+" loZ: "+loZ+" hiZ: "+hiZ+" z: "+z+" x: "+x+" y:"+y);
+						onRamp = hiX - x;
+					}
+					
+					double dY = Math.floor(onRamp / 0.05);
+					dY = (dY * 0.05) + 2.5;
+
+					dY = dY - y;
+					dY = dY * 100;
+					dY = Math.round(dY);
+					dY = dY / 100;
+
+					return dY;
+					
+				}	
+								
+			}
+			//System.out.println("OffRamp: "+ y);
 			
 		}
 		return 0;
