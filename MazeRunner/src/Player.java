@@ -180,18 +180,9 @@ public class Player extends GameObject {
 			double speed = this.speed * speedadjust;
 			
 			
-			double dY = locationY + maze.isRamp(locationX, locationZ, locationY);
-			dY = dY * 100;
-			dY = Math.round(dY);
-			dY = dY / 100;
+			double dY = maze.isRamp(locationX, locationZ, locationY);
 			
-			if(dY > 7.20 && dY < 7.80)
-				dY = 7.5;
-			
-			if(dY > 2.20 && dY < 2.80)
-				dY = 2.5;
-			
-			locationY = dY;
+			locationY += dY;
 			
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);

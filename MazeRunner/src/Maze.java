@@ -16,7 +16,7 @@ public class Maze  implements VisibleObject {
 	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "MazeLevel";
+	private String loadfolder = "savefiles/MazeLevel";
 	private int numberOfStoreys;
 	
 	public Maze(){
@@ -62,7 +62,7 @@ public class Maze  implements VisibleObject {
 						
 					ObjectRamp t = (ObjectRamp) o1.get(j);
 									 
-					drawRamp(gl, t.getPoints(), storey.getFloorHeight());
+					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
 						
 				}
 				
@@ -198,26 +198,33 @@ public class Maze  implements VisibleObject {
 				if(tempo.get(j) instanceof ObjectRamp){
 				
 					o.add((ObjectRamp) tempo.get(j));
-					oFloor.add(i * 5);
+					oFloor.add(i);
 					
 				}
 				
 			}
 			
 		}
-		
+
 		//System.out.println("X: "+x+" Z: "+z+" Y: "+y);
 		
 		for(int i = 0; i < o.size(); i++){
 				
 			ArrayList<Point2D.Float> points = o.get(i).getPoints();
 			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
-			
 			for(int k = 0; k < points.size(); k++){
-				
-				p3d.add(new Point3D(points.get(k).x, points.get(k).y, oFloor.get(k)));
-				
+				float floory = Float.MIN_VALUE;
+				if(k<2){
+					floory = storeys.get(oFloor.get(i)).getFloorHeight();
+				}
+				else{
+					floory = storeys.get(oFloor.get(i)).getRoofHeight();
+					
+				}
+				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), floory,(float)(points.get(k).y*SQUARE_SIZE)));
 			}
+			double[] surface = getSurface(p3d);
+			System.out.println();
 			
 			float hiX = Integer.MIN_VALUE;
 			float hiZ = Integer.MIN_VALUE;
@@ -249,70 +256,14 @@ public class Maze  implements VisibleObject {
 			loZ = loZ * (float) SQUARE_SIZE;
 			
 			// Check if on ramp
-			if(hiX > x && x > loX && hiZ > z && z > loZ){
-				
+			//System.out.println(distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z));
+			//System.out.println(surface[0] +" " + surface[1] +" " + surface[2] +" " + surface[3] +" " + x +" " + y + " " +z);
+			//double distance = distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z);
+			double distance = distToSurfaceSegment(p3d,x,y-2.5,z);
+			if(distance < 1.5 && distance > -1.5){
+				double dy = (- surface[3]- surface[0]*x - surface[2]*z)/surface[1] - (y -2.5);
 				//System.out.println(" OnRamp: "+ y);
-				
-				if(points.get(0).x == points.get(3).x){
-					
-					// Hij gaat omhoog over de z
-					double onRamp = 0;
-					
-					if(points.get(0).y < points.get(3).y){
-						onRamp = z - loZ;
-					}
-					else if(points.get(0).y > points.get(3).y){
-						onRamp = hiZ - z;
-					}
-					
-					double dY = Math.floor(onRamp / 0.05);
-					
-					//System.out.println(oFloor.get(i));
-					
-					if(onRamp < 5 && (oFloor.get(i) + 2.5) == y){
-						
-						dY = (dY * 0.05) + 2.5;
-						System.out.println("dY: "+dY+" F: "+oFloor.get(i)+ " y: "+y);
-						dY = dY + oFloor.get(i) - y;
-						System.out.println(dY);
-						dY = dY * 100;
-						dY = Math.round(dY);
-						dY = dY / 100;
-						
-					}
-					else
-						dY = 0;
-					
-					
-
-					return dY;
-					
-					
-				}
-				else if(points.get(0).y == points.get(3).y){
-					
-					// Hij gaat omhoog over de x
-					double onRamp = 0;
-							
-					if(points.get(0).x < points.get(3).x){
-						onRamp = x - loX;
-					}
-					else if(points.get(0).x > points.get(3).x){
-						System.out.println("loX: "+loX+" hiX: "+hiX+" loZ: "+loZ+" hiZ: "+hiZ+" z: "+z+" x: "+x+" y:"+y);
-						onRamp = hiX - x;
-					}
-					
-					double dY = Math.floor(onRamp / 0.05);
-					dY = (dY * 0.05) + 2.5;
-
-					dY = dY - y;
-					dY = dY * 100;
-					dY = Math.round(dY);
-					dY = dY / 100;
-
-					return dY;
-					
-				}	
+				return dy;
 								
 			}
 			//System.out.println("OffRamp: "+ y);
@@ -323,7 +274,7 @@ public class Maze  implements VisibleObject {
 		
 	}
 
-	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int z){
+	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight,int roofHeight){
 		
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
 		
@@ -332,9 +283,9 @@ public class Maze  implements VisibleObject {
 			Point3D point = new Point3D();
 			point.x = (float) (points.get(i).x * SQUARE_SIZE);
 			point.z = (float) (points.get(i).y * SQUARE_SIZE);
-			point.y = (float) z;
+			point.y = (float) floorHeight;
 			if(i > 1)
-				point.y = (float) z + 5;
+				point.y = (float) roofHeight;
 			
 			p3D.add(point);
 			
@@ -356,7 +307,66 @@ public class Maze  implements VisibleObject {
 	  return dist2(px, py, vx + t * (wx - vx), vy + t * (wy - vy));
 	}
 	
+	public double[] getSurface(ArrayList<Point3D> p){
+		double[] surface = new double[4];
+		Point3D vector1 = new Point3D(p.get(1).x - p.get(0).x,p.get(1).y - p.get(0).y,p.get(1).z - p.get(0).z);
+		Point3D vector2 = new Point3D(p.get(2).x - p.get(0).x,p.get(2).y - p.get(0).y,p.get(2).z - p.get(0).z);
+		surface[0] = vector1.y*vector2.z - vector1.z*vector2.y;
+		surface[1] = vector1.z*vector2.x - vector1.x*vector2.z;
+		surface[2] = vector1.x*vector2.y - vector1.y*vector2.x;
+		surface[3] = - surface[0]*p.get(0).x - surface[1]*p.get(0).y - surface[2]*p.get(0).z;
+		return surface;
+	}
+	
+	
 	public double distToSegment(double px, double py, double vx, double vy, double wx, double wy) { return Math.sqrt(distToSegmentSquared(px, py, vx, vy, wx, wy)); }
 	
+	/**
+	 * Returns the distance to the surface with formula nx*X + ny*Y + nz*Z + d with point(px,py,pz)
+	 * @param nx X coordinate of the normal vector
+	 * @param ny Y coordinate of the normal vector
+	 * @param nz Z coordinate of the normal vector
+	 * @param d Height of the plane
+	 * @param px X coordinate of the point
+	 * @param py Y coordinate of the point
+	 * @param pz Z coordinate of the point
+	 * @return
+	 */
+	public double distToSurface(double nx, double ny, double nz, double d, double px, double py, double pz){
+		
+		double teller = nx * px + ny * py + nz * pz + d;  
+		double noemer = Math.sqrt(Math.pow(nx, 2) + Math.pow(ny, 2) + Math.pow(nz, 2));
+		double dist = teller/noemer;
+		return dist;
+	}
+	
+	public double distToSurfaceSegment(ArrayList<Point3D> p, double px, double py, double pz){
+//		double teller = surface[0] * px + surface[1] * py + surface[2] * pz + surface[3];
+//		double noemer = Math.pow(surface[0], 2) + Math.pow(surface[1], 2) + Math.pow(surface[2], 2);
+//		double t0 = -teller/noemer;
+//		double x0 = px + surface[0]*t0;
+//		double y0 = py + surface[1]*t0;
+//		double z0 = pz + surface[2]*t0;
+
+		double xmax = Double.MIN_VALUE;
+		double xmin = Double.MAX_VALUE;
+		double ymax = Double.MIN_VALUE;
+		double ymin = Double.MAX_VALUE;
+		double zmax = Double.MIN_VALUE;
+		double zmin = Double.MAX_VALUE;
+		for(int i=0;i<p.size();i++){
+			xmax = Math.max(xmax, p.get(i).x);
+			xmin = Math.min(xmin, p.get(i).x);
+			ymax = Math.max(xmax, p.get(i).y);
+			ymin = Math.min(ymin, p.get(i).y);
+			zmax = Math.max(zmax, p.get(i).z);
+			zmin = Math.min(zmin, p.get(i).z);
+		}
+		if(px <= xmax+0.1 && px >=xmin-0.1 && py <= ymax+0.1 && py >=ymin-0.1 && pz <= zmax+0.1 && pz >=zmin-0.1){
+			double[] surface = getSurface(p);
+			return distToSurface(surface[0],surface[1],surface[2],surface[3],px,py,pz);
+		}
+		return Double.MAX_VALUE;
+	}
 	
 }

@@ -210,9 +210,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Initialize the grid
 	 */
 	public void initGrid(){
-		for(int x = 1; x < storeys.get(storeyNumber-1).getSizeX(); x++){
-			for(int y = 1; y < storeys.get(storeyNumber-1).getSizeY(); y++){
-				grid.add(new Point2D.Float((float)(x),(float)(y)));
+		if(storeys.size()>0){
+			for(int x = 1; x < storeys.get(storeyNumber-1).getSizeX(); x++){
+				for(int y = 1; y < storeys.get(storeyNumber-1).getSizeY(); y++){
+					grid.add(new Point2D.Float((float)(x),(float)(y)));
+				}
 			}
 		}
 	}
@@ -352,7 +354,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		return storeys;
 	}
 	
-	public void loadFromFolder(String loadfolder) throws FileNotFoundException{
+	public boolean loadFromFolder(String loadfolder) throws FileNotFoundException{
 		grid.clear();
 		storeys = new ArrayList<Storey>();
 		try {
@@ -365,15 +367,24 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			    }  
 		    }
 			for(int i =1;i<numberOfStoreys+1;i++){
-				storey = Storey.Read(loadfolder + "/Floor " + i);
-				
-				storeys.add(storey);
-				
+				File f = new File(loadfolder + "/Floor " + i);
+				if(f.exists()){
+					storey = Storey.Read(loadfolder + "/Floor " + i);
+					storeys.add(storey);
+				}
+				else{
+					storeys = new ArrayList<Storey>();
+					numberOfStoreys = 0;
+					return false;
+				}
+
 			}			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			storeys = new ArrayList<Storey>();
+			return false;
 		}
 		initGrid();
+		return true;
 	}
 	
 	public void changeStorey(int newStoreyNumber){
@@ -489,48 +500,54 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	private void drawWalls(GL gl){
 		//Screen points
-		wallList = storeys.get(storeyNumber - 1).getWallList();
-		Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
-		for(int i = 0;i<wallList.getWalls().size();i++){
-			p1.x = gridOffsetX + (wallList.getWalls().get(i).getStartx()-1)*gridDistance;
-			p1.y = screenHeight -gridOffsetY - (wallList.getWalls().get(i).getStarty()-1)*gridDistance;
-			p2.x = gridOffsetX + (wallList.getWalls().get(i).getEndx()-1)*gridDistance;
-			p2.y = screenHeight - gridOffsetY - (wallList.getWalls().get(i).getEndy()-1)*gridDistance;
-			wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
+		if(storeys.size()>0){
+			wallList = storeys.get(storeyNumber - 1).getWallList();
+			Point2D.Float p1 = new Point2D.Float(), p2 = new Point2D.Float();
+			for(int i = 0;i<wallList.getWalls().size();i++){
+				p1.x = gridOffsetX + (wallList.getWalls().get(i).getStartx()-1)*gridDistance;
+				p1.y = screenHeight -gridOffsetY - (wallList.getWalls().get(i).getStarty()-1)*gridDistance;
+				p2.x = gridOffsetX + (wallList.getWalls().get(i).getEndx()-1)*gridDistance;
+				p2.y = screenHeight - gridOffsetY - (wallList.getWalls().get(i).getEndy()-1)*gridDistance;
+				wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
+			}
 		}
 	}
 	
 	private void drawFloors(GL gl){
 		//Screen points
-		floorList = storeys.get(storeyNumber - 1).getFloorList();
-		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
-		for(int i = 0; i < floorList.getFloors().size();i++){
-			for(int j =0; j < floorList.getFloors().get(i).getPoints().size();j++){
-				Point2D.Float p1 = new Point2D.Float();
-				p1.x = gridOffsetX + (floorList.getFloors().get(i).getPoints().get(j).x-1)*gridDistance;
-				p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
-				p.add(p1);
+		if(storeys.size()>0){
+			floorList = storeys.get(storeyNumber - 1).getFloorList();
+			ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+			for(int i = 0; i < floorList.getFloors().size();i++){
+				for(int j =0; j < floorList.getFloors().get(i).getPoints().size();j++){
+					Point2D.Float p1 = new Point2D.Float();
+					p1.x = gridOffsetX + (floorList.getFloors().get(i).getPoints().get(j).x-1)*gridDistance;
+					p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
+					p.add(p1);
+				}
+				int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
+				polygonOnScreen(gl,p,textureID);
+				p.clear();
 			}
-			int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
-			polygonOnScreen(gl,p,textureID);
-			p.clear();
 		}
 	}
 	
 	private void drawRoofs(GL gl){
 		//Screen points
-		roofList = storeys.get(storeyNumber - 1).getRoofList();
-		ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
-		for(int i = 0; i < roofList.getRoofs().size();i++){
-			for(int j =0; j < roofList.getRoofs().get(i).getPoints().size();j++){
-				Point2D.Float p1 = new Point2D.Float();
-				p1.x = gridOffsetX + (roofList.getRoofs().get(i).getPoints().get(j).x-1)*gridDistance;
-				p1.y = screenHeight - gridOffsetY - (roofList.getRoofs().get(i).getPoints().get(j).y-1)*gridDistance;
-				p.add(p1);
+		if(storeys.size()>0){
+			roofList = storeys.get(storeyNumber - 1).getRoofList();
+			ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
+			for(int i = 0; i < roofList.getRoofs().size();i++){
+				for(int j =0; j < roofList.getRoofs().get(i).getPoints().size();j++){
+					Point2D.Float p1 = new Point2D.Float();
+					p1.x = gridOffsetX + (roofList.getRoofs().get(i).getPoints().get(j).x-1)*gridDistance;
+					p1.y = screenHeight - gridOffsetY - (roofList.getRoofs().get(i).getPoints().get(j).y-1)*gridDistance;
+					p.add(p1);
+				}
+				int textureID = textureNames.lastIndexOf(roofList.getRoofs().get(i).getTexture());
+				polygonOnScreen(gl,p,textureID);
+				p.clear();
 			}
-			int textureID = textureNames.lastIndexOf(roofList.getRoofs().get(i).getTexture());
-			polygonOnScreen(gl,p,textureID);
-			p.clear();
 		}
 	}
 	

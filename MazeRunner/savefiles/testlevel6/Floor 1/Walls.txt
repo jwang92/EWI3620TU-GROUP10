@@ -1,0 +1,10 @@
+NumberOfWalls: 8;
+1 1; 14 1; textures/brick.png;
+14 1; 19 1; textures/brick.png;
+9 1; 9 6; textures/brick.png;
+7 14; 3 14; textures/brick.png;
+15 10; 16 6; textures/brick.png;
+14 19; 19 19; textures/brick.png;
+1 19; 14 19; textures/wood.png;
+19 19; 19 1; textures/wood.png;
+End;

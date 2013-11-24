@@ -235,7 +235,12 @@ public class LevelEditor implements ActionListener{
 					createVerdiepingList(savefolder);
 					opties4.add(cOptie4);
 					controlArea.updateUI();
-					le.loadFromFolder(savefolder);					    
+					boolean loaded = le.loadFromFolder(savefolder);	
+					if(!loaded){
+						System.out.println("Loading failed, probably the wrong file format");
+						opties4.remove(cOptie4);
+						controlArea.updateUI();
+					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -272,6 +277,8 @@ public class LevelEditor implements ActionListener{
 	private void saveToFile(String selectedFolder) throws IOException{
 		ArrayList<Storey> storeys = le.getStoreys();
 		for(int i = 0;i<numberOfStoreys;i++){
+			File f = new File(selectedFolder + "/Floor " + (i+1));
+			f.mkdirs();
 			storeys.get(i).WriteToFile(selectedFolder + "/Floor " + (i+1));
 		}	
 		savefolder = selectedFolder;
