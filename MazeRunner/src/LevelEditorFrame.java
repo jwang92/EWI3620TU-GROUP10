@@ -96,7 +96,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	* When instantiating, a GLCanvas is added to draw the level editor. 
 	* An animator is created to continuously render the canvas.
 	*/
-	public LevelEditorFrame(GLJPanel panel, int xMap, int yMap) {
+	public LevelEditorFrame(GLJPanel panel) {
 		//super("Knight vs Aliens: Level Editor");
 		
 		//Screen points
@@ -210,6 +210,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * Initialize the grid
 	 */
 	public void initGrid(){
+		grid.clear();
 		if(storeys.size()>0){
 			for(int x = 1; x < storeys.get(storeyNumber-1).getSizeX(); x++){
 				for(int y = 1; y < storeys.get(storeyNumber-1).getSizeY(); y++){
@@ -354,6 +355,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		return storeys;
 	}
 	
+	public void setStoreys(ArrayList<Storey> s){
+		storeys = s;
+	}
+	
 	public boolean loadFromFolder(String loadfolder) throws FileNotFoundException{
 		grid.clear();
 		storeys = new ArrayList<Storey>();
@@ -389,6 +394,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void changeStorey(int newStoreyNumber){
 		storeyNumber = newStoreyNumber;
+		initGrid();
 	}
 
 		

@@ -34,6 +34,18 @@ public class Storey {
 		walls = new WallList();
 		floors = new FloorList();
 		roofs = new RoofList();
+		objects = new ObjectList();
+	}
+	
+	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey){
+		xSize = sizeX;
+		ySize = sizeY;
+		floorHeight = floorh;
+		roofHeight = floorHeight + heightOfStorey;
+		walls = new WallList();
+		floors = new FloorList();
+		roofs = new RoofList();
+		objects = new ObjectList();
 	}
 	
 	public int getSizeX(){

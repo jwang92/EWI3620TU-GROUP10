@@ -40,29 +40,29 @@ public class LevelEditor implements ActionListener{
 		
 		Container content = f.getContentPane();
 		
-		String xMap = (String)JOptionPane.showInputDialog(
-                f,
-                "Hoe breed moet de map zijn?",
-                "Breedte map",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                "10");
-		
-		String yMap = (String)JOptionPane.showInputDialog(
-                f,
-                "Hoe lang moet de map zijn?",
-                "Lengte map",
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                "10");
-		
-		int xMapInt = 10;
-		int yMapInt = 10;
-		
-		xMapInt = Integer.parseInt(xMap);
-		yMapInt = Integer.parseInt(yMap);
+//		String xMap = (String)JOptionPane.showInputDialog(
+//				f,
+//                "Hoe breed moet de map zijn?",
+//                "Breedte map",
+//                JOptionPane.PLAIN_MESSAGE,
+//                null,
+//                null,
+//                "10");
+//		
+//		String yMap = (String)JOptionPane.showInputDialog(
+//                f,
+//                "Hoe lang moet de map zijn?",
+//                "Lengte map",
+//                JOptionPane.PLAIN_MESSAGE,
+//                null,
+//                null,
+//                "10");
+//		
+//		int xMapInt = 10;
+//		int yMapInt = 10;
+//		
+//		xMapInt = Integer.parseInt(xMap);
+//		yMapInt = Integer.parseInt(yMap);
 		
 		controlArea = new JPanel(new GridLayout(5, 1));		
 		
@@ -136,11 +136,18 @@ public class LevelEditor implements ActionListener{
 	    b.setActionCommand("load");
 	    b.addActionListener(this);
 	    opties3.add(b);
-	    
+	    b = new JButton("Nieuwe map");
+	    b.setActionCommand("newMap");
+	    b.addActionListener(this);
+	    opties3.add(b);
 	    controlArea.add(opties3);
 	    
 	    opties4 = new JPanel(new GridLayout(4, 1));
 	    opties4.setBorder(BorderFactory.createTitledBorder("Verdieping:"));
+	    b = new JButton("Nieuwe verdieping");
+	    b.setActionCommand("newStorey");
+	    b.addActionListener(this);
+	    opties4.add(b);
 	    createVerdiepingList(savefolder);
 	    opties4.add(cOptie4);
 	    controlArea.add(opties4);
@@ -157,7 +164,7 @@ public class LevelEditor implements ActionListener{
 		drawingArea.setPreferredSize(new Dimension(700, 700));
 	    drawingArea.setBorder(BorderFactory.createLineBorder (Color.white, 2));
 
-	    le = new LevelEditorFrame(drawingArea, xMapInt, yMapInt);
+	    le = new LevelEditorFrame(drawingArea);
 	    le.setDrawMode(1);
 	    try {
 			le.loadFromFolder(savefolder);
@@ -247,11 +254,56 @@ public class LevelEditor implements ActionListener{
 		    }
 			
 		}
+		else if(cmd.equals("newMap")){
+			
+			JFileChooser fc = new JFileChooser(defaultLoadFolder);
+			fc.setDialogTitle("Nieuwe map");
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int retrival = fc.showSaveDialog(null);
+			
+			if (retrival == JFileChooser.APPROVE_OPTION) {
+				try {
+					savefolder = fc.getSelectedFile().getPath();
+					createNewSaveMap(savefolder);
+					le.initGrid();
+					verdiepingNummer = 1;
+					changeVerdieping(verdiepingNummer);
+					opties4.remove(cOptie4);
+					createVerdiepingList(le.getStoreys());
+					opties4.add(cOptie4);
+					controlArea.updateUI();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+		    }
+			
+		}
+		
+		
 		else if(cmd.equals("textures"))
 		{
 			JComboBox type = (JComboBox) evt.getSource();
 			le.setTexture((String)type.getSelectedItem());
 			
+		}
+		
+		else if(cmd.equals("newStorey")){
+			ArrayList<Storey> storeys = le.getStoreys();
+			Storey s = newStorey(le.getStoreys().get(le.getStoreys().size()-1).getRoofHeight());
+			storeys.add(s);
+			le.setStoreys(storeys);
+			numberOfStoreys += 1;
+			File f = new File(savefolder + "/Floor " + (numberOfStoreys));
+			f.mkdirs();
+			
+			le.initGrid();
+			verdiepingNummer = numberOfStoreys;
+			changeVerdieping(verdiepingNummer);
+			opties4.remove(cOptie4);
+			createVerdiepingList(le.getStoreys());
+			cOptie4.setSelectedIndex(verdiepingNummer-1);
+			opties4.add(cOptie4);
+			controlArea.updateUI();
 		}
 		
 		else if(cmd.equals("verdieping"))
@@ -306,5 +358,66 @@ public class LevelEditor implements ActionListener{
 		cOptie4 = new JComboBox(verdiepingList);
 		cOptie4.addActionListener(this);
 		cOptie4.setActionCommand("verdieping");
-		}
+	}
+	
+	private void createVerdiepingList(ArrayList<Storey> storeys){
+		numberOfStoreys = storeys.size();
+		String[] verdiepingList = new String[numberOfStoreys];
+		for(int j =0;j<numberOfStoreys;j++){
+			String verdieping = "Verdieping " + (j+1);
+			verdiepingList[j] = verdieping;
+		}	
+		cOptie4 = new JComboBox(verdiepingList);
+		cOptie4.addActionListener(this);
+		cOptie4.setActionCommand("verdieping");
+	}
+	
+	private void createNewSaveMap(String selectedFolder) throws IOException{
+		ArrayList<Storey> storeys = new ArrayList<Storey>();
+		Storey s = newStorey(0);
+		storeys.add(s);
+		le.setStoreys(storeys);
+		File f = new File(selectedFolder + "/Floor " + (1));
+		f.mkdirs();
+	}
+	
+	private Storey newStorey(int floorHeight){
+		String xMap = (String)JOptionPane.showInputDialog(
+				f,
+                "Hoe breed moet de verdieping zijn?",
+                "Breedte map",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "10");
+		
+		String yMap = (String)JOptionPane.showInputDialog(
+                f,
+                "Hoe lang moet de verdieping zijn?",
+                "Lengte map",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "10");
+		String height = (String)JOptionPane.showInputDialog(
+				f,
+                "Hoe hoog moet de verdieping zijn?",
+                "Breedte map",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "5");
+
+		
+		int xMapInt = 10;
+		int yMapInt = 10;
+		int heightInt = 5;
+		
+		xMapInt = Integer.parseInt(xMap);
+		yMapInt = Integer.parseInt(yMap);
+		heightInt = Integer.parseInt(height);
+		
+		return new Storey(xMapInt,yMapInt,floorHeight,heightInt);	
+	}
+	
 }
