@@ -16,6 +16,13 @@ public class Point3D {
 		this.z = z;
 	}
 	
+	public Point3D(double x,double y,double z){
+		this.x = (float) x;
+		this.y = (float) y;
+		this.z = (float) z;
+	}
+	
+	
 	public float getX(){
 		return x;
 	}
