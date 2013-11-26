@@ -66,7 +66,7 @@ public class LevelEditor implements ActionListener{
 		
 		controlArea = new JPanel(new GridLayout(5, 1));		
 		
-		opties1 = new JPanel(new GridLayout(2, 2));
+		opties1 = new JPanel(new GridLayout(3, 2));
 		opties1.setBorder(BorderFactory.createTitledBorder("Tekenmodus:"));
 	    ButtonGroup bg = new ButtonGroup();
 		JRadioButton  option1 = new JRadioButton("Muur");
@@ -79,9 +79,12 @@ public class LevelEditor implements ActionListener{
 	    JRadioButton option3 = new JRadioButton("Vloer");
 	    bg.add(option3);
 	    opties1.add(option3);
-	    JRadioButton option4 = new JRadioButton("Textures tekenen");
+	    JRadioButton option4 = new JRadioButton("Gummen");
 	    bg.add(option4);
 	    opties1.add(option4);
+	    JRadioButton option5 = new JRadioButton("Object");
+	    bg.add(option5);
+	    opties1.add(option5);
 	    controlArea.add(opties1);
 	    
 	    option1.setActionCommand("Muur");
@@ -93,8 +96,11 @@ public class LevelEditor implements ActionListener{
 	    option3.setActionCommand("Vloer");
 	    option3.addActionListener(this);
 	    
-	    option4.setActionCommand("Texture");
+	    option4.setActionCommand("Gummen");
 	    option4.addActionListener(this);
+	    
+	    option5.setActionCommand("Object");
+	    option5.addActionListener(this);
 	    
 	    //System.out.println();
 	    
@@ -207,8 +213,12 @@ public class LevelEditor implements ActionListener{
 		else if(cmd.equals("Vloer")){
 			le.setDrawMode(3);
 		}
-		else if(cmd.equals("Texture")){
+		else if(cmd.equals("Gummen")){
 			le.setDrawMode(4);
+		}
+		else if(cmd.equals("Object")){
+			le.setDrawMode(5);
+			le.setWhatObject(1);
 		}
 		else if(cmd.equals("save")){
 			

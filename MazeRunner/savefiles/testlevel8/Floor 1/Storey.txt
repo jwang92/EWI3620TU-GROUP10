@@ -1,0 +1,4 @@
+Size: 10 10;
+Floorheight: 0;
+StoreyHeight: 5;
+End;

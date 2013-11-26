@@ -43,6 +43,14 @@ public class ObjectList {
 		
 	}
 	
+	public void addObject(Object o)
+	{
+		if(!objects.contains(o)){
+			objects.add(o);
+		}
+		
+	}
+	
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfObjects: " + objects.size() + ";\r\n";

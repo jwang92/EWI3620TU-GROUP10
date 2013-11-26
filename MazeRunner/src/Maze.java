@@ -16,7 +16,7 @@ public class Maze  implements VisibleObject {
 	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "savefiles/MazeLevel";
+	private String loadfolder = "savefiles/testlevel8";
 	private int numberOfStoreys;
 	
 	public Maze(){

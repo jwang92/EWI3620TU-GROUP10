@@ -1,0 +1,9 @@
+NumberOfWalls: 7;
+1 1; 9 1; textures/grass.png;
+9 1; 9 9; textures/grass.png;
+9 9; 1 9; textures/grass.png;
+1 9; 1 1; textures/grass.png;
+7 5; 7 6; textures/wood.png;
+7 6; 8 6; textures/wood.png;
+8 6; 8 5; textures/wood.png;
+End;

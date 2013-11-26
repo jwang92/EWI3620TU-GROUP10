@@ -1,0 +1,6 @@
+NumberOfWalls: 4;
+1 1; 9 1; textures/wood.png;
+9 1; 9 9; textures/wood.png;
+9 9; 1 9; textures/wood.png;
+1 9; 1 1; textures/wood.png;
+End;

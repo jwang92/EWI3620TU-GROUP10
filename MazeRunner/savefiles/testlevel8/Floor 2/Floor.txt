@@ -1,0 +1,6 @@
+NumberOfFloors: 4;
+1 1; 7 1; 7 9; 1 9; textures/brick.png;
+7 6; 9 6; 9 9; 7 9; textures/brick.png;
+8 1; 9 1; 9 6; 8 6; textures/brick.png;
+7 1; 8 1; 8 5; 7 5; textures/brick.png;
+End;
