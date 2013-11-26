@@ -62,7 +62,7 @@ public class Maze  implements VisibleObject {
 						
 					ObjectRamp t = (ObjectRamp) o1.get(j);
 									 
-					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
+					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight(), t.getTexture());
 						
 				}
 				
@@ -237,41 +237,41 @@ public class Maze  implements VisibleObject {
 			}
 			double[] surface = getSurface(p3d);
 			
-//			float hiX = Integer.MIN_VALUE;
-//			float hiZ = Integer.MIN_VALUE;
-//			
-//			float loX = Integer.MAX_VALUE;
-//			float loZ = Integer.MAX_VALUE;
-//			
-//			for(int j = 0; j < points.size(); j++){
-//				
-//				if(points.get(j).x > hiX)
-//					hiX = points.get(j).x;
-//				
-//				if(points.get(j).y > hiZ)
-//					hiZ = points.get(j).y;
-//				
-//				if(points.get(j).x < loX)
-//					loX = points.get(j).x;
-//				
-//				if(points.get(j).y < loZ)
-//					loZ = points.get(j).y;
-//					
-//			}
-//			
-//			//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
-//			
-//			hiX = hiX * (float) SQUARE_SIZE;
-//			loX = loX * (float) SQUARE_SIZE;
-//			hiZ = hiZ * (float) SQUARE_SIZE;
-//			loZ = loZ * (float) SQUARE_SIZE;
+			float hiX = Integer.MIN_VALUE;
+			float hiZ = Integer.MIN_VALUE;
+			
+			float loX = Integer.MAX_VALUE;
+			float loZ = Integer.MAX_VALUE;
+			
+			for(int j = 0; j < points.size(); j++){
+				
+				if(points.get(j).x > hiX)
+					hiX = points.get(j).x;
+				
+				if(points.get(j).y > hiZ)
+					hiZ = points.get(j).y;
+				
+				if(points.get(j).x < loX)
+					loX = points.get(j).x;
+				
+				if(points.get(j).y < loZ)
+					loZ = points.get(j).y;
+					
+			}
+			
+			//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
+			
+			hiX = hiX * (float) SQUARE_SIZE;
+			loX = loX * (float) SQUARE_SIZE;
+			hiZ = hiZ * (float) SQUARE_SIZE;
+			loZ = loZ * (float) SQUARE_SIZE;
 			
 			// Check if on ramp
 			//System.out.println(distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z));
 			//System.out.println(surface[0] +" " + surface[1] +" " + surface[2] +" " + surface[3] +" " + x +" " + y + " " +z);
 			//double distance = distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z);
 			double distance = distToSurfaceSegment(p3d,x,y-2.5,z);
-			if(distance < 1.5 && distance > -0.5){
+			if(distance < 1.5 && distance > -1.5){
 				double dy = (- surface[3]- surface[0]*x - surface[2]*z)/surface[1] - (y -2.5);
 				//System.out.println(" OnRamp: "+ y);
 				return dy;
@@ -285,7 +285,7 @@ public class Maze  implements VisibleObject {
 		
 	}
 
-	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight,int roofHeight){
+	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight,int roofHeight, String texture){
 		
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
 		
@@ -301,8 +301,8 @@ public class Maze  implements VisibleObject {
 			p3D.add(point);
 			
 		}
-		//int textureID = MainClass.textureNames.lastIndexOf(texture);
-		polygonOnScreen(gl,p3D, 1);	
+		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		polygonOnScreen(gl,p3D, textureID);	
 		
 	}
 
@@ -351,77 +351,33 @@ public class Maze  implements VisibleObject {
 		return dist;
 	}
 	
-	public double distToSurfaceSegment(ArrayList<Point3D> p, double qx, double qy, double qz){
-		double[] surface = getSurface(p);
-		double teller = surface[0] * qx + surface[1] * qy + surface[2] * qz + surface[3];
-		double noemer = Math.pow(surface[0], 2) + Math.pow(surface[1], 2) + Math.pow(surface[2], 2);
-		double t0 = -teller/noemer;
-		double x0 = qx + surface[0]*t0;
-		double y0 = qy + surface[1]*t0;
-		double z0 = qz + surface[2]*t0;
-		
-		//Is the projection of the player inside the polygon
-		Point3D q= new Point3D(x0,y0,z0);
-		double angleSum = CalcAngleSum(q,p);
-		double twoPI = 2*Math.PI;
-				
-		if(angleSum>(twoPI-0.2)&&angleSum<(twoPI+0.2)){
-			return distToSurface(surface[0],surface[1],surface[2],surface[3],qx,qy,qz);
-		}
+	public double distToSurfaceSegment(ArrayList<Point3D> p, double px, double py, double pz){
+//		double teller = surface[0] * px + surface[1] * py + surface[2] * pz + surface[3];
+//		double noemer = Math.pow(surface[0], 2) + Math.pow(surface[1], 2) + Math.pow(surface[2], 2);
+//		double t0 = -teller/noemer;
+//		double x0 = px + surface[0]*t0;
+//		double y0 = py + surface[1]*t0;
+//		double z0 = pz + surface[2]*t0;
 
-//		double xmax = Double.MIN_VALUE;
-//		double xmin = Double.MAX_VALUE;
-//		double ymax = Double.MIN_VALUE;
-//		double ymin = Double.MAX_VALUE;
-//		double zmax = Double.MIN_VALUE;
-//		double zmin = Double.MAX_VALUE;
-//		for(int i=0;i<p.size();i++){
-//			xmax = Math.max(xmax, p.get(i).x);
-//			xmin = Math.min(xmin, p.get(i).x);
-//			ymax = Math.max(xmax, p.get(i).y);
-//			ymin = Math.min(ymin, p.get(i).y);
-//			zmax = Math.max(zmax, p.get(i).z);
-//			zmin = Math.min(zmin, p.get(i).z);
-//		}
-//		if(qx <= xmax+0.1 && qx >=xmin-0.1 && qy <= ymax+0.1 && qy >=ymin-0.1 && qz <= zmax+0.1 && qz >=zmin-0.1){
-//
-//			return distToSurface(surface[0],surface[1],surface[2],surface[3],qx,qy,qz);
-//		}
+		double xmax = Double.MIN_VALUE;
+		double xmin = Double.MAX_VALUE;
+		double ymax = Double.MIN_VALUE;
+		double ymin = Double.MAX_VALUE;
+		double zmax = Double.MIN_VALUE;
+		double zmin = Double.MAX_VALUE;
+		for(int i=0;i<p.size();i++){
+			xmax = Math.max(xmax, p.get(i).x);
+			xmin = Math.min(xmin, p.get(i).x);
+			ymax = Math.max(xmax, p.get(i).y);
+			ymin = Math.min(ymin, p.get(i).y);
+			zmax = Math.max(zmax, p.get(i).z);
+			zmin = Math.min(zmin, p.get(i).z);
+		}
+		if(px <= xmax+0.1 && px >=xmin-0.1 && py <= ymax+0.1 && py >=ymin-0.1 && pz <= zmax+0.1 && pz >=zmin-0.1){
+			double[] surface = getSurface(p);
+			return distToSurface(surface[0],surface[1],surface[2],surface[3],px,py,pz);
+		}
 		return Double.MAX_VALUE;
 	}
-	
-	public double Modulus(Point3D p){
-		return Math.sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
-	}
-	
-	public double CalcAngleSum(Point3D q,ArrayList<Point3D> p)
-	{
-	   int i;
-	   int n = p.size();
-	   double m1,m2;
-	   double epsilon = 0.0000001;
-	   double anglesum=0,costheta;
-
-	   for (i=0;i<n;i++) {
-		  Point3D p1 = new Point3D();
-		  Point3D p2 = new Point3D();
-	      p1.x = p.get(i).x - q.x;
-	      p1.y = p.get(i).y - q.y;
-	      p1.z = p.get(i).z - q.z;
-	      p2.x = p.get((i+1)%n).x - q.x;
-	      p2.y = p.get((i+1)%n).y - q.y;
-	      p2.z = p.get((i+1)%n).z - q.z;
-
-	      m1 = Modulus(p1);
-	      m2 = Modulus(p2);
-	      if (m1*m2 <= epsilon)
-	         return 2*Math.PI; /* We are on a node, consider this inside */
-	      else
-	         costheta = (p1.x*p2.x + p1.y*p2.y + p1.z*p2.z) / (m1*m2);
-
-	      anglesum += Math.acos(costheta);
-	   }
-	   return(anglesum);
-	} 
 	
 }

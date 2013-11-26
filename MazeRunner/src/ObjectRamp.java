@@ -27,6 +27,10 @@ public class ObjectRamp {
 		return points;
 	}
 	
+	public String getTexture(){
+		return texture;
+	}
+	
 	public static ObjectRamp Read(Scanner s){
 		
 		s.useDelimiter(" |; |;\r\n");
