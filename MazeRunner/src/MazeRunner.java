@@ -120,6 +120,9 @@ public class MazeRunner implements GLEventListener{
 //		//input = new UserInput(canvas);
 		MainClass.player.setControl(MainClass.input);
 		MainClass.player.getMaze(MainClass.maze);
+		
+		MainClass.enemy.getMaze(MainClass.maze);
+		
 	}
 
 /*
@@ -206,7 +209,8 @@ public class MazeRunner implements GLEventListener{
         // Display all the visible objects of MazeRunner.
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
-        	
+            MainClass.enemy.display(gl);
+       	
         }
 
         gl.glLoadIdentity();
@@ -260,6 +264,7 @@ public class MazeRunner implements GLEventListener{
 	private void updateMovement(int deltaTime)
 	{
 		MainClass.player.update(deltaTime);
+		MainClass.enemy.update(deltaTime, MainClass.player);
 		
 	}
 

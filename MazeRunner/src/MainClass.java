@@ -36,6 +36,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static MainMenu mainMenu;
 	public static Maze maze;
 	public static Player player;
+	public static Enemy enemy;
 	public static Camera camera;
 	public static UserInput input;
 	public static Pause pause;
@@ -368,6 +369,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
 							 90, 0 );										// horizontal and vertical angle
 
+		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+				0 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,							// y-position
+				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 );	// z-position
+		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
 				             player.getHorAngle(), player.getVerAngle() );
 		
@@ -375,6 +380,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
+
 	}
 
 	public void setScreenSize(int ScreenHeight, int ScreenWidth){//, int y, int x){
