@@ -21,6 +21,7 @@ public class Player extends GameObject {
 	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
+	public Sounds sound = new Sounds();
 
 	private Control control = null;
 	
@@ -184,6 +185,9 @@ public class Player extends GameObject {
 			
 			locationY += dY;
 			
+			double oldX = locationX;
+			double oldZ = locationZ;
+			
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.cos(horAngle*Math.PI/180);
@@ -236,6 +240,15 @@ public class Player extends GameObject {
 					locationZ = newZ;
 				}
 			}
+				
+			if((Math.abs(locationX - oldX) > 0.01 || Math.abs(locationZ - oldZ) > 0.01) && sound.walking == false){
+				
+				sound.walk();
+				
+			}
+			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.walking == true)
+				sound.stopWalk();
+			
 		}
 	}
 	

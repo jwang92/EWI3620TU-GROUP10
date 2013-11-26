@@ -121,7 +121,14 @@ public class Maze  implements VisibleObject {
 		polygonOnScreen(gl,p3D,textureID);		
 	}
 	
-	
+	private double disPoints(Point3D p1, Point3D p2){
+		
+		double r = Math.sqrt(Math.pow((p2.y - p1.y), 2) + Math.pow((p2.x - p1.x), 2) + Math.pow((p2.z - p1.z), 2));	
+		r = Math.round(r);
+		
+		return r;
+		
+	}
 	
 	private void polygonOnScreen(GL gl, ArrayList<Point3D> p, int textureID){
 		//Set the color
@@ -136,15 +143,20 @@ public class Maze  implements VisibleObject {
 		//Apply texture
 		MainClass.textures.get(textureID).getTarget();
 		//brickTexture.enable();
+		
+		
+		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 2);
+		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 2);
+	
 		MainClass.textures.get(textureID).bind();		
 		gl.glBegin(GL.GL_QUADS);
-    		gl.glTexCoord2f(0, 0);
+    		gl.glTexCoord2f(0, numTex1);
     		gl.glVertex3d(p.get(0).x,p.get(0).y,p.get(0).z);
-    		gl.glTexCoord2f(0, 10);
+    		gl.glTexCoord2f(numTex2, numTex1);
     		gl.glVertex3d(p.get(1).x,p.get(1).y,p.get(1).z);
-    		gl.glTexCoord2f(10, 10);
+    		gl.glTexCoord2f(numTex2, 0);
     		gl.glVertex3d(p.get(2).x,p.get(2).y,p.get(2).z);
-    		gl.glTexCoord2f(10, 0);
+    		gl.glTexCoord2f(0, 0);
     		gl.glVertex3d(p.get(3).x,p.get(3).y,p.get(3).z);		
 		
 		gl.glEnd();
