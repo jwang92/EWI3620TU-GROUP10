@@ -18,9 +18,13 @@
 public class Player extends GameObject {	
 	private double horAngle, verAngle;
 	private double speed;
+	private double verticalSpeed;
+	private double gravity = 0.00005;
 	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
+	
+	//Sounds
 	public Sounds sound = new Sounds();
 
 	private Control control = null;
@@ -130,7 +134,7 @@ public class Player extends GameObject {
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 45)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , z+d*Math.cos(i*Math.PI/180) , locationY ))
+			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) ,locationY,  z+d*Math.cos(i*Math.PI/180) ))
 				res = true;
 		
 		return res;
@@ -181,13 +185,24 @@ public class Player extends GameObject {
 			double speed = this.speed * speedadjust;
 			
 			
-			double dY = maze.isRamp(locationX, locationZ, locationY);
-			
-			locationY += dY;
+			double dY = maze.isRamp(locationX, locationY, locationZ);
+			if(dY != 0){
+				verticalSpeed = 0;
+				locationY += dY;
+			}
+			else if(maze.isFloor(locationX, locationY, locationZ)){
+				locationY = maze.getFloorHeight(locationY)+2.5;
+				verticalSpeed = 0;	
+			}
+			else{
+				verticalSpeed -= gravity*deltaTime;
+			}
+			locationY += verticalSpeed*deltaTime;
+
 			
 			double oldX = locationX;
 			double oldZ = locationZ;
-			
+
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.cos(horAngle*Math.PI/180);
@@ -240,15 +255,12 @@ public class Player extends GameObject {
 					locationZ = newZ;
 				}
 			}
-				
 			if((Math.abs(locationX - oldX) > 0.01 || Math.abs(locationZ - oldZ) > 0.01) && sound.walking == false){
-				
 				sound.walk();
-				
 			}
-			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.walking == true)
+			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.walking == true){
 				sound.stopWalk();
-			
+			}
 		}
 	}
 	
