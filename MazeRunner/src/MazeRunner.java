@@ -280,7 +280,7 @@ public class MazeRunner implements GLEventListener{
 		MainClass.camera.setLocationX( MainClass.player.getLocationX() );
 		MainClass.camera.setLocationY( MainClass.player.getLocationY() );  
 		MainClass.camera.setLocationZ( MainClass.player.getLocationZ() );
-		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() );
+		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() + (MainClass.input.lookback? 180:0));
 		MainClass.camera.setVerAngle( MainClass.player.getVerAngle() );
 		MainClass.camera.calculateVRP();
 	}

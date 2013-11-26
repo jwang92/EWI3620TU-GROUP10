@@ -31,6 +31,8 @@ public class UserInput extends Control
 	int sx=0;
 	int sy=0;
 	
+	protected boolean lookback = false;
+	
     private final Set<Character> pressed = new HashSet<Character>(); // Currently pressed keys
     
 	/**
@@ -136,6 +138,9 @@ public class UserInput extends Control
         			MainClass.state.setStopMainGame(true);
         			MainClass.state.setStopPause(false);
         		}
+        		if(keyCode=='e' && MainClass.state.getState() == 1){
+        			lookback = true;
+        		}
         		
         	}
  
@@ -168,6 +173,9 @@ public class UserInput extends Control
 		else if(event.getKeyCode()==KeyEvent.VK_A)
 		{
 			left=false;
+		}
+		if(event.getKeyCode()==KeyEvent.VK_E){
+			lookback = false;
 		}
 		
 	}
