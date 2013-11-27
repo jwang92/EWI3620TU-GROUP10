@@ -57,6 +57,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		setSize( screenWidth, screenHeight);
 		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
 		
+		//Textures
+		textures = new ArrayList<Texture>();
+		textureNames = new ArrayList<String>();
+		
 		
 		// The window also has to close when we want to.
 		this.addWindowListener( new WindowAdapter()
@@ -90,9 +94,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		setVisible(true);
 		initObjects();
 		
-		//Textures
-		textures = new ArrayList<Texture>();
-		textureNames = new ArrayList<String>();
+
 	}
 	
 	public void display(GLAutoDrawable drawable) {
