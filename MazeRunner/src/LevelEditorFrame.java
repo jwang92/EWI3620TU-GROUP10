@@ -601,7 +601,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				*/
 				
 				int textureID = textureNames.lastIndexOf("textures/arrow.png");
-				polygonOnScreen(gl,p,textureID);
+				
+				polygonOnScreen(gl,p,textureID, true);
 				p.clear();
 				
 			}
@@ -621,7 +622,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					p.add(p1);
 				}
 				int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
-				polygonOnScreen(gl,p,textureID);
+				polygonOnScreen(gl,p,textureID, false);
 				p.clear();
 			}
 		}
@@ -640,7 +641,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					p.add(p1);
 				}
 				int textureID = textureNames.lastIndexOf(roofList.getRoofs().get(i).getTexture());
-				polygonOnScreen(gl,p,textureID);
+				polygonOnScreen(gl,p,textureID, false);
 				p.clear();
 			}
 		}
@@ -671,7 +672,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glEnd();
 	}
 	
-	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID){
+	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID, boolean obj){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_TEXTURE);
 		
 		//Enable textures
@@ -697,13 +698,24 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 //			}
 //			gl.glVertex2f(p.get(i).x, p.get(i).y);
 //		}
-		gl.glTexCoord2f(0,0);
+		
+		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 60);
+		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 60);
+		
+		if(obj == true){
+			numTex1 = 1;
+			numTex2 = 1;
+		}
+		
+		
+		gl.glTexCoord2f(numTex2,0);
+		
 		gl.glVertex2f(p.get(0).x, p.get(0).y);
-		gl.glTexCoord2f(0,1);
+		gl.glTexCoord2f(0,0);
 		gl.glVertex2f(p.get(1).x, p.get(1).y);
-		gl.glTexCoord2f(1,1);
+		gl.glTexCoord2f(0,numTex1);
 		gl.glVertex2f(p.get(2).x, p.get(2).y);
-		gl.glTexCoord2f(1,0);
+		gl.glTexCoord2f(numTex2,numTex1);
 		gl.glVertex2f(p.get(3).x, p.get(3).y);
 		
 		gl.glEnd();
@@ -712,6 +724,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		textures.get(textureID).disable();
 		
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
+	}
+	
+	private double disPoints(Point2D.Float p1, Point2D.Float p2){
+		
+		double r = Math.sqrt(Math.pow((p2.y - p1.y), 2) + Math.pow((p2.x - p1.x), 2));	
+		r = Math.round(r);
+		return r;		
 	}
 	
 //	private void roofOnScreen(GL gl, ArrayList<Point2D.Float> p){
@@ -829,6 +848,66 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
 			gridpoints.add(gridHighlight);
 			System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
+		}
+		else{
+			
+			if (drawMode == DM_OBJECT && points.size() == 0){
+						
+				ArrayList<Object> tempList = objectList.getObjects();
+				
+				for(int i = 0; i < tempList.size(); i++){
+
+					ArrayList<Point2D.Float> ps = null;
+					
+					if(tempList.get(i) instanceof ObjectRamp){
+						ObjectRamp temp = (ObjectRamp) tempList.get(i);
+						ps = temp.getPoints();
+					}
+					
+					float hiX = Integer.MIN_VALUE;
+					float hiZ = Integer.MIN_VALUE;
+					
+					float loX = Integer.MAX_VALUE;
+					float loZ = Integer.MAX_VALUE;
+					
+					for(int j = 0; j < ps.size(); j++){
+					
+						if(ps.get(j).x > hiX)
+							hiX = ps.get(j).x;
+						
+						if(ps.get(j).y > hiZ)
+							hiZ = ps.get(j).y;
+						
+						if(ps.get(j).x < loX)
+							loX = ps.get(j).x;
+					
+						if(ps.get(j).y < loZ)
+							loZ = ps.get(j).y;
+							
+					}
+					
+					float clickedX = (me.getX() - gridOffsetX ) / gridDistance + 1;
+					float clickedY = (me.getY() - gridOffsetY ) / gridDistance + 1;
+					
+					if(clickedX > loX && clickedX < hiX && clickedY > loZ && clickedY < hiZ){
+						System.out.println("Erin");
+						
+						ArrayList<Point2D.Float> newPoints = new ArrayList<Point2D.Float>();
+						newPoints.add(ps.get(1));
+						newPoints.add(ps.get(2));
+						newPoints.add(ps.get(3));
+						newPoints.add(ps.get(0));
+						
+						ObjectRamp newRamp = new ObjectRamp(newPoints, "textures/arrow.png");
+						objectList.getObjects().set(i, newRamp);
+						
+						
+					}
+					
+				}
+				
+			}
+		
 		}
 		
 	}

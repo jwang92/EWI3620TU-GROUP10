@@ -16,7 +16,7 @@ import javax.swing.*;
 public class LevelEditor implements ActionListener{
 	
 	private LevelEditorFrame le;
-	private String savefolder = "savefiles/testlevel3";
+	private String savefolder = "savefiles/testlevel8";
 	private String defaultLoadFolder = "savefiles";
 	private int verdiepingNummer = 1;
 	private int numberOfStoreys = 4;
