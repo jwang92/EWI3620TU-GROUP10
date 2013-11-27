@@ -99,6 +99,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//private int textureID;
 
 	private int objectToDraw;
+	private int wallToHighlight = -1;
+	
+	private CursorHandler c;
 	
 	/**
 	* When instantiating, a GLCanvas is added to draw the level editor. 
@@ -157,6 +160,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		canvas.addMouseMotionListener(this);
 		
 		canvas.addMouseWheelListener(this);
+		
+		// Nieuwe cursordinges maken
+		c = new CursorHandler(canvas);
+		
 
 		// An Animator is a JOGL help class that can be used to make sure our
 		// GLCanvas is continuously being re-rendered. The animator is run on a
@@ -428,7 +435,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		points.clear();
 		gridpoints.clear();
 		
-		canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		c.setCursor(-1);
 		
 		if(i == 1)
 			drawMode = DM_WALL;
@@ -439,11 +446,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		else if(i == 4){
 			// Gummen
 			drawMode = DM_ERASE;
+			c.setCursor(0);
 		}
 		else if(i == 5){
 			// Object tekenen
 			drawMode = DM_OBJECT;
-			System.out.println("test");
 		}
 	}
 	
@@ -561,7 +568,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p1.y = screenHeight -gridOffsetY - (wallList.getWalls().get(i).getStarty()-1)*gridDistance;
 				p2.x = gridOffsetX + (wallList.getWalls().get(i).getEndx()-1)*gridDistance;
 				p2.y = screenHeight - gridOffsetY - (wallList.getWalls().get(i).getEndy()-1)*gridDistance;
-				wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y);
+				if(wallToHighlight == i)
+					wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y, true);
+				else
+					wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y, false);
 			}
 		}
 	}
@@ -664,8 +674,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	/**
 	 * Help method that uses GL calls to draw a line.
 	 */
-	private void wallOnScreen(GL gl, float x1, float y1, float x2, float y2) {
-		gl.glColor3f(1.0f, 0.0f, 0.0f);
+	private void wallOnScreen(GL gl, float x1, float y1, float x2, float y2, boolean highlight) {
+		if(highlight == false)
+			gl.glColor3f(1.0f, 0.0f, 0.0f);
+		else
+			gl.glColor3f(0.0f, 1.0f, 0.0f);
+		
 		gl.glBegin(GL.GL_LINES);
 		gl.glVertex2f(x1, y1);
 		gl.glVertex2f(x2, y2);
@@ -822,7 +836,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * A function defined in MouseListener. Is called when the pointer is in the GLCanvas, and a mouse button is released.
 	 */
 	public void mouseReleased(MouseEvent me) {
-	
+				
 		if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
 				&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
 				&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
@@ -848,10 +862,22 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
 			gridpoints.add(gridHighlight);
 			System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
+			c.setCursor(-1);
+			
 		}
 		else{
 			
-			if (drawMode == DM_OBJECT && points.size() == 0){
+			if(drawMode == DM_ERASE){
+				
+				if(wallToHighlight != -1){
+					
+					wallList.getWalls().remove(wallToHighlight);
+					
+					wallToHighlight = -1;
+					
+				}
+				
+			} else if (drawMode == DM_OBJECT && points.size() == 0){
 						
 				ArrayList<Object> tempList = objectList.getObjects();
 				
@@ -890,7 +916,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					float clickedY = (me.getY() - gridOffsetY ) / gridDistance + 1;
 					
 					if(clickedX > loX && clickedX < hiX && clickedY > loZ && clickedY < hiZ){
-						System.out.println("Erin");
 						
 						ArrayList<Point2D.Float> newPoints = new ArrayList<Point2D.Float>();
 						newPoints.add(ps.get(1));
@@ -954,11 +979,95 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			
 		}
 		
-		if(highlighting == true)
-			canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		if(highlighting == true && drawMode != DM_ERASE)
+			c.setCursor(-2);
+		else if(drawMode == DM_ERASE)
+			c.setCursor(-3);
 		else
-			canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			c.setCursor(-1);
 		
+		
+		if (drawMode == DM_OBJECT && points.size() == 0){
+			
+			ArrayList<Object> tempList = objectList.getObjects();
+			
+			for(int i = 0; i < tempList.size(); i++){
+
+				ArrayList<Point2D.Float> ps = null;
+				
+				if(tempList.get(i) instanceof ObjectRamp){
+					ObjectRamp temp = (ObjectRamp) tempList.get(i);
+					ps = temp.getPoints();
+				}
+				
+				float hiX = Integer.MIN_VALUE;
+				float hiZ = Integer.MIN_VALUE;
+				
+				float loX = Integer.MAX_VALUE;
+				float loZ = Integer.MAX_VALUE;
+				
+				for(int j = 0; j < ps.size(); j++){
+				
+					if(ps.get(j).x > hiX)
+						hiX = ps.get(j).x;
+					
+					if(ps.get(j).y > hiZ)
+						hiZ = ps.get(j).y;
+					
+					if(ps.get(j).x < loX)
+						loX = ps.get(j).x;
+				
+					if(ps.get(j).y < loZ)
+						loZ = ps.get(j).y;
+						
+				}
+				
+				float clickedX = (me.getX() - gridOffsetX ) / gridDistance + 1;
+				float clickedY = (me.getY() - gridOffsetY ) / gridDistance + 1;
+				
+				if(clickedX > loX && clickedX < hiX && clickedY > loZ && clickedY < hiZ){
+					c.setCursor(1);			
+				}
+		
+			}
+		
+		}
+		else if(drawMode == DM_ERASE){
+			
+			ArrayList<Wall> tempList = storeys.get(storeyNumber - 1).getWallList().getWalls();;
+			
+			float gridX = (me.getX() - gridOffsetX ) / gridDistance + 1;
+			float gridY = (me.getY() - gridOffsetY ) / gridDistance + 1;
+			
+			wallToHighlight = -1;
+			
+			for(int i = 0; i < tempList.size(); i++){
+			
+				if(distToSegment(gridX, gridY, tempList.get(i).getStartx(), tempList.get(i).getStarty(), tempList.get(i).getEndx(), tempList.get(i).getEndy()) < 0.05){
+					wallToHighlight = i ;
+				}
+				
+			}
+			
+		}
+		
+		
+	}
+	
+	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
+	
+	public double distToSegmentSquared(double px, double py, double vx, double vy, double wx, double wy) {
+	  double l2 = dist2(vx, vy, wx, wy);
+	  if (l2 == 0) return dist2(px, py, vx, vy);
+	  double t = ((px - vx) * (wx - vx) + (py - vy) * (wy - vy)) / l2;
+	  if (t < 0) return dist2(px, py, vx, vy);
+	  if (t > 1) return dist2(px, py, wx, wy);
+	  return dist2(px, py, vx + t * (wx - vx), vy + t * (wy - vy));
+	}	
+	
+	public double distToSegment(double px, double py, double vx, double vy, double wx, double wy) 
+	{ 
+		return Math.sqrt(distToSegmentSquared(px, py, vx, vy, wx, wy)); 
 	}
 	
 	@Override
@@ -967,6 +1076,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gridOffsetY += me.getY()- gridDragY;
 		gridDragX = me.getX();
 		gridDragY = me.getY();
+		
+		c.setCursor(0);
 		
 	}
 	

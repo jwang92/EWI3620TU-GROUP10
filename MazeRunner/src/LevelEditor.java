@@ -158,7 +158,21 @@ public class LevelEditor implements ActionListener{
 	    opties4.add(cOptie4);
 	    controlArea.add(opties4);
 		
-	    content.add(controlArea, BorderLayout.WEST);
+	    GridBagLayout gridBag = new GridBagLayout();
+        GridBagConstraints cons = new GridBagConstraints();
+        
+        cons.fill = GridBagConstraints.BOTH;
+        
+	    content.setLayout(gridBag);
+	    cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 1.0;
+        cons.gridx = 0;
+        cons.gridy = 0;
+	    
+        gridBag.setConstraints(controlArea, cons);
+        
+	    content.add(controlArea);
 		
 		// The OpenGL capabilities should be set before initializing the
 		// GLCanvas. We use double buffering and hardware acceleration.
@@ -180,8 +194,14 @@ public class LevelEditor implements ActionListener{
 		}
 	    
 	    le.initGrid();
-	    	    
-	    content.add(drawingArea, BorderLayout.EAST);
+	    cons.ipady = 100;
+        cons.ipadx = 100;
+        cons.weightx = 1.0;
+        cons.weighty = 1.0;
+        cons.gridx = 150;
+        cons.gridy = 0;
+	    gridBag.setConstraints(drawingArea, cons);
+	    content.add(drawingArea);
 	    f.pack();
 	    f.setVisible(true);
 	    
