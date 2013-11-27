@@ -169,6 +169,7 @@ public class MazeRunner implements GLEventListener{
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
+        MainClass.enemy.genDisplayList(gl);
 	}
 	
 	/**
@@ -210,6 +211,7 @@ public class MazeRunner implements GLEventListener{
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
             MainClass.enemy.display(gl);
+            
        	
         }
 
