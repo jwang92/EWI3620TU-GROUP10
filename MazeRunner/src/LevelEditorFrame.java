@@ -239,7 +239,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		try {
 		    File folder = new File("textures/");
 		    File[] tList = folder.listFiles();
-		    textureNames = new ArrayList<String>(tList.length-1);
+		    int numberOfTextures = tList.length;
+			for(int j = 0; j<tList.length;j++){
+			    if(tList[j].getName().equals("Thumbs.db")){
+			    	numberOfTextures -= 1;
+			    }  
+			}
+			textureNames = new ArrayList<String>(numberOfTextures);
 		    
 		    int i = 0;
 		    for (File file : tList)
