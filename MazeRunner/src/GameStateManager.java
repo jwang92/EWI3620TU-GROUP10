@@ -4,7 +4,8 @@ public class GameStateManager {
 	protected int gamestate = 0;
 	protected boolean sTitle=false,
 					sMainGame=false,
-					sPause=false;
+					sPause=false,
+					sGameOver=false;
 	
 	void GameStateUpdate(GameState m_curSTATE) {
 	     // handle update
@@ -29,7 +30,11 @@ public class GameStateManager {
 	    	   gamestate = 3;
 	    	   //MainMenu.setTeller(3);
 	           break;
-	    	   
+	       case GAMEOVER_STATE:
+	    	   //
+	    	   gamestate = 4;
+	    	   //MainMenu.setTeller(4);
+	    	   break;
 	    }
 	}
 	
@@ -50,6 +55,10 @@ public class GameStateManager {
 		return sPause;
 	}
 	
+	public boolean getStopGameOver(){
+		return sGameOver;
+	}
+	
 	public void setStopTitle(boolean s){
 		sTitle=s;
 	}
@@ -61,13 +70,18 @@ public class GameStateManager {
 	public void setStopPause(boolean s){
 		sPause=s;
 	}
+	
+	public void setStopGameOver(boolean s){
+		sGameOver=s;
+	}
 }
 
 enum GameState {
     TITLE_STATE,
     MAINGAME_STATE,
     PAUSE_STATE,
-    STOP_STATE
+    STOP_STATE,
+    GAMEOVER_STATE
 }
 
 

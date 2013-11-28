@@ -35,8 +35,8 @@ public class Enemy extends GameObject implements VisibleObject {
 		double d = 2.05; 		//distance from the wall
 		boolean res = false;
 		
-		for(int i = 0; i < 360; i = i + 45)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , z+d*Math.cos(i*Math.PI/180) , locationY))
+		for(int i = 0; i < 360; i = i + 15)
+			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z+d*Math.cos(i*Math.PI/180) ))
 				res = true;
 		
 		return res;
@@ -73,6 +73,8 @@ public class Enemy extends GameObject implements VisibleObject {
 			locationZ = newZ;
 		}
 		
+		this.caught(player);
+		
 	}
 
 	public void display(GL gl) {
@@ -96,6 +98,15 @@ public class Enemy extends GameObject implements VisibleObject {
 	public void getMaze(Maze maze){
 		this.maze = maze;
 	}
-	
+
+	public void caught(Player player){
+		if( Math.abs(locationX - player.locationX) < 1
+				&& Math.abs(locationZ - player.locationZ) < 1
+				/*&& Math.abs(locationY - player.locationY) < 1*/ ){
+			MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+			MainClass.state.setStopMainGame(true);
+			MainClass.state.setStopGameOver(false);
+		}
+	}
 
 }

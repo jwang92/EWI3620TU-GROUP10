@@ -40,6 +40,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Camera camera;
 	public static UserInput input;
 	public static Pause pause;
+	public static GameOver gameover;
 	
 	//Load the textures
 	protected static ArrayList<Texture> textures;
@@ -88,6 +89,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// to mouse events that happen inside the GLCanvas.
 		canvas.addMouseListener(this);
 		
+		mainMenu = new MainMenu(screenHeight, screenWidth);
+		state = new GameStateManager();
+		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
 		setVisible(true);
 		initObjects();
@@ -108,6 +112,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			break;
 		case 2: 
 			pause.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
+		case 4:
+			gameover.reshape(drawable, 0, 0, screenWidth, screenHeight);
 			break;
 		}
 	}
@@ -130,6 +137,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			case 2: 
 				setScreenSize(pause.ScreenHeight, pause.ScreenWidth); 
 				break;
+			case 4:
+				setScreenSize(gameover.ScreenHeight, gameover.ScreenWidth);
+				break;
 			}
 			rendersize(drawable, state.getState());
 		}
@@ -148,6 +158,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if (tel==3){
 			System.exit(0);
+		}
+		else if (tel==4){
+			gameover.render(drawable);
+			gameover.init(drawable);
 		}
 		
 		initUpdater(drawable,0,0, screenWidth, screenHeight);
@@ -235,6 +249,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel == 2){
 			pause.reshape(arg0, arg1, arg2, arg3, arg4);
 		}
+		else if(tel == 4){
+			gameover.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
 		
 		
 	}
@@ -278,6 +295,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel==2){
 			pause.mouseReleased(me);
 		}
+		else if(tel==4){
+			gameover.mouseReleased(me);
+		}
+
 	}
 	
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
@@ -290,6 +311,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if(tel==2 && state.getStopPause()==false){
 			pause.init(drawable);
+		}
+		else if(tel==4 && state.getStopGameOver()==false){
+			gameover.init(drawable);
 		}
 	}
 	
@@ -360,8 +384,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 	
 	public static void initObjects(){
-		mainMenu = new MainMenu(screenHeight, screenWidth);
-		state = new GameStateManager();
 		maze = new Maze();
 		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							 maze.SQUARE_SIZE / 2,							// y-position
@@ -379,6 +401,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
+		gameover = new GameOver(screenHeight, screenWidth);
 
 	}
 
