@@ -15,6 +15,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	private double sx, sy,sz;
 	private boolean alert;
 	
+	//Shaders
+	private int shaderProgram = 0;
+	
 	public Enemy(double x, double y, double z){
 		super(x, y, z);
 		sx=x;
@@ -35,6 +38,10 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+	
+	public void setShaderProgram(int program){
+		shaderProgram = program;
 	}
 	
 	public boolean checkWall(double x, double z, double dT){
@@ -88,20 +95,23 @@ public class Enemy extends GameObject implements VisibleObject {
 
 	public void display(GL gl) {
 		//GLUT glut = new GLUT();
-		
 		gl.glColor3f(1, 0, 0);
 		
 		gl.glPushMatrix();
 		gl.glTranslated(locationX, locationY, locationZ);
-		if(displayList == 0){
-			gl.glCallList(1);	
+		if(displayList <= 0){
+			//gl.glCallList(1);	
+		}
+		else if(shaderProgram <= 0){
+			gl.glCallList(displayList);
 		}
 		else{
+			gl.glUseProgram(shaderProgram);
 			gl.glCallList(displayList);
+			gl.glUseProgram(0);
 		}
 		//glut.glutSolidSphere(2.0d, 10, 10);
 		gl.glPopMatrix();
-		
 	}
 	
 	public void getMaze(Maze maze){

@@ -43,6 +43,8 @@ public class MazeRunner implements GLEventListener{
 //	private Maze maze; 										// The maze.
 	private long previousTime = Calendar.getInstance().getTimeInMillis(); // Used to calculate elapsed time.
 
+	//Shaders
+	private int shaderProgram;
 /*
  * **********************************************
  * *		Initialization methods				*
@@ -144,6 +146,9 @@ public class MazeRunner implements GLEventListener{
         GL gl = drawable.getGL();
         GLU glu = new GLU();
         
+        //Load the shaders
+        setUpShaders("shaders/phong_lighting.vs","shaders/phong_lighting.fs",gl);
+        
         gl.glClearColor(0, 0, 0, 0);								// Set the background color.
         
         // Now we set up our viewpoint.
@@ -160,16 +165,28 @@ public class MazeRunner implements GLEventListener{
         gl.glEnable( GL.GL_DEPTH_TEST );
         
         // Set and enable the lighting.
-        float lightPosition[] = { 0.0f, 50.0f, 0.0f, 1.0f }; 			// High up in the sky!
-        float lightColour[] = { 1.0f, 1.0f, 1.0f, 0.0f };				// White light!
-        gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, lightPosition, 0 );	// Note that we're setting Light0.
-        gl.glLightfv( GL.GL_LIGHT0, GL.GL_AMBIENT, lightColour, 0);
+        //LIGHT0: ambient light high in the sky
+        float lightPosition0[] = { 0.0f, 50.0f, 0.0f, 1.0f }; 			// High up in the sky!
+        float lightColour0[] = { 1.0f, 1.0f, 1.0f, 0.0f };				// White light!
+        gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, lightPosition0, 0 );	// Note that we're setting Light0.
+        gl.glLightfv( GL.GL_LIGHT0, GL.GL_AMBIENT, lightColour0, 0);
+        gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] {0.05f, 0.05f, 0.05f, 1f}, 0);
+        
+        //LIGHT1: Shader light in the room
+        float lightPosition1[] = { 0.0f, 0.2f, 0.0f, 1.0f}; 			// High up in the sky!
+        float lightColour1[] = { 1.0f, 1.0f, 1.0f, 0.0f };				// White light!
+        gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, lightPosition1, 0 );	// Note that we're setting Light1.
+        //gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, lightColour1, 0);
+        
+        
         gl.glEnable( GL.GL_LIGHTING );
         gl.glEnable( GL.GL_LIGHT0 );
+        gl.glEnable(GL.GL_LIGHT1);
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
         MainClass.enemy.genDisplayList(gl);
+        MainClass.enemy.setShaderProgram(shaderProgram);
 	}
 	
 	/**
@@ -294,6 +311,10 @@ public class MazeRunner implements GLEventListener{
     	MainClass.state.setStopMainGame(true);
         
 	}
+	
+    private void setUpShaders(String vertexShaderLocation, String fragmentShaderLocation,GL gl) {
+        shaderProgram = ShaderLoader.loadShaderPair(vertexShaderLocation, fragmentShaderLocation, gl);
+    }
 	
 /*
  * **********************************************
