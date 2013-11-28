@@ -1,0 +1,4 @@
+NumberOfObjects: 2;
+Ramp: 8 3; 7 3; 7 2; 8 2; textures/arrow.png;
+Ramp: 7 12; 8 12; 8 13; 7 13; brick.png;
+End;
