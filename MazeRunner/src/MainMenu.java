@@ -13,11 +13,17 @@ import javax.media.opengl.GLEventListener;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureCoords;
+import com.sun.opengl.util.texture.TextureData;
+import com.sun.opengl.util.texture.TextureIO;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 
 public class MainMenu implements GLEventListener, MouseListener , MouseMotionListener {
 	/*
@@ -36,6 +42,8 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private int bPosX, drawPosX;
 	private int b1PosY, b2PosY, b3PosY, draw1PosY, draw2PosY, draw3PosY;
 	private int mouseOnBox = 0;
+	private Texture tempTexture;
+	private boolean startup = true;
 
 	
 	public MainMenu(int screenHeight, int screenWidth){
@@ -90,15 +98,67 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
+		drawBackground(gl);
 		// Draw the buttons.
 		drawButtons(gl);
+		
 		gl.glFlush();
 	
 
 	}
 	
+	public void loadTexture(GL gl){
+		
+		//Get the name of the texture
+    	String textureFileName = "background.png";
+    	
+    	//Load the texture
+    	File filetexture = new File(textureFileName);
+    	
+		TextureData data = null;
+		try {
+			data = TextureIO.newTextureData(filetexture, false, "png");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		tempTexture = TextureIO.newTexture(data);
+		
+		//Set the the texture parameters
+		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+		tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		
+	}
+	
+	private void drawBackground(GL gl) {
+		
+		if(startup){
+			
+			loadTexture(gl);
+			startup = false;
+			
+		}
+
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		tempTexture.getTarget();
+		tempTexture.bind();
+				
+		gl.glBegin(GL.GL_POLYGON);
+			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, 600);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(600, 600);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(600, 0);
+		gl.glEnd();
+		
+		tempTexture.disable();
+		
+	}
+	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
+		
 		boxOnScreen(gl, drawPosX, draw1PosY, "Start", 1);
 		
 		boxOnScreen(gl, drawPosX, draw2PosY, "Editor", 2);
