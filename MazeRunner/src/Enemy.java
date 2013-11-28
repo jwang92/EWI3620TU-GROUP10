@@ -9,12 +9,18 @@ import com.sun.opengl.util.GLUT;
 public class Enemy extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
-	private double speed = 0.001;
+	private double speed = 0.0015;
 	private Model m ;
 	private int displayList;
+	private double sx, sy,sz;
+	private boolean alert;
 	
 	public Enemy(double x, double y, double z){
 		super(x, y, z);
+		sx=x;
+		sy=y;
+		sz=z;
+		alert = false;
 		try {
 			m = OBJLoader.loadModel((new File("3d_object/lion.obj")));
 		} catch (IOException e) {
@@ -32,11 +38,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public boolean checkWall(double x, double z, double dT){
-		double d = 2.05; 		//distance from the wall
+		double d = 2.0d; 		//distance from the wall
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 15)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z+d*Math.cos(i*Math.PI/180) ))
+			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z-0.8f+d*Math.cos(i*Math.PI/180) ))
 				res = true;
 		
 		return res;
@@ -47,34 +53,37 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
-		
-		double dX = player.locationX - locationX;
-		if(dX > 0)
-			dX = speed * deltaTime;
-		if(dX < 0)
-			dX = -1 * speed * deltaTime;
-		
-		newX = locationX + dX;
-				
-		double dZ = player.locationZ - locationZ;
-		if(dZ > 0)
-			dZ = speed * deltaTime;
-		if(dZ < 0)
-			dZ = -1 * speed * deltaTime;
-		
-		newZ = locationZ + dZ;
-		
-		if(!checkWall(newX, newZ, deltaTime)){
-			locationX = newX;
-			locationZ = newZ;
-		}else if(!checkWall(newX, locationZ, deltaTime)){
-			locationX = newX;
-		}else if(!checkWall(locationX, newZ, deltaTime)){
-			locationZ = newZ;
+		if(alerted(player)){
+			alert = alerted(player);
+		}
+		if(alert){
+			double dX = player.locationX - locationX;
+			if(dX > 0)
+				dX = speed * deltaTime;
+			if(dX < 0)
+				dX = -1 * speed * deltaTime;
+			
+			newX = locationX + dX;
+					
+			double dZ = player.locationZ - locationZ;
+			if(dZ > 0)
+				dZ = speed * deltaTime;
+			if(dZ < 0)
+				dZ = -1 * speed * deltaTime;
+			
+			newZ = locationZ + dZ;
+			
+			if(!checkWall(newX, newZ, deltaTime)){
+				locationX = newX;
+				locationZ = newZ;
+			}else if(!checkWall(newX, locationZ, deltaTime)){
+				locationX = newX;
+			}else if(!checkWall(locationX, newZ, deltaTime)){
+				locationZ = newZ;
+			}
 		}
 		
 		this.caught(player);
-		
 	}
 
 	public void display(GL gl) {
@@ -102,11 +111,16 @@ public class Enemy extends GameObject implements VisibleObject {
 	public void caught(Player player){
 		if( Math.abs(locationX - player.locationX) < 1
 				&& Math.abs(locationZ - player.locationZ) < 1
-				/*&& Math.abs(locationY - player.locationY) < 1*/ ){
+				&& Math.abs(locationY - player.locationY) < 0.8*maze.SQUARE_SIZE ){
 			MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
 			MainClass.state.setStopMainGame(true);
 			MainClass.state.setStopGameOver(false);
 		}
+	}
+	
+	public boolean alerted (Player player){
+		 boolean res = Math.sqrt(Math.pow(sx-player.locationX,2 )+Math.pow(sz-player.locationZ,2)) <15 ;
+		 return res;
 	}
 
 }

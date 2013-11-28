@@ -391,7 +391,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							 90, 0 );										// horizontal and vertical angle
 
 		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
-				0 * maze.SQUARE_SIZE,							// y-position
+				0.01 * maze.SQUARE_SIZE,							// y-position
 				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 );	// z-position
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
