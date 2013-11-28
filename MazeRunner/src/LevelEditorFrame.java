@@ -57,6 +57,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private static final byte DM_ROOF = 3;
 	private static final byte DM_ERASE = 4;
 	private byte drawMode = DM_OBJECT;
+	
+	// 1 = Draw, 2 = Erase
+	private int mode = 1;
 
 	private ArrayList<Point2D.Float> points;
 	
@@ -100,6 +103,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 
 	private int objectToDraw;
 	private int wallToHighlight = -1;
+	private int floorToHighlight = -1;
+	private int roofToHighlight = -1;
+	private int objectToHighlight = -1;
 	
 	private CursorHandler c;
 	
@@ -438,6 +444,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void setDrawMode(int i){
 		
+		resetHighlighting();
+		
 		points.clear();
 		gridpoints.clear();
 		
@@ -458,6 +466,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			// Object tekenen
 			drawMode = DM_OBJECT;
 		}
+	}
+	
+	public void setMode(int i){
+		
+		resetHighlighting();
+		mode = i; // 1 = Draw, 2 = Erase
+				
 	}
 	
 	public void setWhatObject(int i){
@@ -491,9 +506,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 
 				p1 = gridpoints.get(0);
 				
-				
-				System.out.println(p1.x + " " + p1.y);
-				
+								
 				p2 = new Point2D.Float(p1.x + 1, p1.y);
 				p3 = new Point2D.Float(p1.x + 1, p1.y + 1);
 				p4 = new Point2D.Float(p1.x, p1.y + 1);
@@ -506,7 +519,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 				Object obj = new ObjectRamp(temp, "brick.png");
 				storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
-				System.out.println("hoi");
 				
 			}
 			break;
@@ -617,8 +629,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				*/
 				
 				int textureID = textureNames.lastIndexOf("textures/arrow.png");
+				if(objectToHighlight == i)
+					polygonOnScreen(gl,p,textureID, true, true);
+				else
+					polygonOnScreen(gl,p,textureID, true, false);
 				
-				polygonOnScreen(gl,p,textureID, true);
 				p.clear();
 				
 			}
@@ -638,7 +653,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					p.add(p1);
 				}
 				int textureID = textureNames.lastIndexOf(floorList.getFloors().get(i).getTexture());
-				polygonOnScreen(gl,p,textureID, false);
+				
+				//System.out.println(wallToHighlight + " " + i);
+				
+				if(floorToHighlight == i)
+					polygonOnScreen(gl,p,textureID, false, true);
+				else
+					polygonOnScreen(gl,p,textureID, false, false);	
+				
 				p.clear();
 			}
 		}
@@ -657,7 +679,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					p.add(p1);
 				}
 				int textureID = textureNames.lastIndexOf(roofList.getRoofs().get(i).getTexture());
-				polygonOnScreen(gl,p,textureID, false);
+				if(roofToHighlight == i)
+					polygonOnScreen(gl,p,textureID, false, true);
+				else
+					polygonOnScreen(gl,p,textureID, false, false);	
 				p.clear();
 			}
 		}
@@ -692,11 +717,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glEnd();
 	}
 	
-	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID, boolean obj){
+	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID, boolean obj, boolean highlight){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_TEXTURE);
 		
 		//Enable textures
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		if(highlight == true)
+			gl.glColor3f(0.0f, 1.0f, 0.0f);
+		else
+			gl.glColor3f(1.0f, 1.0f, 1.0f);
+		
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		//gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
 		
@@ -842,53 +871,46 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	 * A function defined in MouseListener. Is called when the pointer is in the GLCanvas, and a mouse button is released.
 	 */
 	public void mouseReleased(MouseEvent me) {
-				
-		if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
-				&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
-				&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
-				&& (gridHighlight.y <= ((me.getY()-gridOffsetY)/gridDistance+1)+0.1)){	
-			if (drawMode == DM_OBJECT && points.size() >= 1) {
-				// If we're placing objects and one point was stored, reset the points list
-				points.clear();
-				gridpoints.clear();
-			} else if (drawMode == DM_WALL && points.size() >= 2) {
-				// If we're drawing lines and two points were already stored, reset the points list
-				points.clear();
-				gridpoints.clear();
-			} else if (drawMode == DM_FLOOR && points.size() >= 4) {
-				// If we're drawing Floors and four points were already stored, reset the points list
-				points.clear();
-				gridpoints.clear();
-			} else if (drawMode == DM_ROOF && points.size() >= 4) {
-				// If we're drawing Roofs and four points were already stored, reset the points list
-				points.clear();
-				gridpoints.clear();
-			}
-			// Add a new point to the points list.
-			points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
-			gridpoints.add(gridHighlight);
-			System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
-			c.setCursor(-1);
-			
-		}
-		else{
-			
-			if(drawMode == DM_ERASE){
-				
-				if(wallToHighlight != -1){
-					
-					wallList.getWalls().remove(wallToHighlight);
-					
-					wallToHighlight = -1;
-					
+
+		
+		// Drawing
+		if(mode == 1){
+		
+			if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
+					&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
+					&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
+					&& (gridHighlight.y <= ((me.getY()-gridOffsetY)/gridDistance+1)+0.1)){	
+				if (drawMode == DM_OBJECT && points.size() >= 1) {
+					// If we're placing objects and one point was stored, reset the points list
+					points.clear();
+					gridpoints.clear();
+				} else if (drawMode == DM_WALL && points.size() >= 2) {
+					// If we're drawing lines and two points were already stored, reset the points list
+					points.clear();
+					gridpoints.clear();
+				} else if (drawMode == DM_FLOOR && points.size() >= 4) {
+					// If we're drawing Floors and four points were already stored, reset the points list
+					points.clear();
+					gridpoints.clear();
+				} else if (drawMode == DM_ROOF && points.size() >= 4) {
+					// If we're drawing Roofs and four points were already stored, reset the points list
+					points.clear();
+					gridpoints.clear();
 				}
+				// Add a new point to the points list.
+				points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
+				gridpoints.add(gridHighlight);
+				System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
+				c.setCursor(-1);
 				
-			} else if (drawMode == DM_OBJECT && points.size() == 0){
-						
+			}
+			// Objecten tekenen
+			else if (drawMode == DM_OBJECT && points.size() == 0){
+					
 				ArrayList<Object> tempList = objectList.getObjects();
 				
 				for(int i = 0; i < tempList.size(); i++){
-
+		
 					ArrayList<Point2D.Float> ps = null;
 					
 					if(tempList.get(i) instanceof ObjectRamp){
@@ -939,6 +961,41 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 			}
 		
+		// Erase
+		}else{
+	
+			if(wallToHighlight != -1){
+					
+				wallList.getWalls().remove(wallToHighlight);
+				
+				wallToHighlight = -1;
+				
+			}
+					
+			if(floorToHighlight != -1){
+				
+				floorList.getFloors().remove(floorToHighlight);
+				
+				floorToHighlight = -1;
+				
+			}
+			
+			if(roofToHighlight != -1){
+				
+				roofList.getRoofs().remove(roofToHighlight);
+				
+				roofToHighlight = -1;
+				
+			}
+			
+			if(objectToHighlight != -1){
+				
+				objectList.getObjects().remove(objectToHighlight);
+				
+				objectToHighlight = -1;
+
+			}
+			
 		}
 		
 	}
@@ -985,72 +1042,164 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			
 		}
 		
-		if(highlighting == true && drawMode != DM_ERASE)
+		if(highlighting == true && mode == 1)
 			c.setCursor(-2);
-		else if(drawMode == DM_ERASE)
+		else if(mode == 2)
 			c.setCursor(-3);
 		else
 			c.setCursor(-1);
 		
+		// Drawing
+		if(mode == 1){
 		
-		if (drawMode == DM_OBJECT && points.size() == 0){
-			
-			ArrayList<Object> tempList = objectList.getObjects();
-			
-			for(int i = 0; i < tempList.size(); i++){
-
-				ArrayList<Point2D.Float> ps = null;
+			if (drawMode == DM_OBJECT && points.size() == 0){
 				
-				if(tempList.get(i) instanceof ObjectRamp){
-					ObjectRamp temp = (ObjectRamp) tempList.get(i);
-					ps = temp.getPoints();
-				}
+				ArrayList<Object> tempList = objectList.getObjects();
 				
-				float hiX = Integer.MIN_VALUE;
-				float hiZ = Integer.MIN_VALUE;
-				
-				float loX = Integer.MAX_VALUE;
-				float loZ = Integer.MAX_VALUE;
-				
-				for(int j = 0; j < ps.size(); j++){
-				
-					if(ps.get(j).x > hiX)
-						hiX = ps.get(j).x;
+				for(int i = 0; i < tempList.size(); i++){
+	
+					ArrayList<Point2D.Float> ps = null;
 					
-					if(ps.get(j).y > hiZ)
-						hiZ = ps.get(j).y;
+					if(tempList.get(i) instanceof ObjectRamp){
+						ObjectRamp temp = (ObjectRamp) tempList.get(i);
+						ps = temp.getPoints();
+					}
 					
-					if(ps.get(j).x < loX)
-						loX = ps.get(j).x;
-				
-					if(ps.get(j).y < loZ)
-						loZ = ps.get(j).y;
+					float hiX = Integer.MIN_VALUE;
+					float hiZ = Integer.MIN_VALUE;
+					
+					float loX = Integer.MAX_VALUE;
+					float loZ = Integer.MAX_VALUE;
+					
+					for(int j = 0; j < ps.size(); j++){
+					
+						if(ps.get(j).x > hiX)
+							hiX = ps.get(j).x;
 						
-				}
-				
-				float clickedX = (me.getX() - gridOffsetX ) / gridDistance + 1;
-				float clickedY = (me.getY() - gridOffsetY ) / gridDistance + 1;
-				
-				if(clickedX > loX && clickedX < hiX && clickedY > loZ && clickedY < hiZ){
-					c.setCursor(1);			
-				}
-		
-			}
-		
-		}
-		else if(drawMode == DM_ERASE){
+						if(ps.get(j).y > hiZ)
+							hiZ = ps.get(j).y;
+						
+						if(ps.get(j).x < loX)
+							loX = ps.get(j).x;
+					
+						if(ps.get(j).y < loZ)
+							loZ = ps.get(j).y;
+							
+					}
+					
+					float clickedX = (me.getX() - gridOffsetX ) / gridDistance + 1;
+					float clickedY = (me.getY() - gridOffsetY ) / gridDistance + 1;
+					
+					if(clickedX > loX && clickedX < hiX && clickedY > loZ && clickedY < hiZ){
+						c.setCursor(1);			
+					}
 			
-			ArrayList<Wall> tempList = storeys.get(storeyNumber - 1).getWallList().getWalls();;
+				}
+			
+			}
+			
+		// Erase
+		}else{
 			
 			float gridX = (me.getX() - gridOffsetX ) / gridDistance + 1;
 			float gridY = (me.getY() - gridOffsetY ) / gridDistance + 1;
 			
-			wallToHighlight = -1;
+			Point2D.Float mouseInGrid = new Point2D.Float(gridX, gridY);
 			
-			for(int i = 0; i < tempList.size(); i++){
+			// Highlight wall to erase
+			if(drawMode == DM_WALL){
 			
-				if(distToSegment(gridX, gridY, tempList.get(i).getStartx(), tempList.get(i).getStarty(), tempList.get(i).getEndx(), tempList.get(i).getEndy()) < 0.05){
-					wallToHighlight = i ;
+				ArrayList<Wall> tempList = storeys.get(storeyNumber - 1).getWallList().getWalls();;
+				
+				wallToHighlight = -1;
+				
+				for(int i = 0; i < tempList.size(); i++){
+				
+					if(distToSegment(gridX, gridY, tempList.get(i).getStartx(), tempList.get(i).getStarty(), tempList.get(i).getEndx(), tempList.get(i).getEndy()) < 0.05){
+						wallToHighlight = i ;
+					}
+					
+				}
+				
+			}else if(drawMode == DM_FLOOR){
+				
+				ArrayList<Floor> tempList = storeys.get(storeyNumber - 1).getFloorList().getFloors();;
+				
+				floorToHighlight = -1;
+				
+				for(int i = 0; i < tempList.size(); i++){
+					
+					Floor tempFloor = tempList.get(i);
+					Point2D.Float[] tempPoints = new Point2D.Float[4];
+					
+					for(int j = 0; j < tempFloor.getPoints().size(); j++){
+						
+						tempPoints[j] = tempFloor.getPoints().get(j);
+						
+					}
+					
+					if(inPolygon(mouseInGrid, tempPoints)){
+						
+						floorToHighlight = i;
+						
+					}
+					
+				}
+				
+			}else if(drawMode == DM_ROOF){
+				
+				ArrayList<Roof> tempList = storeys.get(storeyNumber - 1).getRoofList().getRoofs();;
+				
+				roofToHighlight = -1;
+				
+				for(int i = 0; i < tempList.size(); i++){
+					
+					Roof tempRoof = tempList.get(i);
+					Point2D.Float[] tempPoints = new Point2D.Float[4];
+					
+					for(int j = 0; j < tempRoof.getPoints().size(); j++){
+						
+						tempPoints[j] = tempRoof.getPoints().get(j);
+						
+					}
+					
+					if(inPolygon(mouseInGrid, tempPoints)){
+						
+						roofToHighlight = i;
+						
+					}
+					
+				}
+				
+			}else if(drawMode == DM_OBJECT){
+				
+				ArrayList<Object> tempList = storeys.get(storeyNumber - 1).getObjectList().getObjects();
+				
+				objectToHighlight = -1;
+				
+				for(int i = 0; i < tempList.size(); i++){
+					
+					ObjectRamp tempObject = null;
+					
+					if(tempList.get(i) instanceof ObjectRamp){
+						tempObject = (ObjectRamp) tempList.get(i);
+					}
+						
+					
+					Point2D.Float[] tempPoints = new Point2D.Float[4];
+					
+					for(int j = 0; j < tempObject.getPoints().size(); j++){
+						
+						tempPoints[j] = tempObject.getPoints().get(j);
+						
+					}
+					
+					if(inPolygon(mouseInGrid, tempPoints)){
+						
+						objectToHighlight = i;
+						
+					}
+					
 				}
 				
 			}
@@ -1058,6 +1207,28 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 		
 		
+	}
+	
+	public void resetHighlighting(){
+		
+		floorToHighlight = -1;
+		roofToHighlight = -1;
+		wallToHighlight = -1;
+		//floorToHighlight = -1;
+		
+	}
+	
+	public boolean inPolygon(Point2D.Float test, Point2D.Float[] points) {
+		int i;
+		int j;
+		boolean result = false;
+		for (i = 0, j = points.length - 1; i < points.length; j = i++) {
+			if ((points[i].y > test.y) != (points[j].y > test.y) &&
+				(test.x < (points[j].x - points[i].x) * (test.y - points[i].y) / (points[j].y-points[i].y) + points[i].x)) {
+				result = !result;
+			}
+		}
+		return result;
 	}
 	
 	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
@@ -1084,6 +1255,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gridDragY = me.getY();
 		
 		c.setCursor(0);
+		
+		resetHighlighting();
 		
 	}
 	

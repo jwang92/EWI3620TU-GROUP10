@@ -63,11 +63,48 @@ public class LevelEditor implements ActionListener{
 //		
 //		xMapInt = Integer.parseInt(xMap);
 //		yMapInt = Integer.parseInt(yMap);
+	
+		GridBagLayout gridBag = new GridBagLayout();
+		GridBagConstraints cons = new GridBagConstraints();
+        
+        cons.fill = GridBagConstraints.BOTH;
+        
+	    content.setLayout(gridBag);
+	    
+	    
+        
+		controlArea = new JPanel(gridBag);	
 		
-		controlArea = new JPanel(new GridLayout(5, 1));		
+		
+		
+		opties1 = new JPanel(new GridLayout(1, 2));
+		opties1.setBorder(BorderFactory.createTitledBorder("Modus:"));
+	    ButtonGroup bg1 = new ButtonGroup();
+		JRadioButton  option1a = new JRadioButton("Tekenen");
+	    bg1.add(option1a);
+	    option1a.setSelected(true);
+	    opties1.add(option1a);
+	    JRadioButton option2a = new JRadioButton("Gummen");
+	    bg1.add(option2a);
+	    opties1.add(option2a);
+	    
+	    cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 1;
+        gridBag.setConstraints(opties1, cons);
+	    controlArea.add(opties1);
+		
+	    option1a.setActionCommand("Tekenen");
+	    option1a.addActionListener(this);
+	    
+	    option2a.setActionCommand("Gummen");
+	    option2a.addActionListener(this);
+	    
 		
 		opties1 = new JPanel(new GridLayout(3, 2));
-		opties1.setBorder(BorderFactory.createTitledBorder("Tekenmodus:"));
+		opties1.setBorder(BorderFactory.createTitledBorder("Wat:"));
 	    ButtonGroup bg = new ButtonGroup();
 		JRadioButton  option1 = new JRadioButton("Muur");
 	    bg.add(option1);
@@ -79,12 +116,16 @@ public class LevelEditor implements ActionListener{
 	    JRadioButton option3 = new JRadioButton("Vloer");
 	    bg.add(option3);
 	    opties1.add(option3);
-	    JRadioButton option4 = new JRadioButton("Gummen");
-	    bg.add(option4);
-	    opties1.add(option4);
 	    JRadioButton option5 = new JRadioButton("Object");
 	    bg.add(option5);
 	    opties1.add(option5);
+	    
+	    cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 2;
+        gridBag.setConstraints(opties1, cons);
 	    controlArea.add(opties1);
 	    
 	    option1.setActionCommand("Muur");
@@ -95,9 +136,6 @@ public class LevelEditor implements ActionListener{
 	    
 	    option3.setActionCommand("Vloer");
 	    option3.addActionListener(this);
-	    
-	    option4.setActionCommand("Gummen");
-	    option4.addActionListener(this);
 	    
 	    option5.setActionCommand("Object");
 	    option5.addActionListener(this);
@@ -135,6 +173,13 @@ public class LevelEditor implements ActionListener{
 		c.setActionCommand("textures");
 		opties2.add(c);
 		
+		cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 3;
+        gridBag.setConstraints(opties2, cons);
+		
 		controlArea.add(opties2);
 		
 		opties3 = new JPanel(new GridLayout(4,1));
@@ -151,6 +196,13 @@ public class LevelEditor implements ActionListener{
 	    b.setActionCommand("newMap");
 	    b.addActionListener(this);
 	    opties3.add(b);
+	    
+	    cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.3;
+        cons.gridx = 1;
+        cons.gridy = 4;
+        gridBag.setConstraints(opties3, cons);
 	    controlArea.add(opties3);
 	    
 	    opties4 = new JPanel(new GridLayout(4, 1));
@@ -161,10 +213,17 @@ public class LevelEditor implements ActionListener{
 	    opties4.add(b);
 	    createVerdiepingList(savefolder);
 	    opties4.add(cOptie4);
+	    
+	    cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 1;
+        cons.gridx = 1;
+        cons.gridy = 5;
+        gridBag.setConstraints(opties4, cons);
 	    controlArea.add(opties4);
 		
-	    GridBagLayout gridBag = new GridBagLayout();
-        GridBagConstraints cons = new GridBagConstraints();
+	    gridBag = new GridBagLayout();
+        cons = new GridBagConstraints();
         
         cons.fill = GridBagConstraints.BOTH;
         
@@ -209,7 +268,8 @@ public class LevelEditor implements ActionListener{
 	    content.add(drawingArea);
 	    f.pack();
 	    f.setVisible(true);
-	    
+	    f.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
+
 	    f.addWindowListener(new WindowAdapter() {
 	    	@Override
 	    	  public void windowClosing(WindowEvent e) {
@@ -238,8 +298,11 @@ public class LevelEditor implements ActionListener{
 		else if(cmd.equals("Vloer")){
 			le.setDrawMode(3);
 		}
+		else if(cmd.equals("Tekenen")){
+			le.setMode(1);
+		}
 		else if(cmd.equals("Gummen")){
-			le.setDrawMode(4);
+			le.setMode(2);
 		}
 		else if(cmd.equals("Object")){
 			le.setDrawMode(5);
