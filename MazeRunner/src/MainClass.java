@@ -14,6 +14,7 @@ import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
+import javax.swing.JFrame;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
@@ -57,6 +58,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		// Let's change the window to our liking.
 		setSize( screenWidth, screenHeight);
+		setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
 		
 		//Textures
