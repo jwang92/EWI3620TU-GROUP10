@@ -38,7 +38,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private static final long serialVersionUID = 1L;
 	
 	//frame setup
-	public int ScreenWidth, ScreenHeight;
+	public int ScreenWidth, ScreenHeight, drawScreenWidth, drawScreenHeight;
 //	public int screenX, screenY;
 	//buttons setup
 	private int buttonSizeX, buttonSizeY, drawbuttonSizeX, drawbuttonSizeY;
@@ -96,6 +96,9 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	}
 	
 	public void setDrawButtons(){
+		drawScreenHeight = ScreenHeight;
+		drawScreenWidth = ScreenWidth;
+		
 		drawPosX = bPosX;
 		draw1PosY = b1PosY;
 		draw2PosY = b2PosY;
@@ -202,9 +205,9 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, 600);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(600, 600);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(600, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, drawScreenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(drawScreenWidth, drawScreenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(drawScreenWidth, 0);
 		gl.glEnd();
 		
 		textures.get(textureID).disable();

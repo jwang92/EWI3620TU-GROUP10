@@ -385,6 +385,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 	
 	public static void initObjects(){
+		mainMenu.setDrawButtons();
+		
 		maze = new Maze();
 		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							 maze.SQUARE_SIZE / 2,							// y-position
