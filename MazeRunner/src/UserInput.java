@@ -80,7 +80,7 @@ public class UserInput extends Control
 	public void mousePressed(MouseEvent event)
 	{
 		// TODO: Detect the location where the mouse has been pressed
-		if(event.getButton()==1){
+		if(event.getButton()==1 && MainClass.state.getState() == 1){
 			
 			attack = true;
 			
@@ -138,7 +138,7 @@ public class UserInput extends Control
         			left = true;
         			//right = false;
         		}
-        		if(keyCode=='p' && MainClass.state.getState() == 1){
+        		if(keyCode== KeyEvent.VK_ESCAPE && MainClass.state.getState() == 1){
         			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
         			MainClass.state.setStopMainGame(true);
         			MainClass.state.setStopPause(false);
