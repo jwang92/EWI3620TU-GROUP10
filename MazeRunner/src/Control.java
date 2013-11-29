@@ -22,6 +22,7 @@ public abstract class Control
 	protected boolean back = false;
 	protected boolean left = false;
 	protected boolean right = false;
+	protected boolean attack  = false;
 	
 	protected int dX = 0;
 	protected int dY = 0;
@@ -58,6 +59,16 @@ public abstract class Control
 		return right;
 	}
 	
+	public boolean getAttack()
+	{
+		return attack;
+	}
+	
+	public void setAttack(boolean a)
+	{
+		this.attack=a;
+	}
+	
 	/**
 	 * Gets the amount of rotation desired on the horizontal plane.
 	 * @return The horizontal rotation.
@@ -75,6 +86,7 @@ public abstract class Control
 	{
 		return dY;
 	}
+
 	
 	/**
 	 * Updates the fields of the Control class to represent the

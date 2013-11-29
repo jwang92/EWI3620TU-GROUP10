@@ -27,7 +27,7 @@ public class Player extends GameObject {
 	//Sounds
 	public Sounds sound = new Sounds();
 
-	private Control control = null;
+	Control control = null;
 	
 	/**
 	 * The Player constructor.

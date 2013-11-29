@@ -30,7 +30,6 @@ public class UserInput extends Control
 	int dy=0;
 	int sx=0;
 	int sy=0;
-	
 	protected boolean lookback = false;
 	
     private final Set<Character> pressed = new HashSet<Character>(); // Currently pressed keys
@@ -76,8 +75,14 @@ public class UserInput extends Control
 	public void mousePressed(MouseEvent event)
 	{
 		// TODO: Detect the location where the mouse has been pressed
-		x=event.getX();
-		y=event.getY();
+		if(event.getButton()==1){
+			x=event.getX();
+			y=event.getY();
+		}
+		else{
+			attack = true;
+		}
+		
 		
 	}
 

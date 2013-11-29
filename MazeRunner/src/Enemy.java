@@ -12,8 +12,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	private double speed = 0.0015;
 	private Model m ;
 	private int displayList;
-	private double sx, sy,sz;
+	private double sx, sy,sz, px, py,pz;
 	private boolean alert;
+	public boolean dood =false;
 	
 	//Shaders
 	private int shaderProgram = 0;
@@ -60,37 +61,42 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
-		if(alerted(player)){
-			alert = alerted(player);
-		}
-		if(alert){
-			double dX = player.locationX - locationX;
-			if(dX > 0)
-				dX = speed * deltaTime;
-			if(dX < 0)
-				dX = -1 * speed * deltaTime;
-			
-			newX = locationX + dX;
-					
-			double dZ = player.locationZ - locationZ;
-			if(dZ > 0)
-				dZ = speed * deltaTime;
-			if(dZ < 0)
-				dZ = -1 * speed * deltaTime;
-			
-			newZ = locationZ + dZ;
-			
-			if(!checkWall(newX, newZ, deltaTime)){
-				locationX = newX;
-				locationZ = newZ;
-			}else if(!checkWall(newX, locationZ, deltaTime)){
-				locationX = newX;
-			}else if(!checkWall(locationX, newZ, deltaTime)){
-				locationZ = newZ;
+		px=player.locationX;
+		py=player.locationY;
+		pz=player.locationZ;
+		if(!dood){
+			if(alerted(player)){
+				alert = alerted(player);
 			}
+			if(alert){
+				double dX = player.locationX - locationX;
+				if(dX > 0)
+					dX = speed * deltaTime;
+				if(dX < 0)
+					dX = -1 * speed * deltaTime;
+				
+				newX = locationX + dX;
+						
+				double dZ = player.locationZ - locationZ;
+				if(dZ > 0)
+					dZ = speed * deltaTime;
+				if(dZ < 0)
+					dZ = -1 * speed * deltaTime;
+				
+				newZ = locationZ + dZ;
+				
+				if(!checkWall(newX, newZ, deltaTime)){
+					locationX = newX;
+					locationZ = newZ;
+				}else if(!checkWall(newX, locationZ, deltaTime)){
+					locationX = newX;
+				}else if(!checkWall(locationX, newZ, deltaTime)){
+					locationZ = newZ;
+				}
+			}
+			
+			this.caught(player);
 		}
-		
-		this.caught(player);
 	}
 
 	public void display(GL gl) {
@@ -99,6 +105,18 @@ public class Enemy extends GameObject implements VisibleObject {
 		
 		gl.glPushMatrix();
 		gl.glTranslated(locationX, locationY, locationZ);
+		
+		if(alert && !dood){
+		//berekening hoek
+			double inP = pz-locationZ;
+			double lengteV = 1;
+			double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
+			double test = inP/Math.max(lengteV*lengteW, 00001);
+			double angle = Math.acos(test)*180/Math.PI;
+			
+			gl.glRotated(angle,0, 1, 0);
+		}
+		
 		if(displayList <= 0){
 			//gl.glCallList(1);	
 		}
@@ -132,5 +150,10 @@ public class Enemy extends GameObject implements VisibleObject {
 		 boolean res = Math.sqrt(Math.pow(sx-player.locationX,2 )+Math.pow(sz-player.locationZ,2)) <15 ;
 		 return res;
 	}
-
+	
+	public void damage(double x, double y, double z, double h){
+		if(x-2>locationX && locationX >x-3){
+			dood =true;
+		}
+	}
 }

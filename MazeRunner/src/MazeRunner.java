@@ -124,6 +124,8 @@ public class MazeRunner implements GLEventListener{
 		MainClass.player.getMaze(MainClass.maze);
 		
 		MainClass.enemy.getMaze(MainClass.maze);
+		MainClass.sword.setMaze(MainClass.maze);
+		MainClass.sword.setPlayer(MainClass.player);
 		
 	}
 
@@ -186,6 +188,8 @@ public class MazeRunner implements GLEventListener{
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
         MainClass.enemy.genDisplayList(gl);
+        MainClass.sword.genDisplayList(gl);
+        
         MainClass.enemy.setShaderProgram(shaderProgram);
 	}
 	
@@ -228,6 +232,7 @@ public class MazeRunner implements GLEventListener{
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
             MainClass.enemy.display(gl);
+            MainClass.sword.display(gl);
             
        	
         }
@@ -284,6 +289,7 @@ public class MazeRunner implements GLEventListener{
 	{
 		MainClass.player.update(deltaTime);
 		MainClass.enemy.update(deltaTime, MainClass.player);
+		MainClass.sword.update(deltaTime, MainClass.player);
 		
 	}
 
