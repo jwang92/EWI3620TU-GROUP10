@@ -4,20 +4,35 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 
+import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLJPanel;
 
 
 public class CursorHandler {
 	
 	private GLJPanel canvas;
+	private GLCanvas canvasGL;
 	private int cursorID;
 	private ArrayList<Cursor> cursors;
+	private int whichCanvas;
 	
 	public CursorHandler(GLJPanel c){
 		
 		canvas = c;
 		cursors = new ArrayList<Cursor>();
 		cursorID = -1;
+		whichCanvas = 1;
+		
+		loadCursors();
+		
+	}
+	
+	public CursorHandler(GLCanvas c){
+		
+		canvasGL = c;
+		cursors = new ArrayList<Cursor>();
+		cursorID = -1;
+		whichCanvas = 2;
 		
 		loadCursors();
 		
@@ -40,6 +55,11 @@ public class CursorHandler {
 		c =  toolkit.createCustomCursor(image, hotSpot, "Rotate");
 		cursors.add(c);
 		
+		image = toolkit.getImage("cursors/transparant.png");
+		hotSpot = new Point(0,0);
+		c =  toolkit.createCustomCursor(image, hotSpot, "Rotate");
+		cursors.add(c);
+		
 	}
 	
 	public int getCursorID(){
@@ -51,26 +71,49 @@ public class CursorHandler {
 	public void setCursor(int id){
 		
 		cursorID = id;
-		
-		if(id < 0){
-			
-			switch(id){
-				case -1:
-					canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-					break;
-				case -2:
-					canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-					break;
-				case -3:
-					canvas.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-					break;
+		if(whichCanvas == 1){
+			if(id < 0){
+				
+				switch(id){
+					case -1:
+						canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+						break;
+					case -2:
+						canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+						break;
+					case -3:
+						canvas.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+						break;
+				}
+			}
+			else{
+				
+				canvas.setCursor(cursors.get(id));
+				
 			}
 		}
-		else{
+		else if(whichCanvas == 2){
+			if(id < 0){
+				
+				switch(id){
+					case -1:
+						canvasGL.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+						break;
+					case -2:
+						canvasGL.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+						break;
+					case -3:
+						canvasGL.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+						break;
+				}
+			}
+			else{
+				
+				canvasGL.setCursor(cursors.get(id));
+				
+			}
 			
-			canvas.setCursor(cursors.get(id));
-			
-		}
+		}	
 		
 	}
 	
