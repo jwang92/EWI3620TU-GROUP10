@@ -7,8 +7,11 @@ public class GameStateManager {
 					sPause=false,
 					sGameOver=false;
 	
+	private CursorHandler c = new CursorHandler(MainClass.canvas);
+	
 	void GameStateUpdate(GameState m_curSTATE) {
 	     // handle update
+		
 	    switch(m_curSTATE) {
 	       case TITLE_STATE:
 	          //
@@ -18,6 +21,7 @@ public class GameStateManager {
 	       case MAINGAME_STATE:
 	          //
 	    	   //MainMenu.setTeller(1);
+	    	   c.setCursor(2);
 	    	   gamestate = 1;
 	          break;
 	       case PAUSE_STATE:

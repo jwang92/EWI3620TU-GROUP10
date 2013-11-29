@@ -1,3 +1,5 @@
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,9 @@ public class UserInput extends Control
 	int dy=0;
 	int sx=0;
 	int sy=0;
+	
+	private CursorHandler c = new CursorHandler(MainClass.canvas);
+	
 	protected boolean lookback = false;
 	
     private final Set<Character> pressed = new HashSet<Character>(); // Currently pressed keys
@@ -76,13 +81,11 @@ public class UserInput extends Control
 	{
 		// TODO: Detect the location where the mouse has been pressed
 		if(event.getButton()==1){
-			x=event.getX();
-			y=event.getY();
-		}
-		else{
+			
 			attack = true;
+			
 		}
-		
+
 		
 	}
 
@@ -90,10 +93,7 @@ public class UserInput extends Control
 	public void mouseDragged(MouseEvent event)
 	{		
 		// TODO: Detect mouse movement while the mouse button is down
-		dx=event.getX() -x;
-		dy=event.getY() -y;
-		x=event.getX();
-		y=event.getY();
+		
 	}
 
 	@Override
@@ -194,6 +194,38 @@ public class UserInput extends Control
 	@Override
 	public void mouseMoved(MouseEvent event)
 	{
+
+		if(MainClass.state.getState() == 1){
+			
+			c.setCursor(2);
+			
+			int midX = Math.round(MainClass.screenWidth / 2);
+			int midY = Math.round(MainClass.screenHeight / 2);
+					
+			dx = event.getX() - midX;
+			dy = event.getY() - midY + 22;
+			
+			x = midX;
+			y = midY;
+			
+			Robot r = null;
+			try {
+				r = new Robot();
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+			r.mouseMove(midX, midY);
+		
+		}else{
+			
+				
+			dx=event.getX() -x;
+			dy=event.getY() -y;
+			x=event.getX();
+			y=event.getY();
+			
+		}
+		
 	}
 
 	@Override
