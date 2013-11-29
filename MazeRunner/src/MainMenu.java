@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -10,6 +11,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
@@ -24,6 +26,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainMenu implements GLEventListener, MouseListener , MouseMotionListener {
 	/*
@@ -42,12 +45,21 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private int bPosX, drawPosX;
 	private int b1PosY, b2PosY, b3PosY, draw1PosY, draw2PosY, draw3PosY;
 	private int mouseOnBox = 0;
-	private Texture tempTexture;
 	private boolean startup = true;
+	
+	private ArrayList<Texture> textures;
+	private ArrayList<String> textureNames;
 
+	private Texture tempTexture;
+	private String textureFileName = "";
+	private String textureFileType = "png";
+
+	
 	
 	public MainMenu(int screenHeight, int screenWidth){
 		initWindowSize(screenHeight, screenWidth);
+		textures = new ArrayList<Texture>();
+		textureNames = new ArrayList<String>();
 		
 		setButtonSize();
 				
@@ -69,16 +81,16 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	public void initWindowSize(int screenHeight, int screenWidth){
 		ScreenWidth = screenWidth;
 		ScreenHeight = screenHeight;
-		buttonSizeX = (int) (ScreenWidth/3);
-		buttonSizeY = (int) (ScreenHeight/6);
+		buttonSizeX = (int) (ScreenWidth/7);
+		buttonSizeY = (int) (ScreenHeight/13);
 //		System.out.println("Screen: " + ScreenWidth + " " + ScreenHeight + " " + buttonSizeX + " " + buttonSizeY);
 	}
 	
 	public void setButtonSize(){
-		bPosX = (int) (ScreenWidth/2.0f - buttonSizeX/2.0f);
-		b1PosY = (int) (ScreenHeight/2.0f + 0.5f*buttonSizeY);
-		b2PosY = (int) (ScreenHeight/2.0f - 0.5f*buttonSizeY);
-		b3PosY = (int) (ScreenHeight/2.0f - 1.5f*buttonSizeY);
+		bPosX = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
+		b1PosY = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
+		b2PosY = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
+		b3PosY = (int) (ScreenHeight/1.2f - 2.7f*buttonSizeY);
 		
 //		System.out.println("BottomLeft buttons (x,y1,y2,y3): " + bPosX + " , " + b1PosY + " , " + b2PosY + " , " + b3PosY);
 	}
@@ -107,43 +119,86 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 
 	}
 	
-	public void loadTexture(GL gl){
-		
-		//Get the name of the texture
-    	String textureFileName = "background.png";
-    	
-    	//Load the texture
-    	File filetexture = new File(textureFileName);
-    	
-		TextureData data = null;
+	public void loadTextures(GL gl){
 		try {
-			data = TextureIO.newTextureData(filetexture, false, "png");
-		} catch (IOException e) {
+		    File folder = new File("menu_files/");
+		    File[] tList = folder.listFiles();
+		    int numberOfTextures = tList.length;
+			for(int j = 0; j<tList.length;j++){
+			    if(tList[j].getName().equals("Thumbs.db")){
+			    	numberOfTextures -= 1;
+			    }  
+			    
+			}
+			textureNames = new ArrayList<String>(numberOfTextures);
+		    
+		    int i = 0;
+		    for (File file : tList)
+		    {
+		    	
+	            if(!file.getName().equals("Thumbs.db"))
+	            {
+	            	//Get the name of the texture
+	            	textureFileName = "menu_files/" + file.getName();
+	            	
+	            	//Load the texture
+	            	File filetexture = new File(textureFileName);
+	    			TextureData data;
+	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
+	    			tempTexture = TextureIO.newTexture(data);
+	    			
+	    			//Set the the texture parameters
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    			
+	    			//Add the texture to the arraylist
+	    			textures.add(tempTexture);
+	            	textureNames.add(textureFileName);
+	            	
+	            	i++;
+	            	textureFileName = textureNames.get(0);
+	            }	
+	        }
+			
+			//GenerateMipmap
+			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+			
+			// Use linear filter for texture if image is larger than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			// Use linear filter for texture if image is smaller than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			//Select the texture coordinates
+
+		} catch (GLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		tempTexture = TextureIO.newTexture(data);
-		
-		//Set the the texture parameters
-		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-		tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-		tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-		
+		} 	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	private void drawBackground(GL gl) {
 		
 		if(startup){
 			
-			loadTexture(gl);
+			loadTextures(gl);
+			
 			startup = false;
 			
 		}
 
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		tempTexture.getTarget();
-		tempTexture.bind();
+
+		int textureID = textureNames.lastIndexOf("menu_files/background2.png");
+		
+		textures.get(textureID).getTarget();
+		textures.get(textureID).bind();
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
@@ -152,37 +207,65 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			gl.glTexCoord2f(1, 1); gl.glVertex2f(600, 0);
 		gl.glEnd();
 		
-		tempTexture.disable();
+		textures.get(textureID).disable();
+		
 		
 	}
 	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		
-		boxOnScreen(gl, drawPosX, draw1PosY, "Start", 1);
+		boxOnScreen(gl, drawPosX, draw1PosY, 1);
 		
-		boxOnScreen(gl, drawPosX, draw2PosY, "Editor", 2);
+		boxOnScreen(gl, drawPosX, draw2PosY, 2);
 		
-		boxOnScreen(gl, drawPosX, draw3PosY, "Stop", 3);
+		boxOnScreen(gl, drawPosX, draw3PosY,  3);
 		
 	}
 	
-	private void boxOnScreen(GL gl, float x, float y, String text, int boxnum) {
-		if(mouseOnBox == boxnum){
-			gl.glColor3f(0, 1.0f, 0);
-			gl.glLineWidth(5);
-			gl.glBegin(GL.GL_LINE_LOOP);
-			gl.glVertex2f(x, y);
-			gl.glVertex2f(x + drawbuttonSizeX, y);
-			gl.glVertex2f(x + drawbuttonSizeX, y + drawbuttonSizeY);
-			gl.glVertex2f(x, y + drawbuttonSizeY);
-			gl.glEnd();
-		}
+	private void boxOnScreen(GL gl, float x, float y, int boxnum) {
 		
-		GLUT glut = new GLUT();
-		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2d(x + drawbuttonSizeX/6.0, y + drawbuttonSizeY/3.0);
-		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
+		String texNaam = null;
+		switch(boxnum){
+		case 1:
+			texNaam = "start";
+			break;
+		case 2:
+			texNaam = "editor";
+			break;
+		case 3:
+			texNaam = "exit";
+			break;
+			
+		
+		}
+
+		int textureID;
+		if(mouseOnBox == boxnum){
+			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+"_over.png");
+		}
+		else{
+			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+".png");
+		}
+
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		
+		textures.get(textureID).getTarget();
+		textures.get(textureID).bind();
+		
+		gl.glBegin(GL.GL_POLYGON);
+			gl.glTexCoord2f(0, 1); gl.glVertex2f(x, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(x + drawbuttonSizeX, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(x + drawbuttonSizeX,  y + drawbuttonSizeY);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(x,  y + drawbuttonSizeY);
+		gl.glEnd();
+		
+		textures.get(textureID).disable();
+		gl.glDisable(GL.GL_BLEND);
 
 	}
 	
@@ -337,6 +420,13 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			else
 				mouseOnBox = 0;
 		
+			if(mouseOnBox == 0){
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			else{
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			
 //			System.out.println(mouseOnBox);
 		}
 
