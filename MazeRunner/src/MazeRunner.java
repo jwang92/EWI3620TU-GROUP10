@@ -290,7 +290,7 @@ public class MazeRunner implements GLEventListener{
 		MainClass.player.update(deltaTime);
 		MainClass.enemy.update(deltaTime, MainClass.player);
 		MainClass.sword.update(deltaTime, MainClass.player);
-		
+		MainClass.mazePheromones.evapPheromones();
 	}
 
 	/**

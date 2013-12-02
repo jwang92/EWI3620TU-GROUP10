@@ -261,6 +261,9 @@ public class Player extends GameObject {
 			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.walking == true){
 				sound.stopWalk();
 			}
+			
+			//The player leaves a trail of pheromones which the enemies will follow
+			MainClass.mazePheromones.addPher(locationX, locationY, locationZ);
 		}
 	}
 	

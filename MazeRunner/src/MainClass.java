@@ -36,6 +36,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static GameStateManager state;
 	public static MainMenu mainMenu;
 	public static Maze maze;
+	public static MazePheromones mazePheromones;
 	public static Player player;
 	public static Enemy enemy;
 	public static Camera camera;
@@ -390,6 +391,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mainMenu.setDrawButtons();
 		
 		maze = new Maze();
+		mazePheromones = new MazePheromones();
 		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							 maze.SQUARE_SIZE / 2,							// y-position
 							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position

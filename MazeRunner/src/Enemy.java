@@ -14,7 +14,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private int displayList;
 	private double sx, sy,sz, px, py,pz;
 	private boolean alert;
-	public boolean dood =false;
+	public boolean dood = false;
 	
 	//Shaders
 	private int shaderProgram = 0;
@@ -69,20 +69,18 @@ public class Enemy extends GameObject implements VisibleObject {
 				alert = alerted(player);
 			}
 			if(alert){
-				double dX = player.locationX - locationX;
-				if(dX > 0)
-					dX = speed * deltaTime;
-				if(dX < 0)
-					dX = -1 * speed * deltaTime;
+				Pheromone highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
-				newX = locationX + dX;
-						
-				double dZ = player.locationZ - locationZ;
-				if(dZ > 0)
-					dZ = speed * deltaTime;
-				if(dZ < 0)
-					dZ = -1 * speed * deltaTime;
+//				System.out.println("enemy: " + highestPher.x + " , " + highestPher.z);
 				
+				double dX = highestPher.x - locationX;				
+				double dZ = highestPher.z - locationZ;				
+				double distance = Math.sqrt(dZ*dZ + dX*dX);
+				
+				dX = dX/distance * speed * deltaTime;
+				dZ = dZ/distance * speed * deltaTime;
+				
+				newX = locationX + dX;		
 				newZ = locationZ + dZ;
 				
 				if(!checkWall(newX, newZ, deltaTime)){
