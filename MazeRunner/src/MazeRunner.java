@@ -187,8 +187,8 @@ public class MazeRunner implements GLEventListener{
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
-        MainClass.enemy.genDisplayList(gl);
-        MainClass.sword.genDisplayList(gl);
+        MainClass.enemy.genVBO(gl);
+        MainClass.sword.genVBO(gl);
         
         MainClass.enemy.setShaderProgram(shaderProgram);
 	}

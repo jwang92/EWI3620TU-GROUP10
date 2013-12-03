@@ -27,17 +27,24 @@
  * either expressed or implied, of the FreeBSD Project.
  */
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.media.opengl.GL;
 
+import com.sun.opengl.util.texture.Texture;
+
 /** @author Oskar */
 public class Model {
+	private final List<ModelPart> parts = new ArrayList<ModelPart>();
+	private int[] verticesOffsetArray;
+	private int[] normalOffsetArray;
+	private int[] numberOfFaces;
 
     private final List<Point3D> vertices = new ArrayList<Point3D>();
- //   private final List<Vector2f> textureCoordinates = new ArrayList<Vector2f>();
+    private final List<Point2D.Float> textureCoordinates = new ArrayList<Point2D.Float>();
     private final List<Point3D> normals = new ArrayList<Point3D>();
     private final List<Face> faces = new ArrayList<Face>();
     private final HashMap<String, Material> materials = new HashMap<String, Material>();
@@ -45,11 +52,11 @@ public class Model {
     private GL gl;
 
     public void enableStates() {
-    	/*
+    	
         if (hasTextureCoordinates()) {
             gl.glEnable(GL.GL_TEXTURE_2D);
         }
-        */
+        
         if (isSmoothShadingEnabled()) {
             gl.glShadeModel(GL.GL_SMOOTH);
         } else {
@@ -57,10 +64,43 @@ public class Model {
         }
     }
     
-    /*
+    public void addModelPart(ModelPart p){
+    	parts.add(p);
+    }
+    
+    public List<ModelPart> getModelParts(){
+    	return parts;
+    }
+    
+    public int[] getVerticesOffsetArray(){
+    	return verticesOffsetArray;
+    }
+    
+    public void setVerticesOffsetArrayForPart(int offset,int part){
+    	verticesOffsetArray[part] = offset;
+    }
+    
+    public int[] getNormalsOffsetArray(){
+    	return normalOffsetArray;
+    }
+    
+    public void setNormalOffsetArrayForPart(int offset,int part){
+    	normalOffsetArray[part] = offset;
+    }
+    
+    public void setNumberOfFaces(int[] numberOfF){
+    	numberOfFaces = numberOfF;
+    }
+    
+    public void initiliazeArrays(){
+    	verticesOffsetArray = new int[parts.size()];
+    	normalOffsetArray = new int[parts.size()];
+    	numberOfFaces = new int[parts.size()];
+    }
+
     public boolean hasTextureCoordinates() {
         return getTextureCoordinates().size() > 0;
-    }*/
+    }
 
     public boolean hasNormals() {
         return getNormals().size() > 0;
@@ -70,10 +110,10 @@ public class Model {
         return vertices;
     }
 
-    /*
-    public List<Vector2f> getTextureCoordinates() {
+
+    public List<Point2D.Float> getTextureCoordinates() {
         return textureCoordinates;
-    }*/
+    }
 
     public List<Point3D> getNormals() {
         return normals;
@@ -112,7 +152,25 @@ public class Model {
         public float[] ambientColour = {0.2f, 0.2f, 0.2f};
         public float[] diffuseColour = {0.3f, 1, 1};
         public float[] specularColour = {1, 1, 1};
-//        public Texture texture;
+        public Texture texture = null;
+        public String texturePath = "";
+        
+        public boolean hasTexture(){
+        	if(texture != null){
+        		return true;
+        	}
+        	return false;
+        }
+        
+        public Texture getTexture(){
+        	return texture;
+        }
+        
+        public void loadTexture(GL gl){
+        	if(!texturePath.equals("")){
+        		texture = TextureLoader.loadTexture(texturePath);
+        	}
+        }
     }
 
     /** @author Oskar */

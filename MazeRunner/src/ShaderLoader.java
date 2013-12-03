@@ -88,7 +88,6 @@ public class ShaderLoader {
             	count1++;
                 //vertexShaderSource.append(line).append('\n');
             }
-            System.out.println();
             fIn.close();
         } catch (IOException e) {
             e.printStackTrace();

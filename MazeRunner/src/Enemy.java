@@ -1,9 +1,11 @@
 import java.io.File;
 import java.io.IOException;
+import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.texture.Texture;
 
 
 public class Enemy extends GameObject implements VisibleObject {
@@ -15,18 +17,27 @@ public class Enemy extends GameObject implements VisibleObject {
 	private double sx, sy,sz, px, py,pz;
 	private boolean alert;
 	public boolean dood = false;
+	private boolean texture;
+	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public Enemy(double x, double y, double z){
+	public Enemy(double x, double y, double z, boolean tex){
 		super(x, y, z);
 		sx=x;
 		sy=y;
 		sz=z;
 		alert = false;
+		texture = tex;
 		try {
-			m = OBJLoader.loadModel((new File("3d_object/lion.obj")));
+			if(texture){
+				m = OBJLoader.loadTexturedModel((new File("3d_object/lion.obj")));
+			}
+			else{
+				m = OBJLoader.loadModel((new File("3d_object/lion.obj")));
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,8 +67,12 @@ public class Enemy extends GameObject implements VisibleObject {
 		return res;
 	}
 	
-	public void genDisplayList(GL gl){
-        displayList = OBJLoader.createDisplayList(m, gl);
+//	public void genDisplayList(GL gl){
+//        displayList = OBJLoader.createDisplayList(m, gl);
+//	}
+	
+	public void genVBO(GL gl){
+		vboHandle = OBJLoader.createVBO(m, gl);
 	}
 		
 	public void update(int deltaTime, Player player){
@@ -98,35 +113,111 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 
 	public void display(GL gl) {
-		//GLUT glut = new GLUT();
-		gl.glColor3f(1, 0, 0);
-		
 		gl.glPushMatrix();
-		gl.glTranslated(locationX, locationY, locationZ);
 		
-		if(alert && !dood){
-		//berekening hoek
-			double inP = pz-locationZ;
-			double lengteV = 1;
-			double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
-			double test = inP/Math.max(lengteV*lengteW, 00001);
-			double angle = Math.acos(test)*180/Math.PI;
-			
-			gl.glRotated(angle,0, 1, 0);
-		}
-		
-		if(displayList <= 0){
-			//gl.glCallList(1);	
-		}
-		else if(shaderProgram <= 0){
-			gl.glCallList(displayList);
-		}
-		else{
+		//Enable the shaderprogram
+		if(shaderProgram >0){
 			gl.glUseProgram(shaderProgram);
-			gl.glCallList(displayList);
-			gl.glUseProgram(0);
 		}
-		//glut.glutSolidSphere(2.0d, 10, 10);
+		
+		//Draw nothing if the vboHandle are not loaded
+		if(vboHandle.get(0)<=0||vboHandle.get(1)<=0){
+			
+		}
+		
+		else{
+			//Translate the model to the right location
+			gl.glTranslated(locationX, locationY, locationZ);
+			
+			if(alert && !dood){
+				//berekening hoek
+					double inP = pz-locationZ;
+					double lengteV = 1;
+					double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
+					double test = inP/Math.max(lengteV*lengteW, 00001);
+					double angle = Math.acos(test)*180/Math.PI;
+					
+					gl.glRotated(angle,0, 1, 0);
+				}
+			
+			//Reset the color to white
+			gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
+			
+			//Initialize counters
+			int vertexSize = 0;
+			int vertexCount = 0;
+			
+			//Initialize the texture
+			Texture tempTexture = null;
+			for(int i=0;i<m.getModelParts().size();i++){
+				ModelPart p = m.getModelParts().get(i);
+				ModelPart.Face face = p.getFaces().get(0);
+				
+				//the modelPart has textureCoordinates so the material should be used
+				if(face.hasMaterial()){
+	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {1f,face.getMaterial()
+                            .diffuseColour[0], face.getMaterial().diffuseColour[1],
+                            face.getMaterial().diffuseColour[2]},1);
+	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, new float[] {1f,face.getMaterial()
+                            .ambientColour[0], face.getMaterial().ambientColour[1],
+                            face.getMaterial().ambientColour[2]}, 1);
+	                gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, face.getMaterial().specularCoefficient);
+				}
+				
+				//Use default material
+				else{
+	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {1.0f, 1.0f, 1.0f}, 1);
+					gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, new float[] {1.0f, 1.0f, 1.0f}, 1);
+	                gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120f);
+				}
+				
+				//Enable the texture if the modelPart has a texture
+				if(face.hasTexture()){
+					gl.glActiveTexture(GL.GL_TEXTURE0);
+					gl.glEnable(GL.GL_TEXTURE_2D);
+					tempTexture = face.getTexture();
+					tempTexture.bind();
+				}
+
+				//Bind the vbo buffers for the normal and vertex arrays
+                vertexSize = p.getFaces().size()*3;
+				gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120f);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(0));
+				gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0L);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(1));
+				gl.glNormalPointer(GL.GL_FLOAT, 0, 0L);
+				
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(2));
+				gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0L);
+
+				//Enable the Array draw Mode for vertex,normals and textures
+				gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				
+				//Draw the arrays
+				gl.glDrawArrays(GL.GL_TRIANGLES, vertexCount, vertexSize);
+				
+				//Enable the Array draw Mode for vertex,normals and textures
+				gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
+				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+				
+				//Keep track of the size of the modelParts. This 
+				vertexCount += vertexSize;
+				
+				//Disable the texture i
+				if(face.hasTexture()){
+					tempTexture.disable();
+					gl.glDisable(GL.GL_TEXTURE_2D);
+				}
+			}
+		}
+		
+		//Disable shaderprograms
+		gl.glUseProgram(0);	
+		
 		gl.glPopMatrix();
 	}
 	

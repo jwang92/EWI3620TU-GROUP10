@@ -36,7 +36,7 @@ Ks 0.746154 0.746154 0.746154
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd C:\Users\Johnny\AppData\Local\Minhas imagens\Meus Trabalhos\Eyeball_uv.jpg
+map_Kd brick.png
 
 newmtl Material.011
 Ns 1.960784
@@ -55,3 +55,4 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd brick.png

@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -322,69 +323,18 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 	
 	public void loadTextures(){
-		try {
-		    File folder = new File("textures/");
-		    File[] tList = folder.listFiles();
-		    numberOfTextures = tList.length;
-			for(int j = 0; j<tList.length;j++){
-			    if(tList[j].getName().equals("Thumbs.db")){
-			    	numberOfTextures -= 1;
-			    }  
-			}
-			textureNames = new ArrayList<String>(numberOfTextures);
-		    int i = 0;
-		    for (File file : tList)
-		    {
-	            if(!file.getName().equals("Thumbs.db"))
-	            {
-	            	//Get the name of the texture
-	            	textureFileName = "textures/" + file.getName();
-	            	
-	            	//Load the texture
-	            	File filetexture = new File(textureFileName);
-	    			TextureData data;
-	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
-	    			tempTexture = TextureIO.newTexture(data);
-	    			
-	    			//Set the the texture parameters
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-	    			
-	    			//Add the texture to the arraylist
-	    			textures.add(tempTexture);
-	            	textureNames.add(textureFileName);
-	            	System.out.println(textureNames.toString());
-	            	//Load the texture coordinates
-	    			TextureCoords textureCoords = tempTexture.getImageTexCoords();
-	    			textureTop = textureCoords.top();
-	    			textureBottom = textureCoords.bottom();
-	    			textureLeft = textureCoords.left();
-	    			textureRight = textureCoords.right();
-	            	i++;
-	            	textureFileName = textureNames.get(0);
-	            }	
-	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
-		} catch (GLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		ArrayList<HashMap> tempTextureHashMapArray = TextureLoader.loadTextureArray("textures/");
+		numberOfTextures = tempTextureHashMapArray.size();
+		textureNames = new ArrayList<String>(numberOfTextures);
+		textures = new ArrayList<Texture>(numberOfTextures);
+		for(int i = 0; i<numberOfTextures;i++){
+			HashMap<String, Texture> tempTextureHashMap = tempTextureHashMapArray .get(i);
+			String tempTextureName = tempTextureHashMap.entrySet().iterator().next().getKey();
+			Texture tempTexture = tempTextureHashMap.entrySet().iterator().next().getValue();
+			textureNames.add(tempTextureName);
+			textures.add(tempTexture);		
+		}
+		textureFileName = textureNames.get(0);			
 	}
 	
 	public static void initObjects(){
@@ -398,12 +348,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2);
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true);
 
 
 		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 				0.01 * maze.SQUARE_SIZE,							// y-position
-				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 );	// z-position
+				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, true);	// z-position, texture boolean
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
 				             player.getHorAngle(), player.getVerAngle() );

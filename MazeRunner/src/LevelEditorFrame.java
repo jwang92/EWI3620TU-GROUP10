@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -242,71 +243,18 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	public void loadTextures(){
-		try {
-		    File folder = new File("textures/");
-		    File[] tList = folder.listFiles();
-		    int numberOfTextures = tList.length;
-			for(int j = 0; j<tList.length;j++){
-			    if(tList[j].getName().equals("Thumbs.db")){
-			    	numberOfTextures -= 1;
-			    }  
-			}
-			textureNames = new ArrayList<String>(numberOfTextures);
-		    
-		    int i = 0;
-		    for (File file : tList)
-		    {
-		    	
-	            if(!file.getName().equals("Thumbs.db"))
-	            {
-	            	//Get the name of the texture
-	            	textureFileName = "textures/" + file.getName();
-	            	
-	            	//Load the texture
-	            	File filetexture = new File(textureFileName);
-	    			TextureData data;
-	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
-	    			tempTexture = TextureIO.newTexture(data);
-	    			
-	    			//Set the the texture parameters
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-	    			
-	    			//Add the texture to the arraylist
-	    			textures.add(tempTexture);
-	            	textureNames.add(textureFileName);
-	            	
-	            	//Load the texture coordinates
-	    			TextureCoords textureCoords = tempTexture.getImageTexCoords();
-	    			textureTop = textureCoords.top();
-	    			textureBottom = textureCoords.bottom();
-	    			textureLeft = textureCoords.left();
-	    			textureRight = textureCoords.right();
-	            	i++;
-	            	textureFileName = textureNames.get(0);
-	            }	
-	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
-		} catch (GLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		ArrayList<HashMap> tempTextureHashMapArray = TextureLoader.loadTextureArray("textures/");
+		int numberOfTextures = tempTextureHashMapArray.size();
+		textureNames = new ArrayList<String>(numberOfTextures);
+		textures = new ArrayList<Texture>(numberOfTextures);
+		for(int i = 0; i<numberOfTextures;i++){
+			HashMap<String, Texture> tempTextureHashMap = tempTextureHashMapArray .get(i);
+			String tempTextureName = tempTextureHashMap.entrySet().iterator().next().getKey();
+			Texture tempTexture = tempTextureHashMap.entrySet().iterator().next().getValue();
+			textureNames.add(tempTextureName);
+			textures.add(tempTexture);		
+		}
+		textureFileName = textureNames.get(0);	
 	}
 	
 	@Override

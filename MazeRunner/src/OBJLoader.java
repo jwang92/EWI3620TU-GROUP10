@@ -30,6 +30,7 @@
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
@@ -42,7 +43,6 @@ public class OBJLoader {
 
     public static int createDisplayList(Model m,GL gl) {
         int displayList = gl.glGenLists(1);
-        System.out.println(displayList);
         gl.glNewList(displayList, GL.GL_COMPILE_AND_EXECUTE);
         {
             gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120);
@@ -74,42 +74,68 @@ public class OBJLoader {
         return displayList;
     }
 
-    /*
+    
     private static FloatBuffer reserveData(int size) {
-        return BufferUtils.createFloatBuffer(size);
-    }*/
+        return BufferTools.reserveData(size);
+    }
 
     private static float[] asFloats(Point3D v) {
         return new float[]{v.x, v.y, v.z};
     }
     
-    /*
+    private static float[] asFloats(Point2D.Float v) {
+        return new float[]{v.x, v.y};
+    }
+    
 
-    public static int[] createVBO(Model model, GL gl) {
-        int vboVertexHandle = gl.glGenBuffers();
-        int vboNormalHandle = gl.glGenBuffers();
-        // TODO: Implement materials with VBOs
-        FloatBuffer vertices = reserveData(model.getFaces().size() * 9);
-        FloatBuffer normals = reserveData(model.getFaces().size() * 9);
-        for (Model.Face face : model.getFaces()) {
-            vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[0] - 1)));
-            vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[1] - 1)));
-            vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[2] - 1)));
-            normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[0] - 1)));
-            normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[1] - 1)));
-            normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[2] - 1)));
+    public static IntBuffer createVBO(Model model, GL gl) {
+    	model = loadTextures(model,gl);
+        IntBuffer vboHandle = IntBuffer.allocate(3);
+        gl.glGenBuffers(3, vboHandle);
+        FloatBuffer vertices = reserveData(model.getFaces().size() * 36);
+        FloatBuffer normals = reserveData(model.getFaces().size() * 36);
+        FloatBuffer textureCoordinates = reserveData(model.getFaces().size() * 24);
+        for(int i =0;i<model.getModelParts().size();i++){
+        	ModelPart modelPart = model.getModelParts().get(i);
+        	model.setVerticesOffsetArrayForPart(vertices.position(), i);
+        	model.setNormalOffsetArrayForPart(normals.position(), i);
+            for (ModelPart.Face face : modelPart.getFaces()) {
+                vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[0] - 1)));
+                vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[1] - 1)));
+                vertices.put(asFloats(model.getVertices().get(face.getVertexIndices()[2] - 1)));
+                normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[0] - 1)));
+                normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[1] - 1)));
+                normals.put(asFloats(model.getNormals().get(face.getNormalIndices()[2] - 1)));
+                if(face.hasTextureCoordinates()){
+                    textureCoordinates.put(asFloats(model.getTextureCoordinates().get(face.getTextureCoordinateIndices()[0] - 1)));
+                    textureCoordinates.put(asFloats(model.getTextureCoordinates().get(face.getTextureCoordinateIndices()[1] - 1)));
+                    textureCoordinates.put(asFloats(model.getTextureCoordinates().get(face.getTextureCoordinateIndices()[2] - 1)));
+                }
+            }
         }
         vertices.flip();
         normals.flip();
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboVertexHandle);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertices, GL.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(0));
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertices.capacity(),vertices, GL.GL_STATIC_DRAW);
         gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0L);
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboNormalHandle);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, normals, GL.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(1));
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, normals.capacity(),normals, GL.GL_STATIC_DRAW);
         gl.glNormalPointer(GL.GL_FLOAT, 0, 0L);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(2));
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, textureCoordinates.capacity(),textureCoordinates, GL.GL_STATIC_DRAW);
+        gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0L);
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
-        return new int[]{vboVertexHandle, vboNormalHandle};
-    }*/
+        return vboHandle;
+    }
+    
+    private static Model loadTextures(Model model, GL gl){
+    	 for(int i =0;i<model.getModelParts().size();i++){
+    		 ModelPart modelPart = model.getModelParts().get(i);
+    		 ModelPart.Face face = modelPart.getFaces().get(0);
+    		 face.getMaterial().loadTexture(gl);
+    	 }
+    	 return model;
+    }
 
     private static Point3D parseVertex(String line) {
         String[] xyz = line.split(" ");
@@ -183,24 +209,25 @@ public class OBJLoader {
             gl.glBegin(GL.GL_TRIANGLES);
             for (Model.Face face : m.getFaces()) {
                 if (face.hasTextureCoordinates()) {
-/*                    gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, BufferTools.asFlippedFloatBuffer(face.getMaterial()
+                    gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {face.getMaterial()
                             .diffuseColour[0], face.getMaterial().diffuseColour[1],
-                            face.getMaterial().diffuseColour[2], 1));
-                    gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, BufferTools.asFlippedFloatBuffer(face.getMaterial()
+                            face.getMaterial().diffuseColour[2]}, 1);
+                    gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, new float[] {face.getMaterial()
                             .ambientColour[0], face.getMaterial().ambientColour[1],
-                            face.getMaterial().ambientColour[2], 1));
-                    gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, face.getMaterial().specularCoefficient);*/
+                            face.getMaterial().ambientColour[2]}, 1);
+                    gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, face.getMaterial().specularCoefficient);
+                    
                 }
                 if (face.hasNormals()) {
                     Point3D n1 = m.getNormals().get(face.getNormalIndices()[0] - 1);
                     gl.glNormal3f(n1.x, n1.y, n1.z);
                 }
                 
-                /*
+                
                 if (face.hasTextureCoordinates()) {
                     Point2D.Float t1 = m.getTextureCoordinates().get(face.getTextureCoordinateIndices()[0] - 1);
                     gl.glTexCoord2f(t1.x, t1.y);
-                }*/
+                }
                 
                 Point3D v1 = m.getVertices().get(face.getVertexIndices()[0] - 1);
                 gl.glVertex3f(v1.x, v1.y, v1.z);
@@ -209,11 +236,11 @@ public class OBJLoader {
                     gl.glNormal3f(n2.x, n2.y, n2.z);
                 }
                 
-                /*
+                
                 if (face.hasTextureCoordinates()) {
                 	Point2D.Float t2 = m.getTextureCoordinates().get(face.getTextureCoordinateIndices()[1] - 1);
                     gl.glTexCoord2f(t2.x, t2.y);
-                }*/
+                }
                 
                 Point3D v2 = m.getVertices().get(face.getVertexIndices()[1] - 1);
                 gl.glVertex3f(v2.x, v2.y, v2.z);
@@ -222,11 +249,10 @@ public class OBJLoader {
                     gl.glNormal3f(n3.x, n3.y, n3.z);
                 }
                 
-                /*
                 if (face.hasTextureCoordinates()) {
                 	Point2D.Float t3 = m.getTextureCoordinates().get(face.getTextureCoordinateIndices()[2] - 1);
                     gl.glTexCoord2f(t3.x, t3.y);
-                }*/
+                }
                 
                 Point3D v3 = m.getVertices().get(face.getVertexIndices()[2] - 1);
                 gl.glVertex3f(v3.x, v3.y, v3.z);
@@ -241,8 +267,10 @@ public class OBJLoader {
     public static Model loadTexturedModel(File f) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(f));
         Model m = new Model();
+        ModelPart part = new ModelPart();
         Model.Material currentMaterial = new Model.Material();
         String line;
+        boolean newPart = true;
         while ((line = reader.readLine()) != null) {
             if (line.startsWith("#")) {
                 continue;
@@ -265,7 +293,8 @@ public class OBJLoader {
                         parseMaterialName = materialLine.split(" ")[1];
                         parseMaterial = new Model.Material();
                     } else if (materialLine.startsWith("Ns ")) {
-                        parseMaterial.specularCoefficient = Float.valueOf(materialLine.split(" ")[1]);
+                        parseMaterial.specularCoefficient = Math.min(120f, Float.valueOf(materialLine.split(" ")[1]));
+                        
                     } else if (materialLine.startsWith("Ka ")) {
                         String[] rgb = materialLine.split(" ");
                         parseMaterial.ambientColour[0] = Float.valueOf(rgb[1]);
@@ -282,73 +311,87 @@ public class OBJLoader {
                         parseMaterial.diffuseColour[1] = Float.valueOf(rgb[2]);
                         parseMaterial.diffuseColour[2] = Float.valueOf(rgb[3]);
                     } 
-                    /*
+                    
                     else if (materialLine.startsWith("map_Kd")) {
-                        parseMaterial.texture = TextureLoader.getTexture("PNG",
-                                new FileInputStream(new File(f.getParentFile().getAbsolutePath() + "/" + materialLine
-                                        .split(" ")[1])));
+                    	parseMaterial.texturePath = f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1];
+                    	//System.out.println(f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1]);
+                    	//parseMaterial.texture = TextureLoader.loadTexture(
+                    	//		f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1]);
                     } 
-                    */
+                    
                     else {
-                        System.err.println("[MTL] Unknown Line: " + materialLine);
+                        //System.err.println("[MTL] Unknown Line: " + materialLine);
                     }
                 }
                 m.getMaterials().put(parseMaterialName, parseMaterial);
                 materialFileReader.close();
             } else if (line.startsWith("usemtl ")) {
                 currentMaterial = m.getMaterials().get(line.split(" ")[1]);
+
             } else if (line.startsWith("v ")) {
+            	if(newPart){
+                	part = new ModelPart();
+                	m.addModelPart(part);
+                	newPart = false;
+            	}
                 String[] xyz = line.split(" ");
                 float x = Float.valueOf(xyz[1]);
                 float y = Float.valueOf(xyz[2]);
                 float z = Float.valueOf(xyz[3]);
+                part.getVertices().add(new Point3D(x, y, z));
                 m.getVertices().add(new Point3D(x, y, z));
             } else if (line.startsWith("vn ")) {
                 String[] xyz = line.split(" ");
                 float x = Float.valueOf(xyz[1]);
                 float y = Float.valueOf(xyz[2]);
                 float z = Float.valueOf(xyz[3]);
+                part.getNormals().add(new Point3D(x, y, z));
                 m.getNormals().add(new Point3D(x, y, z));
             } else if (line.startsWith("vt ")) {
                 String[] xyz = line.split(" ");
                 float s = Float.valueOf(xyz[1]);
                 float t = Float.valueOf(xyz[2]);
-//                m.getTextureCoordinates().add(new Vector2f(s, t));
+                part.getTextureCoordinates().add(new Point2D.Float(s, t));
+                m.getTextureCoordinates().add(new Point2D.Float(s, t));
             } else if (line.startsWith("f ")) {
+            	if(!newPart){
+            		newPart = true;
+            	}
                 String[] faceIndices = line.split(" ");
                 int[] vertexIndicesArray = {Integer.parseInt(faceIndices[1].split("/")[0]),
                         Integer.parseInt(faceIndices[2].split("/")[0]), Integer.parseInt(faceIndices[3].split("/")[0])};
                 int[] textureCoordinateIndicesArray = {-1, -1, -1};
                 
-                /*
-                if (m.hasTextureCoordinates()) {
+                
+                if (part.hasTextureCoordinates()) {
                     textureCoordinateIndicesArray[0] = Integer.parseInt(faceIndices[1].split("/")[1]);
                     textureCoordinateIndicesArray[1] = Integer.parseInt(faceIndices[2].split("/")[1]);
                     textureCoordinateIndicesArray[2] = Integer.parseInt(faceIndices[3].split("/")[1]);
-                }*/
-                
+                }  
                 int[] normalIndicesArray = {0, 0, 0};
-                if (m.hasNormals()) {
+                if (part.hasNormals()) {
                     normalIndicesArray[0] = Integer.parseInt(faceIndices[1].split("/")[2]);
                     normalIndicesArray[1] = Integer.parseInt(faceIndices[2].split("/")[2]);
                     normalIndicesArray[2] = Integer.parseInt(faceIndices[3].split("/")[2]);
                 }
-                //                Point3D vertexIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[0]),
-                //                        Float.valueOf(faceIndices[2].split("/")[0]),
-                // Float.valueOf(faceIndices[3].split("/")[0]));
-                //                Point3D normalIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[2]),
-                //                        Float.valueOf(faceIndices[2].split("/")[2]),
-                // Float.valueOf(faceIndices[3].split("/")[2]));
-                m.getFaces().add(new Model.Face(vertexIndicesArray, normalIndicesArray,
-                        textureCoordinateIndicesArray, currentMaterial));
+                Point3D vertexIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[0]),
+                		Float.valueOf(faceIndices[2].split("/")[0]),Float.valueOf(faceIndices[3].split("/")[0]));
+                Point3D normalIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[2]),
+                		Float.valueOf(faceIndices[2].split("/")[2]),Float.valueOf(faceIndices[3].split("/")[2]));
+                part.getFaces().add(new ModelPart.Face(vertexIndicesArray, normalIndicesArray, 
+                		textureCoordinateIndicesArray, currentMaterial));
+                m.getFaces().add(new Model.Face(vertexIndicesArray, normalIndicesArray, 
+                		textureCoordinateIndicesArray, currentMaterial));
+                
             } else if (line.startsWith("s ")) {
                 boolean enableSmoothShading = !line.contains("off");
                 m.setSmoothShadingEnabled(enableSmoothShading);
             } else {
-                System.err.println("[OBJ] Unknown Line: " + line);
+                //System.err.println("[OBJ] Unknown Line: " + line);
             }
         }
         reader.close();
+        m.initiliazeArrays();
         return m;
     }
 }
