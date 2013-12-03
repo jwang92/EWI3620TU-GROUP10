@@ -198,7 +198,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
 
-		int textureID = textureNames.lastIndexOf("menu_files/background2.png");
+		int textureID = textureNames.lastIndexOf("menu_files/background_ufos.png");
 		
 		textures.get(textureID).getTarget();
 		textures.get(textureID).bind();
