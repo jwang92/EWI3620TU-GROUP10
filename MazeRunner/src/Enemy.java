@@ -241,8 +241,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public void damage(double x, double y, double z, double h){
-		if(x-2>locationX && locationX >x-3){
-			dood =true;
+		if(locationX+3>x && x>locationX-3){
+			double r=Math.sqrt(Math.pow(3,2)+Math.pow(x,2));
+			if(locationZ+r>z && z>locationZ-r){
+				dood =true;
+			}
 		}
 	}
 }

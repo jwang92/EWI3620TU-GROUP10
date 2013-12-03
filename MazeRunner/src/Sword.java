@@ -105,8 +105,11 @@ public class Sword extends GameObject implements VisibleObject {
 			if(player.control.getAttack()){
 				gl.glRotated(-5*attackCounter,1,0,0);
 				attackCounter +=1;
-				if(attackCounter==18){
-					MainClass.enemy.damage(player.getLocationX(), player.getLocationY(), player.getLocationZ(), player.getHorAngle());
+				if(attackCounter==18 || attackCounter==17 || attackCounter==16){
+					MainClass.enemy.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
+							player.getLocationY(),
+							player.getLocationZ()-Math.cos(player.getHorAngle()*Math.PI/180), 
+							player.getHorAngle());
 				}
 					
 			}
