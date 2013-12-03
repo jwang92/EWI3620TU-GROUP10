@@ -23,6 +23,7 @@ public class Player extends GameObject {
 	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
+	private int health;
 	
 	//Sounds
 	public Sounds sound = new Sounds();
@@ -51,6 +52,7 @@ public class Player extends GameObject {
 		verAngle = v;
 		speed = 0.01;
 		speedadjust = 1;
+		health = 100;
 	}
 	
 	/**
@@ -122,6 +124,14 @@ public class Player extends GameObject {
 		this.speed = speed;
 	}
 
+	public void setDeltaHealth(int health){
+		this.health += health;
+	}
+	
+	public int getHealth(){
+		return health;		
+	}
+	
 	/**
 	 * Check whether the player is near a wall
 	 * @param x

@@ -1,10 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 
 import com.sun.opengl.util.*;
+import com.sun.opengl.util.j2d.TextRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +48,11 @@ public class MazeRunner implements GLEventListener{
 
 	//Shaders
 	private int shaderProgram;
+	
+	// Fonts
+	private TextRenderer tr;
+	private Font f = new Font("SansSerif", Font.PLAIN, 20);
+	private int previousHealth;
 /*
  * **********************************************
  * *		Initialization methods				*
@@ -187,10 +195,26 @@ public class MazeRunner implements GLEventListener{
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
-        MainClass.enemy.genVBO(gl);
-        MainClass.sword.genVBO(gl);
+		MainClass.enemy.genVBO(gl);
+		MainClass.sword.genVBO(gl);
+
         
         MainClass.enemy.setShaderProgram(shaderProgram);
+        
+        // Fonts setten
+ 
+        try {
+			Font f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
+			f = f2.deriveFont(14f);
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+		previousHealth = MainClass.player.getHealth();
+        
+        
 	}
 	
 	/**
@@ -206,6 +230,109 @@ public class MazeRunner implements GLEventListener{
 		render(drawable);
 	}
 
+	public void draw2D(GL gl){
+		
+		gl.glMatrixMode( GL.GL_PROJECTION );
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		gl.glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+		gl.glMatrixMode( GL.GL_MODELVIEW );
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+		
+		gl.glDisable(GL.GL_LIGHTING);
+		gl.glDisable(GL.GL_LIGHT0);
+		gl.glDisable(GL.GL_LIGHT1);
+		gl.glDisable( GL.GL_DEPTH_TEST );
+		
+		
+		drawHit(gl);
+		drawHealthbar(gl);
+	
+		
+		gl.glEnable( GL.GL_DEPTH_TEST );
+		gl.glEnable(GL.GL_LIGHTING);
+		gl.glEnable(GL.GL_LIGHT0);
+		gl.glEnable(GL.GL_LIGHT1);	
+		
+	
+		
+		gl.glMatrixMode( GL.GL_PROJECTION );
+		gl.glPopMatrix();
+		gl.glMatrixMode( GL.GL_MODELVIEW );
+		gl.glPopMatrix();
+		
+	}
+	
+	public void drawHit(GL gl){
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
+		
+		gl.glBegin(GL.GL_QUADS);
+		
+		if(previousHealth > MainClass.player.getHealth()){
+			gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
+		}else{
+			gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
+		}
+	
+			gl.glVertex2f(0f, 0f);
+			gl.glVertex2f(0f, screenHeight);
+			gl.glVertex2f(screenWidth, screenHeight);
+			gl.glVertex2f(screenWidth, 0);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_BLEND);
+		
+		
+	}
+	
+	public void drawHealthbar(GL gl){
+		
+		// Box met bar tekenen
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glColor3f(0.6f, 0.6f, 0.6f);
+			gl.glVertex2f(20.0f, 20.0f);
+			gl.glVertex2f(248.0f, 20.0f);
+			gl.glVertex2f(248.0f, 40.0f);
+			gl.glVertex2f(20.0f, 40.0f);
+		gl.glEnd();
+		
+		float blockWidth = 9;
+		
+		for(int i = 0; i < Math.floor(MainClass.player.getHealth() / 5); i++){
+			
+			gl.glBegin(GL.GL_QUADS);
+				gl.glColor3f(0f, 1f, 0f);
+				gl.glVertex2f(25f + (i * blockWidth) + (i * 2), 25f);
+				gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 25f);
+				gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 35.0f);
+				gl.glVertex2f(25.0f + (i * blockWidth) + (i * 2), 35.0f);
+			gl.glEnd();
+			
+			
+		}
+		
+		// Text erbij
+		gl.glBegin(GL.GL_QUADS);
+			gl.glColor3f(0.6f, 0.6f, 0.6f);
+			gl.glVertex2f(194.0f, 40.0f);
+			gl.glVertex2f(248.0f, 40.0f);
+			gl.glVertex2f(248.0f, 60.0f);
+			gl.glVertex2f(194.0f, 60.0f);
+		gl.glEnd();
+				
+		tr = new TextRenderer(f);
+		tr.beginRendering(screenWidth, screenHeight);
+		tr.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
+		tr.endRendering();
+		
+		previousHealth = MainClass.player.getHealth();
+
+		
+	}
+	
 	public void render(GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
@@ -236,6 +363,8 @@ public class MazeRunner implements GLEventListener{
             
        	
         }
+        
+        draw2D(gl);
 
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.

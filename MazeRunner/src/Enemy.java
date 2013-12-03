@@ -19,6 +19,8 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean dood = false;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
+	private int attackTimeout = 0;
+	
 	
 	//Shaders
 	private int shaderProgram = 0;
@@ -235,10 +237,24 @@ public class Enemy extends GameObject implements VisibleObject {
 		if( Math.abs(locationX - player.locationX) < 1
 				&& Math.abs(locationZ - player.locationZ) < 1
 				&& Math.abs(locationY - player.locationY) < 0.8*maze.SQUARE_SIZE ){
-			MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
-			MainClass.state.setStopMainGame(true);
-			MainClass.state.setStopGameOver(false);
+			
+			if(attackTimeout == 0){
+				player.setDeltaHealth(-5);
+				attackTimeout = 10;
+			}else{
+				attackTimeout--;
+			}
+			
+			if(player.getHealth() <= 0){
+				
+				MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+				MainClass.state.setStopMainGame(true);
+				MainClass.state.setStopGameOver(false);
+				
+			}
+			
 		}
+		
 	}
 	
 	public boolean alerted (Player player){
