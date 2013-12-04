@@ -45,6 +45,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Pause pause;
 	public static GameOver gameover;
 	public static Sword sword;
+	public static Upgrade upgrade;
 	
 	//Load the textures
 	protected static ArrayList<Texture> textures;
@@ -348,7 +349,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true);
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 
 
 		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
@@ -363,6 +364,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
 		gameover = new GameOver(screenHeight, screenWidth);
+		upgrade = new Upgrade(6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+							 maze.SQUARE_SIZE / 2,							// y-position
+							 3 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2);
 
 	}
 

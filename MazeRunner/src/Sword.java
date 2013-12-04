@@ -18,19 +18,30 @@ public class Sword extends GameObject implements VisibleObject {
 	public int attackCounter=0;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
+	//public static boolean upgrade;
 	
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public Sword(double x, double y, double z,boolean tex){
+	public Sword(double x, double y, double z,boolean tex, boolean upgrade){
 		super(x, y, z);
 		texture = tex;
 		try {
-			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/sword/sword.obj")));
+			if(!upgrade){
+				if(texture){
+					m = OBJLoader.loadTexturedModel((new File("3d_object/sword/sword.obj")));
+				}
+				else{
+					m = OBJLoader.loadModel((new File("3d_object/sword.obj")));
+				}
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/sword.obj")));
+				if(texture){
+					m = OBJLoader.loadTexturedModel((new File("3d_object/lightsaber/lightSaber.obj")));
+				}
+				else{
+					m = OBJLoader.loadModel((new File("3d_object/lightsaber.obj")));
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -209,4 +220,5 @@ public class Sword extends GameObject implements VisibleObject {
 	public void setPlayer(Player player){
 		this.player=player;
 	}
+	
 }

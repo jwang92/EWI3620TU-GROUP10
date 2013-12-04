@@ -358,6 +358,7 @@ public void drawHealthbar(GL gl){
         	it.next().display(gl);
             MainClass.enemy.display(gl);
             MainClass.sword.display(gl);
+            MainClass.upgrade.display(gl);;
             
        	
         }
@@ -418,6 +419,7 @@ public void drawHealthbar(GL gl){
 		MainClass.enemy.update(deltaTime, MainClass.player);
 		MainClass.sword.update(deltaTime, MainClass.player);
 		MainClass.mazePheromones.evapPheromones();
+		MainClass.upgrade.update(MainClass.player);
 	}
 
 	/**
