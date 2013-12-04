@@ -71,7 +71,7 @@ public class Sword extends GameObject implements VisibleObject {
 		
 	public void update(int deltaTime, Player player){
 		locationX=player.locationX;
-		locationY=player.locationY-0.8;
+		locationY=player.locationY;
 		locationZ=player.locationZ;
 	}
 
@@ -95,15 +95,21 @@ public class Sword extends GameObject implements VisibleObject {
 			}
 			
 			//Translate the model
-			gl.glTranslated(locationX-Math.sin(player.getHorAngle()*Math.PI/180), 
-					locationY + Math.sin(player.getVerAngle()*Math.PI/180), 
-					locationZ-Math.cos(player.getHorAngle()*Math.PI/180));
+			gl.glTranslated(locationX, locationY, locationZ);
+			double h = Math.toRadians(player.getHorAngle());
+			double v = Math.toRadians(player.getVerAngle());
+			double tx = -Math.cos(v)*Math.sin(h);
+			double tz = -Math.cos(v)*Math.cos(h);
+			double ty = Math.sin(v);
+			gl.glTranslated(tx, ty, tz);
 			
 			//Rotate the model
 			gl.glRotated(player.getHorAngle(), 0, 1, 0);
 			gl.glRotated(player.getVerAngle(), 1,0 ,0);
 			if(player.control.getAttack()){
+				gl.glTranslated(0, -0.8, 0);
 				gl.glRotated(-5*attackCounter,1,0,0);
+				gl.glTranslated(0, 0.8, 0);
 				attackCounter +=1;
 				if(attackCounter==18 || attackCounter==17 || attackCounter==16){
 					MainClass.enemy.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
@@ -113,6 +119,7 @@ public class Sword extends GameObject implements VisibleObject {
 				}
 					
 			}
+			
 			
 			//Reset the color to white
 			gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
