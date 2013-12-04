@@ -22,7 +22,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private int attackTimeout = 0;
 	private double angle;
 	private int deathAngle = 0;
-	
+	private Pheromone highestPher;
 	//Shaders
 	private int shaderProgram = 0;
 	
@@ -80,15 +80,15 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
-		px=player.locationX;
-		py=player.locationY;
-		pz=player.locationZ;
+		//px=player.locationX;
+		//py=player.locationY;
+		//pz=player.locationZ;
 		if(!dood){
 			if(alerted(player)){
 				alert = alerted(player);
 			}
 			if(alert){
-				Pheromone highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
+				highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
 //				System.out.println("enemy: " + highestPher.x + " , " + highestPher.z);
 				
@@ -140,9 +140,9 @@ public class Enemy extends GameObject implements VisibleObject {
 			
 			if(alert && !dood){
 				//berekening hoek
-					double inP = pz-locationZ;
+					double inP = highestPher.z-locationZ;
 					double lengteV = 1;
-					double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
+					double lengteW = Math.sqrt(Math.pow(highestPher.x-locationX, 2)+Math.pow(highestPher.z-locationZ, 2));
 					double test = inP/Math.max(lengteV*lengteW, 00001);
 					angle = Math.acos(test)*180/Math.PI;
 				}
