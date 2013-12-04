@@ -328,7 +328,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		textureNames = new ArrayList<String>(numberOfTextures);
 		textures = new ArrayList<Texture>(numberOfTextures);
 		for(int i = 0; i<numberOfTextures;i++){
-			HashMap<String, Texture> tempTextureHashMap = tempTextureHashMapArray .get(i);
+			HashMap<String, Texture> tempTextureHashMap = tempTextureHashMapArray.get(i);
 			String tempTextureName = tempTextureHashMap.entrySet().iterator().next().getKey();
 			Texture tempTexture = tempTextureHashMap.entrySet().iterator().next().getValue();
 			textureNames.add(tempTextureName);

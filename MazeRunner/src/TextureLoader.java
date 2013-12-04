@@ -30,6 +30,19 @@ public class TextureLoader {
 	    		tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 	    		
 	    	}
+	    	else if(texturePath.endsWith(".tga")){
+	        	//Load the texture
+	        	File filetexture = new File(texturePath);
+	    		TextureData data;
+	    		data = TextureIO.newTextureData(filetexture, false, "tga");
+	    		tempTexture = TextureIO.newTexture(data);
+	    		
+	    		//Set the the texture parameters
+	    		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    		tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    		tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    		tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    	}
 		} catch (GLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -53,6 +53,7 @@ public class MazeRunner implements GLEventListener{
 	private TextRenderer tr;
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
+
 /*
  * **********************************************
  * *		Initialization methods				*
@@ -177,32 +178,32 @@ public class MazeRunner implements GLEventListener{
         // Set and enable the lighting.
         //LIGHT0: ambient light high in the sky
         float lightPosition0[] = { 0.0f, 50.0f, 0.0f, 1.0f }; 			// High up in the sky!
-        float lightColour0[] = { 1.0f, 1.0f, 1.0f, 0.0f };				// White light!
+        float lightColour0[] = { 1.0f, 1.0f, 1.0f, 1.0f };				// White light!
         gl.glLightfv( GL.GL_LIGHT0, GL.GL_POSITION, lightPosition0, 0 );	// Note that we're setting Light0.
         gl.glLightfv( GL.GL_LIGHT0, GL.GL_AMBIENT, lightColour0, 0);
-        gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] {0.05f, 0.05f, 0.05f, 1f}, 0);
+        gl.glLightfv( GL.GL_LIGHT0, GL.GL_DIFFUSE, lightColour0, 0);
+        //gl.glLightModelfv(GL.GL_LIGHT_MODEL_AMBIENT, new float[] {0.0f, 0.0f, 0.0f, 1f}, 0);
         
         //LIGHT1: Shader light in the room
         float lightPosition1[] = { 0.0f, 0.2f, 0.0f, 1.0f}; 			// High up in the sky!
-        float lightColour1[] = { 1.0f, 1.0f, 1.0f, 0.0f };				// White light!
+        float lightColour1[] = { 1.0f, 1.0f, 1.0f, 1.0f };				// White light!
         gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, lightPosition1, 0 );	// Note that we're setting Light1.
-        //gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, lightColour1, 0);
+        gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, lightColour1, 0);
         
         
-        gl.glEnable( GL.GL_LIGHTING );
+        gl.glEnable(GL.GL_LIGHTING );
         gl.glEnable( GL.GL_LIGHT0 );
         gl.glEnable(GL.GL_LIGHT1);
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
-		MainClass.enemy.genVBO(gl);
-		MainClass.sword.genVBO(gl);
-
+        MainClass.enemy.genVBO(gl);
+        MainClass.sword.genVBO(gl);
         
-        MainClass.enemy.setShaderProgram(shaderProgram);
+        //MainClass.enemy.setShaderProgram(shaderProgram);
         
         // Fonts setten
- 
+        
         try {
 			Font f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
 			f = f2.deriveFont(14f);
@@ -213,8 +214,6 @@ public class MazeRunner implements GLEventListener{
 		}
         
 		previousHealth = MainClass.player.getHealth();
-        
-        
 	}
 	
 	/**
@@ -229,8 +228,8 @@ public class MazeRunner implements GLEventListener{
 	public void display(GLAutoDrawable drawable) {
 		render(drawable);
 	}
-
-	public void draw2D(GL gl){
+	
+public void draw2D(GL gl){
 		
 		gl.glMatrixMode( GL.GL_PROJECTION );
 		gl.glPushMatrix();
@@ -263,76 +262,76 @@ public class MazeRunner implements GLEventListener{
 		gl.glPopMatrix();
 		
 	}
-	
-	public void drawHit(GL gl){
-		gl.glEnable(GL.GL_BLEND);
-		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
-		
-		gl.glBegin(GL.GL_QUADS);
-		
-		if(previousHealth > MainClass.player.getHealth()){
-			gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
-		}else{
-			gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
-		}
-	
-			gl.glVertex2f(0f, 0f);
-			gl.glVertex2f(0f, screenHeight);
-			gl.glVertex2f(screenWidth, screenHeight);
-			gl.glVertex2f(screenWidth, 0);
-		gl.glEnd();
-		
-		gl.glDisable(GL.GL_BLEND);
-		
-		
-	}
-	
-	public void drawHealthbar(GL gl){
-		
-		// Box met bar tekenen
-		
-		gl.glBegin(GL.GL_QUADS);
-			gl.glColor3f(0.6f, 0.6f, 0.6f);
-			gl.glVertex2f(20.0f, 20.0f);
-			gl.glVertex2f(248.0f, 20.0f);
-			gl.glVertex2f(248.0f, 40.0f);
-			gl.glVertex2f(20.0f, 40.0f);
-		gl.glEnd();
-		
-		float blockWidth = 9;
-		
-		for(int i = 0; i < Math.floor(MainClass.player.getHealth() / 5); i++){
-			
-			gl.glBegin(GL.GL_QUADS);
-				gl.glColor3f(0f, 1f, 0f);
-				gl.glVertex2f(25f + (i * blockWidth) + (i * 2), 25f);
-				gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 25f);
-				gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 35.0f);
-				gl.glVertex2f(25.0f + (i * blockWidth) + (i * 2), 35.0f);
-			gl.glEnd();
-			
-			
-		}
-		
-		// Text erbij
-		gl.glBegin(GL.GL_QUADS);
-			gl.glColor3f(0.6f, 0.6f, 0.6f);
-			gl.glVertex2f(194.0f, 40.0f);
-			gl.glVertex2f(248.0f, 40.0f);
-			gl.glVertex2f(248.0f, 60.0f);
-			gl.glVertex2f(194.0f, 60.0f);
-		gl.glEnd();
-				
-		tr = new TextRenderer(f);
-		tr.beginRendering(screenWidth, screenHeight);
-		tr.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
-		tr.endRendering();
-		
-		previousHealth = MainClass.player.getHealth();
 
+public void drawHit(GL gl){
+	gl.glEnable(GL.GL_BLEND);
+	gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
+	
+	gl.glBegin(GL.GL_QUADS);
+	
+	if(previousHealth > MainClass.player.getHealth()){
+		gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
+	}else{
+		gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
+	}
+
+		gl.glVertex2f(0f, 0f);
+		gl.glVertex2f(0f, screenHeight);
+		gl.glVertex2f(screenWidth, screenHeight);
+		gl.glVertex2f(screenWidth, 0);
+	gl.glEnd();
+	
+	gl.glDisable(GL.GL_BLEND);
+	
+	
+}
+
+public void drawHealthbar(GL gl){
+	
+	// Box met bar tekenen
+	
+	gl.glBegin(GL.GL_QUADS);
+		gl.glColor3f(0.6f, 0.6f, 0.6f);
+		gl.glVertex2f(20.0f, 20.0f);
+		gl.glVertex2f(248.0f, 20.0f);
+		gl.glVertex2f(248.0f, 40.0f);
+		gl.glVertex2f(20.0f, 40.0f);
+	gl.glEnd();
+	
+	float blockWidth = 9;
+	
+	for(int i = 0; i < Math.floor(MainClass.player.getHealth() / 5); i++){
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glColor3f(0f, 1f, 0f);
+			gl.glVertex2f(25f + (i * blockWidth) + (i * 2), 25f);
+			gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 25f);
+			gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 35.0f);
+			gl.glVertex2f(25.0f + (i * blockWidth) + (i * 2), 35.0f);
+		gl.glEnd();
+		
 		
 	}
 	
+	// Text erbij
+	gl.glBegin(GL.GL_QUADS);
+		gl.glColor3f(0.6f, 0.6f, 0.6f);
+		gl.glVertex2f(194.0f, 40.0f);
+		gl.glVertex2f(248.0f, 40.0f);
+		gl.glVertex2f(248.0f, 60.0f);
+		gl.glVertex2f(194.0f, 60.0f);
+	gl.glEnd();
+			
+	tr = new TextRenderer(f);
+	tr.beginRendering(screenWidth, screenHeight);
+	tr.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
+	tr.endRendering();
+	
+	previousHealth = MainClass.player.getHealth();
+
+	
+}
+
 	public void render(GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
@@ -363,8 +362,6 @@ public class MazeRunner implements GLEventListener{
             
        	
         }
-        
-        draw2D(gl);
 
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.

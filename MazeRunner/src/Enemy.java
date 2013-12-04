@@ -19,8 +19,6 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean dood = false;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
-	private int attackTimeout = 0;
-	
 	
 	//Shaders
 	private int shaderProgram = 0;
@@ -34,10 +32,10 @@ public class Enemy extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/lion.obj")));
+				m = OBJLoader.loadTexturedModel((new File("3d_object/Predator_Youngblood/Predator_Youngblood.obj")));
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/lion.obj")));
+				m = OBJLoader.loadModel((new File("3d_object/Predator_Youngblood/Predator_Youngblood.obj")));
 			}
 
 		} catch (IOException e) {
@@ -88,7 +86,7 @@ public class Enemy extends GameObject implements VisibleObject {
 			if(alert){
 				Pheromone highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
-//				System.out.println("enemy: " + highestPher.x + " , " + highestPher.z + " , pher = " + highestPher.pheromone);
+//				System.out.println("enemy: " + highestPher.x + " , " + highestPher.z);
 				
 				double dX = highestPher.x - locationX;				
 				double dZ = highestPher.z - locationZ;				
@@ -113,7 +111,6 @@ public class Enemy extends GameObject implements VisibleObject {
 						locationZ = newZ;
 					}
 				}
-				
 			}
 			
 			this.caught(player);
@@ -122,7 +119,7 @@ public class Enemy extends GameObject implements VisibleObject {
 
 	public void display(GL gl) {
 		gl.glPushMatrix();
-		
+		//gl.glEnable(GL.GL_TEXTURE_NORMAL_EXT);
 		//Enable the shaderprogram
 		if(shaderProgram >0){
 			gl.glUseProgram(shaderProgram);
@@ -149,8 +146,8 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 			
 			//Reset the color to white
-			gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
-			
+			gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
+			gl.glColor3f(1.0f,1.0f,1.0f);
 			//Initialize counters
 			int vertexSize = 0;
 			int vertexCount = 0;
@@ -158,11 +155,17 @@ public class Enemy extends GameObject implements VisibleObject {
 			//Initialize the texture
 			Texture tempTexture = null;
 			for(int i=0;i<m.getModelParts().size();i++){
+				gl.glColor3f(1.0f,1.0f,1.0f);
 				ModelPart p = m.getModelParts().get(i);
 				ModelPart.Face face = p.getFaces().get(0);
 				
+				//Enable the Array draw Mode for vertex,normals and textures
+				gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
+				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
+				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				
 				//the modelPart has textureCoordinates so the material should be used
-				if(face.hasMaterial()){
+				if(face.hasMaterial() && !face.hasTexture()){
 	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {1f,face.getMaterial()
                             .diffuseColour[0], face.getMaterial().diffuseColour[1],
                             face.getMaterial().diffuseColour[2]},1);
@@ -173,11 +176,21 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 				
 				//Use default material
-				else{
-	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {1.0f, 1.0f, 1.0f}, 1);
-					gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, new float[] {1.0f, 1.0f, 1.0f}, 1);
+				else if (!face.hasTexture()){
+	                gl.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, new float[] {1.0f,1.0f, 1.0f, 1.0f}, 1);
+					gl.glMaterialfv(GL.GL_FRONT, GL.GL_AMBIENT, new float[] {1.0f,1.0f, 1.0f, 1.0f}, 1);
 	                gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120f);
 				}
+				
+				//Bind the vbo buffers for the normal and vertex arrays
+                vertexSize = p.getFaces().size()*3;
+				//gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120f);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(2));
+				gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0L);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(0));
+				gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0L);
+				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(1));
+				gl.glNormalPointer(GL.GL_FLOAT, 0, 0L);
 				
 				//Enable the texture if the modelPart has a texture
 				if(face.hasTexture()){
@@ -186,22 +199,6 @@ public class Enemy extends GameObject implements VisibleObject {
 					tempTexture = face.getTexture();
 					tempTexture.bind();
 				}
-
-				//Bind the vbo buffers for the normal and vertex arrays
-                vertexSize = p.getFaces().size()*3;
-				gl.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, 120f);
-				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(0));
-				gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0L);
-				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(1));
-				gl.glNormalPointer(GL.GL_FLOAT, 0, 0L);
-				
-				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(2));
-				gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, 0L);
-
-				//Enable the Array draw Mode for vertex,normals and textures
-				gl.glEnableClientState(GL.GL_VERTEX_ARRAY);
-				gl.glEnableClientState(GL.GL_NORMAL_ARRAY);
-				gl.glEnableClientState(GL.GL_TEXTURE_COORD_ARRAY);
 				
 				//Draw the arrays
 				gl.glDrawArrays(GL.GL_TRIANGLES, vertexCount, vertexSize);
@@ -209,7 +206,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				//Enable the Array draw Mode for vertex,normals and textures
 				gl.glDisableClientState(GL.GL_VERTEX_ARRAY);
 				gl.glDisableClientState(GL.GL_NORMAL_ARRAY);
-				gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
+				//gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY);
 				gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 				
 				//Keep track of the size of the modelParts. This 
@@ -237,24 +234,10 @@ public class Enemy extends GameObject implements VisibleObject {
 		if( Math.abs(locationX - player.locationX) < 1
 				&& Math.abs(locationZ - player.locationZ) < 1
 				&& Math.abs(locationY - player.locationY) < 0.8*maze.SQUARE_SIZE ){
-			
-			if(attackTimeout == 0){
-				player.setDeltaHealth(-5);
-				attackTimeout = 10;
-			}else{
-				attackTimeout--;
-			}
-			
-			if(player.getHealth() <= 0){
-				
-				MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
-				MainClass.state.setStopMainGame(true);
-				MainClass.state.setStopGameOver(false);
-				
-			}
-			
+			MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+			MainClass.state.setStopMainGame(true);
+			MainClass.state.setStopGameOver(false);
 		}
-		
 	}
 	
 	public boolean alerted (Player player){

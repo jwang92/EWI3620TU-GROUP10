@@ -115,6 +115,7 @@ public class OBJLoader {
         }
         vertices.flip();
         normals.flip();
+        textureCoordinates.flip();
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboHandle.get(0));
         gl.glBufferData(GL.GL_ARRAY_BUFFER, vertices.capacity(),vertices, GL.GL_STATIC_DRAW);
         gl.glVertexPointer(3, GL.GL_FLOAT, 0, 0L);
@@ -314,9 +315,6 @@ public class OBJLoader {
                     
                     else if (materialLine.startsWith("map_Kd")) {
                     	parseMaterial.texturePath = f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1];
-                    	//System.out.println(f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1]);
-                    	//parseMaterial.texture = TextureLoader.loadTexture(
-                    	//		f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1]);
                     } 
                     
                     else {
