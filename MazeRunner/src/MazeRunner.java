@@ -190,7 +190,6 @@ public class MazeRunner implements GLEventListener{
         gl.glLightfv( GL.GL_LIGHT1, GL.GL_POSITION, lightPosition1, 0 );	// Note that we're setting Light1.
         gl.glLightfv( GL.GL_LIGHT1, GL.GL_DIFFUSE, lightColour1, 0);
         
-        
         gl.glEnable(GL.GL_LIGHTING );
         gl.glEnable( GL.GL_LIGHT0 );
         gl.glEnable(GL.GL_LIGHT1);
@@ -362,6 +361,8 @@ public void drawHealthbar(GL gl){
             
        	
         }
+        
+        draw2D(gl);
 
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.

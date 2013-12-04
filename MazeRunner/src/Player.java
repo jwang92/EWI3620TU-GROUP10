@@ -208,7 +208,6 @@ public class Player extends GameObject {
 				verticalSpeed -= gravity*deltaTime;
 			}
 			locationY += verticalSpeed*deltaTime;
-
 			
 			double oldX = locationX;
 			double oldZ = locationZ;
