@@ -1,30 +1,39 @@
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 
 public class MazePheromones {
+	private PriorityQueue<Pheromone> pheromonesOrder;
 	private ArrayList<Pheromone> pheromones;
+	private Pheromone lastPher;
+	
 	
 	public MazePheromones(){
+		pheromonesOrder = new PriorityQueue<Pheromone>();
 		pheromones = new ArrayList<Pheromone>();
 	}
 	
 	public void addPher(double x, double y, double z){
 		Pheromone newpheromone = new Pheromone(x, y, z);
 		
-		if(pheromones.contains(newpheromone)){
-			int index = pheromones.indexOf(newpheromone);
-			pheromones.remove(index);
+		if(pheromonesOrder.contains(newpheromone)){
+			pheromonesOrder.remove(newpheromone);
 		}
 
-		if(pheromones.size() > 1){
-			if(pherDistance(pheromones.get(pheromones.size()-1), newpheromone) > 0.5)
-				pheromones.add(newpheromone);
+		if(pheromonesOrder.size() > 1){
+			if(pherDistance(lastPher, newpheromone) > 0.5){
+				pheromonesOrder.add(newpheromone);
+				lastPher = newpheromone;
+			}
 		}
 		else{
-			pheromones.add(newpheromone);
+			pheromonesOrder.add(newpheromone);
+			lastPher = newpheromone;
 		}
 		
 //		System.out.println("player: " + newpheromone.x + " , " + newpheromone.z);
+		
+		pheromones = new ArrayList<Pheromone>(pheromonesOrder);
 	}
 	
 	public void evapPheromones(){
@@ -32,7 +41,7 @@ public class MazePheromones {
 			pher.evapPher();
 		}
 		for(int i = pheromones.size()-1; i >= 0; i--){
-			if(pheromones.get(i).pheromone < 0.1){
+			if(pheromones.get(i).pheromone < 5){
 				pheromones.remove(i);
 //				System.out.println("pheromone deleted");
 			}
@@ -82,6 +91,9 @@ public class MazePheromones {
 						highestPher = pher;
 				}
 			}
+			
+			if(highestPher.pheromone > 0)
+				break;
 		}
 		
 //		System.out.println(pheromones.get(0).pheromone);
