@@ -20,15 +20,18 @@ public class Enemy extends GameObject implements VisibleObject {
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private int attackTimeout = 0;
+	private double angle;
+	private int deathAngle = 0;
 	
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public Enemy(double x, double y, double z, boolean tex){
+	public Enemy(double x, double y, double z, double angle,boolean tex){
 		super(x, y, z);
 		sx=x;
 		sy=y;
 		sz=z;
+		this.angle = angle;
 		alert = false;
 		texture = tex;
 		try {
@@ -141,11 +144,15 @@ public class Enemy extends GameObject implements VisibleObject {
 					double lengteV = 1;
 					double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
 					double test = inP/Math.max(lengteV*lengteW, 00001);
-					double angle = Math.acos(test)*180/Math.PI;
-					
-					gl.glRotated(angle,0, 1, 0);
+					angle = Math.acos(test)*180/Math.PI;
 				}
-			
+			else if(dood){
+				if(deathAngle>-90){
+					deathAngle -= 2.5;
+				}
+			}
+			gl.glRotated(angle,0, 1, 0);
+			gl.glRotated(deathAngle, 1, 0, 0);
 			//Reset the color to white
 			gl.glClearColor(1.0f, 1.0f, 1.0f, 1);
 			gl.glColor3f(1.0f,1.0f,1.0f);

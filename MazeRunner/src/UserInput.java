@@ -138,6 +138,10 @@ public class UserInput extends Control
         			left = true;
         			//right = false;
         		}
+        		else if(keyCode == KeyEvent.VK_SPACE){
+        			jump = true;
+        		}
+        		
         		if(keyCode== KeyEvent.VK_ESCAPE && MainClass.state.getState() == 1){
         			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
         			MainClass.state.setStopMainGame(true);
@@ -146,6 +150,7 @@ public class UserInput extends Control
         		if(keyCode=='e' && MainClass.state.getState() == 1){
         			lookback = true;
         		}
+        		
         		
         	}
  
@@ -181,6 +186,9 @@ public class UserInput extends Control
 		}
 		if(event.getKeyCode()==KeyEvent.VK_E){
 			lookback = false;
+		}
+		if(event.getKeyCode()==KeyEvent.VK_SPACE){
+			jump=false;
 		}
 		
 	}

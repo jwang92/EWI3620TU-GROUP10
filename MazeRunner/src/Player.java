@@ -202,7 +202,12 @@ public class Player extends GameObject {
 			}
 			else if(maze.isFloor(locationX, locationY, locationZ)){
 				locationY = maze.getFloorHeight(locationY)+2.5;
-				verticalSpeed = 0;	
+				if(control.getJump()){
+					verticalSpeed = 0.025;
+				}
+				else{
+					verticalSpeed = 0;	
+				}
 			}
 			else{
 				verticalSpeed -= gravity*deltaTime;
