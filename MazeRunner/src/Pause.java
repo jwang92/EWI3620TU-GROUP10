@@ -10,14 +10,21 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.texture.Texture;
+import com.sun.opengl.util.texture.TextureData;
+import com.sun.opengl.util.texture.TextureIO;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Pause implements GLEventListener, MouseListener, MouseMotionListener {
 	/*
@@ -27,7 +34,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	 */
 	
 	//frame setup
-	public int ScreenWidth, ScreenHeight;
+	public int ScreenWidth, ScreenHeight, drawScreenWidth, drawScreenHeight;
 	//buttons setup
 	private int buttonSizeX, buttonSizeY;
 	private int bPosX;
@@ -37,10 +44,20 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	private int draw1PosY, draw2PosY;
 	private int mouseOnBox = 0;
 	boolean stop = false;
+	private boolean startup = true;
+	
+	private ArrayList<Texture> textures;
+	private ArrayList<String> textureNames;
 
+	private Texture tempTexture;
+	private String textureFileName = "";
+	private String textureFileType = "png";
 	
 	public Pause(int screenHeight, int screenWidth){
 		initWindowSize(screenHeight, screenWidth);
+		
+		textures = new ArrayList<Texture>();
+		textureNames = new ArrayList<String>();
 		
 		setButtonSize();
 				
@@ -62,72 +79,191 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	public void initWindowSize(int screenHeight, int screenWidth){
 		ScreenWidth = screenWidth;
 		ScreenHeight = screenHeight;
-		buttonSizeX = (int) (ScreenWidth/3);
-		buttonSizeY = (int) (ScreenHeight/6);
+		buttonSizeX = (int) (ScreenWidth/7);
+		buttonSizeY = (int) (ScreenHeight/13);
 //		System.out.println("Screen: " + ScreenWidth + " " + ScreenHeight + " " + buttonSizeX + " " + buttonSizeY);
 	}
 	
 	public void setButtonSize(){
-		bPosX = (int) (ScreenWidth/2.0f-buttonSizeX/2.0f);
-		b1PosY = (int) (ScreenHeight-2.0f*buttonSizeY);
-		b2PosY = (int) (ScreenHeight-3.0f*buttonSizeY);
+		bPosX = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
+		b1PosY = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
+		b2PosY = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
+		
+//		System.out.println("BottomLeft buttons (x,y1,y2,y3): " + bPosX + " , " + b1PosY + " , " + b2PosY + " , " + b3PosY);
 	}
-
+	
 	public void setDrawButtons(){
+		drawScreenHeight = ScreenHeight;
+		drawScreenWidth = ScreenWidth;
+		
 		drawPosX = bPosX;
 		draw1PosY = b1PosY;
 		draw2PosY = b2PosY;
 		drawbuttonSizeX = buttonSizeX;
 		drawbuttonSizeY = buttonSizeY;
 	}
-
+	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
-		gl.glClearColor(0.0f, 0.0f, 1.0f, 1);
+		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
+		drawBackground(gl);
 		// Draw the buttons.
 		drawButtons(gl);
+		
 		gl.glFlush();
 	
+
 	}
 	
-//	private GL BoxColor(GL gl, int boxnum){
-//		if(mouseOnBox == boxnum)
-//			gl.glColor3f(0, 1.0f, 0);
-//		else
-//			gl.glColor3f(1.0f, 0, 0);
-//		return gl;
-//	}
+	public void loadTextures(GL gl){
+		try {
+		    File folder = new File("menu_files/");
+		    File[] tList = folder.listFiles();
+		    int numberOfTextures = tList.length;
+			for(int j = 0; j<tList.length;j++){
+			    if(tList[j].getName().equals("Thumbs.db")){
+			    	numberOfTextures -= 1;
+			    }  
+			    
+			}
+			textureNames = new ArrayList<String>(numberOfTextures);
+		    
+		    int i = 0;
+		    for (File file : tList)
+		    {
+		    	
+	            if(!file.getName().equals("Thumbs.db"))
+	            {
+	            	//Get the name of the texture
+	            	textureFileName = "menu_files/" + file.getName();
+	            	
+	            	//Load the texture
+	            	File filetexture = new File(textureFileName);
+	    			TextureData data;
+	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
+	    			tempTexture = TextureIO.newTexture(data);
+	    			
+	    			//Set the the texture parameters
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    			
+	    			//Add the texture to the arraylist
+	    			textures.add(tempTexture);
+	            	textureNames.add(textureFileName);
+	            	
+	            	i++;
+	            	textureFileName = textureNames.get(0);
+	            }	
+	        }
+			
+			//GenerateMipmap
+			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
+			
+			// Use linear filter for texture if image is larger than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			// Use linear filter for texture if image is smaller than the original texture
+			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
+			
+			//Select the texture coordinates
+
+		} catch (GLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 	catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
+	private void drawBackground(GL gl) {
+		
+		if(startup){
+			
+			loadTextures(gl);
+			
+			startup = false;
+			
+		}
+
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+
+		int textureID = textureNames.lastIndexOf("menu_files/background_ufos.png");
+		
+		textures.get(textureID).getTarget();
+		textures.get(textureID).bind();
+				
+		gl.glBegin(GL.GL_POLYGON);
+			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, drawScreenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(drawScreenWidth, drawScreenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(drawScreenWidth, 0);
+		gl.glEnd();
+		
+		textures.get(textureID).disable();
+		
+		
+	}
 	
 	private void drawButtons(GL gl) {
-	
 		// Draw the background boxes
-//		gl = BoxColor(gl, 1);
-		boxOnScreen(gl, bPosX, b1PosY, "Resume Game", 1);
 		
-//		gl = BoxColor(gl, 2);
-		boxOnScreen(gl, bPosX, b2PosY, "Exit", 2);
+		boxOnScreen(gl, drawPosX, draw1PosY, 1);
+		
+		boxOnScreen(gl, drawPosX, draw2PosY, 2);
+		
 		
 	}
 	
-	private void boxOnScreen(GL gl, float x, float y, String text, int boxnum) {
-		if(mouseOnBox == boxnum){
-			gl.glColor3f(0, 1.0f, 0);
-			gl.glLineWidth(5);
-			gl.glBegin(GL.GL_LINE_LOOP);
-			gl.glVertex2f(x, y);
-			gl.glVertex2f(x + buttonSizeX, y);
-			gl.glVertex2f(x + buttonSizeX, y + buttonSizeY);
-			gl.glVertex2f(x, y + buttonSizeY);
-			gl.glEnd();
-		}
+	private void boxOnScreen(GL gl, float x, float y, int boxnum) {
 		
-		GLUT glut = new GLUT();
-		gl.glColor3f(1.0f,  1.0f, 1.0f);
-		gl.glRasterPos2d(x + buttonSizeX/10.0, y + buttonSizeY/3.0);
-		glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, text);
+		String texNaam = null;
+		switch(boxnum){
+		case 1:
+			texNaam = "start";
+			break;
+		case 2:
+			texNaam = "editor";
+			break;
+		case 3:
+			texNaam = "exit";
+			break;
+			
+		
+		}
+
+		int textureID;
+		if(mouseOnBox == boxnum){
+			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+"_over.png");
+		}
+		else{
+			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+".png");
+		}
+
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		
+		textures.get(textureID).getTarget();
+		textures.get(textureID).bind();
+		
+		gl.glBegin(GL.GL_POLYGON);
+			gl.glTexCoord2f(0, 1); gl.glVertex2f(x, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(x + drawbuttonSizeX, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(x + drawbuttonSizeX,  y + drawbuttonSizeY);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(x,  y + drawbuttonSizeY);
+		gl.glEnd();
+		
+		textures.get(textureID).disable();
+		gl.glDisable(GL.GL_BLEND);
 
 	}
 	
