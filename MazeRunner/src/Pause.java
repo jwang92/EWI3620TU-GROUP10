@@ -34,14 +34,14 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	 */
 	
 	//frame setup
-	public int ScreenWidth, ScreenHeight, drawScreenWidth, drawScreenHeight;
+	public int ScreenWidth, ScreenHeight /*, drawScreenWidth, drawScreenHeight*/;
 	//buttons setup
 	private int buttonSizeX, buttonSizeY;
 	private int bPosX;
 	private int b1PosY, b2PosY;
-	private int drawbuttonSizeX, drawbuttonSizeY;
-	private int drawPosX;
-	private int draw1PosY, draw2PosY;
+//	private int drawbuttonSizeX, drawbuttonSizeY;
+//	private int drawPosX;
+//	private int draw1PosY, draw2PosY;
 	private int mouseOnBox = 0;
 	boolean stop = false;
 	private boolean startup = true;
@@ -61,7 +61,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		
 		setButtonSize();
 				
-		setDrawButtons();
+//		setDrawButtons();
 	
 //		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
 //		 * The Animator class handles that for JOGL.
@@ -92,16 +92,16 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 //		System.out.println("BottomLeft buttons (x,y1,y2,y3): " + bPosX + " , " + b1PosY + " , " + b2PosY + " , " + b3PosY);
 	}
 	
-	public void setDrawButtons(){
-		drawScreenHeight = ScreenHeight;
-		drawScreenWidth = ScreenWidth;
-		
-		drawPosX = bPosX;
-		draw1PosY = b1PosY;
-		draw2PosY = b2PosY;
-		drawbuttonSizeX = buttonSizeX;
-		drawbuttonSizeY = buttonSizeY;
-	}
+//	public void setDrawButtons(){
+//		drawScreenHeight = ScreenHeight;
+//		drawScreenWidth = ScreenWidth;
+//		
+//		drawPosX = bPosX;
+//		draw1PosY = b1PosY;
+//		draw2PosY = b2PosY;
+//		drawbuttonSizeX = buttonSizeX;
+//		drawbuttonSizeY = buttonSizeY;
+//	}
 	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
@@ -201,9 +201,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, drawScreenHeight);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(drawScreenWidth, drawScreenHeight);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(drawScreenWidth, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, ScreenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(ScreenWidth, ScreenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(ScreenWidth, 0);
 		gl.glEnd();
 		
 		textures.get(textureID).disable();
@@ -214,9 +214,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		
-		boxOnScreen(gl, drawPosX, draw1PosY, 1);
+		boxOnScreen(gl, bPosX, b1PosY, 1);
 		
-		boxOnScreen(gl, drawPosX, draw2PosY, 2);
+		boxOnScreen(gl, bPosX, b2PosY, 2);
 		
 		
 	}
@@ -257,9 +257,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(x, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(x + drawbuttonSizeX, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(x + drawbuttonSizeX,  y + drawbuttonSizeY);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(x,  y + drawbuttonSizeY);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(x + buttonSizeX, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(x + buttonSizeX,  y + buttonSizeY);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(x,  y + buttonSizeY);
 		gl.glEnd();
 		
 		textures.get(textureID).disable();
@@ -339,6 +339,8 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		// Set the new screen size and adjusting the sizes
 		initWindowSize(height, width);
 		setButtonSize();
+//		setDrawButtons();
+
 		
 //		System.out.println(x + " " + y);
 		
