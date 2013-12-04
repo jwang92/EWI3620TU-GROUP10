@@ -27,7 +27,7 @@ public class Sword extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/sword.obj")));
+				m = OBJLoader.loadTexturedModel((new File("3d_object/sword/sword.obj")));
 			}
 			else{
 				m = OBJLoader.loadModel((new File("3d_object/sword.obj")));
