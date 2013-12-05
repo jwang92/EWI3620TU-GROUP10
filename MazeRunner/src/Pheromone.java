@@ -31,12 +31,12 @@ public class Pheromone extends Point3D implements Comparable<Pheromone> {
 
 	@Override
 	public int compareTo(Pheromone pher) {
-		if(this.pheromone < pher.pheromone)
-			return -1;
-		
-		if(this.pheromone > pher.pheromone)
+		if(this.pheromone < pher.pheromone){
 			return 1;
-		
+		}
+		if(this.pheromone > pher.pheromone){
+			return -1;
+		}
 		return 0;
 	}
 }

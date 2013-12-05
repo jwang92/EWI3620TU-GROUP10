@@ -109,10 +109,24 @@ public class Enemy extends GameObject implements VisibleObject {
 					if(!checkWall(newX, newZ, deltaTime)){
 						locationX = newX;
 						locationZ = newZ;
-					}else if(!checkWall(newX, locationZ, deltaTime)){
-						locationX = newX;
-					}else if(!checkWall(locationX, newZ, deltaTime)){
-						locationZ = newZ;
+					}else{
+						newX = locationX;
+						if(dX > 0.0)
+							newX += speed * deltaTime;
+						else if(dX < 0.0)
+							newX -= speed * deltaTime;
+							
+						newZ = locationZ;
+						if(dZ > 0.0)
+							newZ += speed * deltaTime;
+						else if(dZ < 0.0)
+							newZ -= speed * deltaTime;
+						
+						if(!checkWall(newX, locationZ, deltaTime)){
+							locationX = newX;
+						}else if(!checkWall(locationX, newZ, deltaTime)){
+							locationZ = newZ;
+						}
 					}
 				}
 			}

@@ -16,13 +16,18 @@ public class MazePheromones {
 	public void addPher(double x, double y, double z){
 		Pheromone newpheromone = new Pheromone(x, y, z);
 		
-		if(pheromonesOrder.contains(newpheromone)){
-			pheromonesOrder.remove(newpheromone);
+//		System.out.print(pheromones.contains(newpheromone)+ ": ");
+		if(pheromones.contains(newpheromone)){
+			int index = pheromones.indexOf(newpheromone);
+			pheromones.remove(index);
 		}
 
+		pheromonesOrder = new PriorityQueue<Pheromone>(pheromones);
+		
 		if(pheromonesOrder.size() > 1){
-			if(pherDistance(lastPher, newpheromone) > 0.5){
+			if(pherDistance(lastPher, newpheromone) > 1){
 				pheromonesOrder.add(newpheromone);
+				System.out.println(newpheromone.x +", "+newpheromone.z+", "+newpheromone.y);
 				lastPher = newpheromone;
 			}
 		}
@@ -33,7 +38,17 @@ public class MazePheromones {
 		
 //		System.out.println("player: " + newpheromone.x + " , " + newpheromone.z);
 		
-		pheromones = new ArrayList<Pheromone>(pheromonesOrder);
+//		System.out.print(pheromonesOrder.size()+"-"+ pheromonesOrder.peek().pheromone + "; ");
+		
+		pheromones = new ArrayList<Pheromone>();
+		while(pheromonesOrder.size() != 0){
+			pheromones.add(pheromonesOrder.poll());
+		}
+		
+//		System.out.print("size "+pheromones.size());
+//		for(Pheromone pher : pheromones)
+//			System.out.print(" - "+ pher.pheromone);
+//		System.out.println();
 	}
 	
 	public void evapPheromones(){
@@ -41,7 +56,7 @@ public class MazePheromones {
 			pher.evapPher();
 		}
 		for(int i = pheromones.size()-1; i >= 0; i--){
-			if(pheromones.get(i).pheromone < 5){
+			if(pheromones.get(i).pheromone < 3){
 				pheromones.remove(i);
 //				System.out.println("pheromone deleted");
 			}
@@ -81,22 +96,24 @@ public class MazePheromones {
 		
 		for( Pheromone pher : pheromones){
 			double dx = pher.x - x;
-			double dy = pher.y+1.25 - y;
+			double dy = pher.y - y;
 			double dz = pher.z - z;
 			double distance = Math.sqrt(dx*dx + dz*dz);			//calculate distance to current pheromone
 			
-			if( distance <= vision /*&& Math.abs(dy) <= 1.25*/ ){	//pheromone within vision?
+			if( distance <= vision && Math.abs(dy) <= (MainClass.maze.SQUARE_SIZE/2.0) ){	//pheromone within vision?
 				if( pher.pheromone > highestPher.pheromone ){		//current pheromone higher than highest?
+//					System.out.println(!obstructed(x, dx, z, dz, y));
 					if(!obstructed(x, dx, z, dz, y))
 						highestPher = pher;
 				}
 			}
 			
-			if(highestPher.pheromone > 0)
+			if(highestPher.pheromone > 0.0)
 				break;
 		}
 		
-//		System.out.println(pheromones.get(0).pheromone);
+//		System.out.println(highestPher.pheromone);
+//		System.out.println("first: "+pheromones.get(0).pheromone);
 		
 		return highestPher;
 	}
