@@ -45,6 +45,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Pause pause;
 	public static GameOver gameover;
 	public static Sword sword;
+	public static Shield shield;
 	
 	//Load the textures
 	protected static ArrayList<Texture> textures;
@@ -349,6 +350,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
 							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 1);
+		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
+				 maze.SQUARE_SIZE / 2 -1,							
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 
 
 		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position

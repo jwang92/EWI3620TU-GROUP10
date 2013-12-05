@@ -136,6 +136,8 @@ public class MazeRunner implements GLEventListener{
 		MainClass.enemy.getMaze(MainClass.maze);
 		MainClass.sword.setMaze(MainClass.maze);
 		MainClass.sword.setPlayer(MainClass.player);
+		MainClass.shield.setMaze(MainClass.maze);
+		MainClass.shield.setPlayer(MainClass.player);
 		
 	}
 
@@ -199,6 +201,7 @@ public class MazeRunner implements GLEventListener{
         gl.glShadeModel( GL.GL_SMOOTH );
         MainClass.enemy.genVBO(gl);
         MainClass.sword.genVBO(gl);
+        MainClass.shield.genVBO(gl);
         
         //MainClass.enemy.setShaderProgram(shaderProgram);
         
@@ -396,8 +399,7 @@ public void setSwordloader(boolean tf){
         	it.next().display(gl);
             MainClass.enemy.display(gl);
             MainClass.sword.display(gl);
-            
-       	
+            MainClass.shield.display(gl);
         }
         
         draw2D(gl);
@@ -455,6 +457,7 @@ public void setSwordloader(boolean tf){
 		MainClass.player.update(deltaTime);
 		MainClass.enemy.update(deltaTime, MainClass.player);
 		MainClass.sword.update(deltaTime, MainClass.player);
+		MainClass.shield.update(deltaTime, MainClass.player);
 		MainClass.mazePheromones.evapPheromones();
 	}
 

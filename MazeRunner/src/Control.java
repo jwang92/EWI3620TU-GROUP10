@@ -23,7 +23,9 @@ public abstract class Control
 	protected boolean left = false;
 	protected boolean right = false;
 	protected boolean attack  = false;
+	protected boolean defense = false;
 	protected boolean jump = false;
+	
 	
 	protected int dX = 0;
 	protected int dY = 0;
@@ -68,6 +70,16 @@ public abstract class Control
 	public void setAttack(boolean a)
 	{
 		this.attack=a;
+	}
+	
+	public boolean getDefense()
+	{
+		return defense;
+	}
+	
+	public void setDefense(boolean d)
+	{
+		this.defense=d;
 	}
 	
 	public boolean getJump()

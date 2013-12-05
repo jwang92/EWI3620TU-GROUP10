@@ -26,6 +26,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	//Shaders
 	private int shaderProgram = 0;
 	
+	//Attack
+	private int attackPower = 10;
+	
 	public Enemy(double x, double y, double z, double angle,boolean tex){
 		super(x, y, z);
 		sx=x;
@@ -109,19 +112,26 @@ public class Enemy extends GameObject implements VisibleObject {
 					if(!checkWall(newX, newZ, deltaTime)){
 						locationX = newX;
 						locationZ = newZ;
-					}else{
+					}
+					
+					else{
 						newX = locationX;
-						if(dX > 0.0)
+						if(dX > 0.0){
 							newX += speed * deltaTime;
-						else if(dX < 0.0)
+						}
+						else if(dX < 0.0){
 							newX -= speed * deltaTime;
+						}
 							
 						newZ = locationZ;
-						if(dZ > 0.0)
+						if(dZ > 0.0){
 							newZ += speed * deltaTime;
-						else if(dZ < 0.0)
-							newZ -= speed * deltaTime;
+						}
 						
+						else if(dZ < 0.0){
+							newZ -= speed * deltaTime;
+						}
+				
 						if(!checkWall(newX, locationZ, deltaTime)){
 							locationX = newX;
 						}else if(!checkWall(locationX, newZ, deltaTime)){
@@ -256,7 +266,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				&& Math.abs(locationZ - player.locationZ) < 1
 				&& Math.abs(locationY - player.locationY) < 0.8*maze.SQUARE_SIZE ){
 			if(attackTimeout == 0){
-				player.setDeltaHealth(-5);
+				player.setDeltaHealth(Math.min(0, -attackPower+player.getDefensePower()));
 				attackTimeout = 10;
 			} else{
 				attackTimeout--;

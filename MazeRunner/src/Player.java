@@ -26,6 +26,10 @@ public class Player extends GameObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 	private int health;
+	
+	//Defense
+	private int defensePower = 0;
+	
 	private ArrayList<int[]> currentUpgrades;
 	
 	//Sounds
@@ -134,6 +138,14 @@ public class Player extends GameObject {
 	
 	public int getHealth(){
 		return health;		
+	}
+	
+	public int getDefensePower(){
+		return defensePower;
+	}
+	
+	public void setDefensePower(int dp){
+		defensePower = dp;
 	}
 	
 	public ArrayList<int[]> getUpgrades(){

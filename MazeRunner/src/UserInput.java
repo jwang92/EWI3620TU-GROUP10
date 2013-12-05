@@ -79,11 +79,13 @@ public class UserInput extends Control
 	@Override
 	public void mousePressed(MouseEvent event)
 	{
-		// TODO: Detect the location where the mouse has been pressed
-		if(event.getButton()==1 && MainClass.state.getState() == 1){
+		if(event.getButton()==1 && MainClass.state.getState() == 1 && !defense && !attack){
 			
 			attack = true;
 			
+		}
+		else if(event.getButton()==3 && MainClass.state.getState() == 1 && !defense &&!attack){
+			defense = true;
 		}
 
 		
@@ -92,7 +94,36 @@ public class UserInput extends Control
 	@Override
 	public void mouseDragged(MouseEvent event)
 	{		
-		// TODO: Detect mouse movement while the mouse button is down
+		if(MainClass.state.getState() == 1){
+			
+			c.setCursor(2);
+			
+			int midX = Math.round(MainClass.screenWidth / 2);
+			int midY = Math.round(MainClass.screenHeight / 2);
+					
+			dx = event.getX() - midX;
+			dy = event.getY() - midY + 22;
+			
+			x = midX;
+			y = midY;
+			
+			Robot r = null;
+			try {
+				r = new Robot();
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+			r.mouseMove(midX, midY);
+		
+		}else{
+			
+				
+			dx=event.getX() -x;
+			dy=event.getY() -y;
+			x=event.getX();
+			y=event.getY();
+			
+		}
 		
 	}
 
@@ -259,6 +290,9 @@ public class UserInput extends Control
 	@Override
 	public void mouseReleased(MouseEvent event)
 	{
+		if(event.getButton()==3 && MainClass.state.getState() == 1 && defense){
+			defense = false;
+		}
 	}
 
 
