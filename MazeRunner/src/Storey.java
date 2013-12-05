@@ -14,8 +14,9 @@ public class Storey {
 	private FloorList floors;
 	private RoofList roofs;
 	private ObjectList objects;
+	private PickupList pickups;
 	
-	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof, ObjectList object){
+	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof, ObjectList object, PickupList pickup){
 		xSize = sizeX;
 		ySize = sizeY;
 		floorHeight = floorh;
@@ -24,6 +25,8 @@ public class Storey {
 		floors = floor;
 		roofs = roof;
 		objects = object;
+		pickups = pickup;
+		
 	}
 	
 	public Storey(){
@@ -35,6 +38,7 @@ public class Storey {
 		floors = new FloorList();
 		roofs = new RoofList();
 		objects = new ObjectList();
+		pickups = new PickupList();
 	}
 	
 	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey){
@@ -46,6 +50,7 @@ public class Storey {
 		floors = new FloorList();
 		roofs = new RoofList();
 		objects = new ObjectList();
+		pickups = new PickupList();
 	}
 	
 	public int getSizeX(){
@@ -78,6 +83,10 @@ public class Storey {
 	
 	public ObjectList getObjectList(){
 		return objects;
+	}
+	
+	public PickupList getPickupList(){
+		return pickups;
 	}
 	
 	public RoofList getRoofList(){
@@ -133,11 +142,13 @@ public class Storey {
 		FloorList f = new FloorList();
 		RoofList r = new RoofList();
 		ObjectList o = new ObjectList();
+		PickupList p = new PickupList();
 		w.Read(FileName+"/Walls.txt");
 		f.Read(FileName+"/Floor.txt");
 		r.Read(FileName+"/Roof.txt");
 		o.Read(FileName+"/Objects.txt");
-		Storey res = new Storey(sizeX, sizeY,floorh,storeyh,w,f,r,o);
+		p.Read(FileName+"/Pickups.txt");
+		Storey res = new Storey(sizeX, sizeY,floorh,storeyh,w,f,r,o,p);
 		return res; 
 	}
 	

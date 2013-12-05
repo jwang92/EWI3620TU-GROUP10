@@ -53,7 +53,8 @@ public class MazeRunner implements GLEventListener{
 	private TextRenderer tr;
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
-
+	private boolean swordLoaded = true;
+	
 /*
  * **********************************************
  * *		Initialization methods				*
@@ -243,9 +244,10 @@ public void draw2D(GL gl){
 		gl.glDisable(GL.GL_LIGHT1);
 		gl.glDisable( GL.GL_DEPTH_TEST );
 		
-		
+		tr = new TextRenderer(f);
 		drawHit(gl);
-		drawHealthbar(gl);
+		drawHealthbar(gl, tr);
+		drawUpgrades(gl, tr);
 	
 		
 		gl.glEnable( GL.GL_DEPTH_TEST );
@@ -285,7 +287,38 @@ public void drawHit(GL gl){
 	
 }
 
-public void drawHealthbar(GL gl){
+public void drawUpgrades(GL gl, TextRenderer t){
+	
+	ArrayList<int[]> ups = MainClass.player.getUpgrades();
+	
+	t.beginRendering(screenWidth, screenHeight);
+	
+	for(int i = 0; i < ups.size(); i++){
+		
+		if(ups.get(i)[1] == -1)
+			t.draw("Superzwaard", screenWidth - 200, screenHeight - 20);
+		else
+			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 200, screenHeight - 20);
+		
+	}
+	
+	
+	t.endRendering();
+	
+	
+	for(int i = 0; i < ups.size(); i++){
+		
+		if(ups.get(i)[0] == 2 && swordLoaded == false){
+			
+			MainClass.sword.genVBO(gl);
+			
+		}
+		
+	}
+	
+}
+
+public void drawHealthbar(GL gl, TextRenderer t){
 	
 	// Box met bar tekenen
 	
@@ -321,14 +354,18 @@ public void drawHealthbar(GL gl){
 		gl.glVertex2f(194.0f, 60.0f);
 	gl.glEnd();
 			
-	tr = new TextRenderer(f);
-	tr.beginRendering(screenWidth, screenHeight);
-	tr.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
-	tr.endRendering();
+	
+	t.beginRendering(screenWidth, screenHeight);
+	t.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
+	t.endRendering();
 	
 	previousHealth = MainClass.player.getHealth();
 
 	
+}
+
+public void setSwordloader(boolean tf){
+	swordLoaded = tf;
 }
 
 	public void render(GLAutoDrawable drawable){
@@ -358,7 +395,6 @@ public void drawHealthbar(GL gl){
         	it.next().display(gl);
             MainClass.enemy.display(gl);
             MainClass.sword.display(gl);
-            MainClass.upgrade.display(gl);;
             
        	
         }
@@ -419,7 +455,6 @@ public void drawHealthbar(GL gl){
 		MainClass.enemy.update(deltaTime, MainClass.player);
 		MainClass.sword.update(deltaTime, MainClass.player);
 		MainClass.mazePheromones.evapPheromones();
-		MainClass.upgrade.update(MainClass.player);
 	}
 
 	/**

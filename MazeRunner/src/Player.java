@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Player represents the actual player in MazeRunner.
  * <p>
@@ -24,6 +26,7 @@ public class Player extends GameObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 	private int health;
+	private ArrayList<int[]> currentUpgrades;
 	
 	//Sounds
 	public Sounds sound = new Sounds();
@@ -53,6 +56,7 @@ public class Player extends GameObject {
 		speed = 0.01;
 		speedadjust = 1;
 		health = 100;
+		currentUpgrades = new ArrayList<int[]>();
 	}
 	
 	/**
@@ -130,6 +134,10 @@ public class Player extends GameObject {
 	
 	public int getHealth(){
 		return health;		
+	}
+	
+	public ArrayList<int[]> getUpgrades(){
+		return currentUpgrades;
 	}
 	
 	/**
@@ -276,9 +284,85 @@ public class Player extends GameObject {
 				sound.stopWalk();
 			}
 			
+			// Pickupcheck
+			checkPickup(locationX, locationY, locationZ);
+			
+			// Running upgrades
+			checkUpgrades(deltaTime);
+			
 			//The player leaves a trail of pheromones which the enemies will follow
 			MainClass.mazePheromones.addPher(locationX, locationY, locationZ);
 		}
+	}
+	
+	public void checkUpgrades(int dt){
+		
+		for(int i = 0; i < currentUpgrades.size(); i++){
+			
+			int check = currentUpgrades.get(i)[0];
+			
+			switch(check){
+			
+				case 1: // Speedupgrade
+					
+					int tempdt = currentUpgrades.get(i)[1] - dt;
+					if(tempdt <= 0){
+						tempdt = 0;
+					}
+
+					int[] temp = {1, tempdt};
+					currentUpgrades.set(i, temp);
+					if(currentUpgrades.get(i)[1] <= 0){
+						
+						this.speed = 0.01;
+						currentUpgrades.remove(i);
+						
+					}
+					break;
+				case 2: // Swordupgrade?
+					// todo
+					break;
+				default:
+					// niets doen
+					break;
+				
+			}
+				
+		}
+		
+	}
+	
+	public void checkPickup(double x, double y, double z){
+		
+		int check = maze.isPickup(x, z, y);
+		
+		int[] temp = new int[2];
+		
+		switch(check){
+		
+			case 1: // Speedupgrade
+				this.speed = 0.03;
+				temp[0] = 1; // type 1
+				temp[1] = 2000; //tijd voor upgrade 2 seconden
+				currentUpgrades.add(temp);
+				break;
+			case 2: // Swordupgrade
+				
+				MainClass.sword = new Sword(x, y, z, true, 2);
+				MainClass.sword.setMaze(MainClass.maze);
+				MainClass.sword.setPlayer(MainClass.player);
+				MainClass.mazeRunner.setSwordloader(false);
+				
+				temp[0] = 2; // type 2
+				temp[1] = -1; //tijd voor upgrade 2 seconden
+				currentUpgrades.add(temp);
+				break;
+			default:
+				// niets doen
+				break;
+			
+		}
+		
 	}
 	
 	/**
