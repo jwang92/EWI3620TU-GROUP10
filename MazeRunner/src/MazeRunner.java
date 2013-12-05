@@ -311,7 +311,8 @@ public void drawUpgrades(GL gl, TextRenderer t){
 		if(ups.get(i)[0] == 2 && swordLoaded == false){
 			
 			MainClass.sword.genVBO(gl);
-			
+			swordLoaded = true;
+
 		}
 		
 	}

@@ -79,27 +79,11 @@ public class Maze  implements VisibleObject {
 	
 	public void drawPickup(GL gl, Point2D.Float p, int z){
 		
-		double x = p.x * SQUARE_SIZE;
-		double y = p.y * SQUARE_SIZE;
-		double nZ = z - 2.5;
-
-		gl.glColor3f(1f, 0f, 0f);
-		gl.glBegin(GL.GL_QUADS);
-		    gl.glVertex3d(x, y, nZ);
-		    gl.glVertex3d(x, y, nZ + 1);
-		    gl.glVertex3d(x + 1, y, nZ +1);
-			gl.glVertex3d(x + 1, y, nZ);		
-		gl.glEnd();
-		
-		
-			
-		/*
 		GLUT glut = new GLUT();
 		gl.glPushMatrix();
-		gl.glTranslated(, z - 2.5, p.y * SQUARE_SIZE);
+		gl.glTranslated(p.x * SQUARE_SIZE, z - 2.5, p.y * SQUARE_SIZE);
 		glut.glutSolidCube(1.0f);
 		gl.glPopMatrix();
-		*/
 		
 	}
 	
