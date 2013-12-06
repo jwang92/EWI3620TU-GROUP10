@@ -242,8 +242,9 @@ public class Maze  implements VisibleObject {
 				double ycor = storeys.get(i).getPickupList().getPickups().get(j).getPoint().y;
 				int ret = storeys.get(i).getPickupList().getPickups().get(j).getType();
 				
-				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE, ycor * SQUARE_SIZE, 2.5)) <= 1){
+				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE, ycor * SQUARE_SIZE, storeys.get(i).getFloorHeight() + 2.5)) <= 1){
 					storeys.get(i).getPickupList().getPickups().remove(j);
+
 					return ret;
 				}
 								
