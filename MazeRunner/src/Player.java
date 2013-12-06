@@ -239,7 +239,6 @@ public class Player extends GameObject {
 				}
 			}
 			if(fellThroughFloor){
-				System.out.println("test");
 				locationY = maze.getFloorHeight(locationY)+2.5;
 			}
 			else{
