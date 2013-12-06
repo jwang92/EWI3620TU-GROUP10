@@ -83,6 +83,8 @@ public class Maze  implements VisibleObject {
 			texture = "textures/upgrade_speed.png";
 		else if(type == 2)
 			texture = "textures/upgrade_sword.png";
+		else if(type == 3)
+			texture = "textures/upgrade_health.png";
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
 		double x = p.x * SQUARE_SIZE - 0.5;
@@ -165,46 +167,46 @@ public class Maze  implements VisibleObject {
 	}
 	
 	public void drawWall(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
-			if(Math.abs(ex-sx)==0){
-				float c=1.0f;
-				if(sy>ey){
-					c=1.0f;
-				}
-				else{
-					c=-1.0f;
-				}
-				drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+		if(Math.abs(ex-sx)==0){
+			float c=1.0f;
+			if(sy>ey){
+				c=1.0f;
 			}
-			else if(Math.abs(ey-sy)/Math.abs(ex-sx)<1){
-				float c = 1.0f;
-				if(sx>ex){
-					c=1.0f;
-				}
-				else{
-					c=-1.0f;
-				}
-				drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.019f*c, sy+0.02f, ex-0.019f*c, ey+0.02f, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.019f*c, sy+0.02f, sx+0.019f*c, sy-0.02f, texture, zfloor, zroof);
-				drawWall2(gl, ex-0.019f*c, ey+0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
+			else{
+				c=-1.0f;
 			}
-			else if(Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
-				float c=1.0f;
-				if(sy>ey){
-					c=1.0f;
-				}
-				else{
-					c=-1.0f;
-				}
-				drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
-				drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
-			}
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
 		}
+		else if(Math.abs(ey-sy)/Math.abs(ex-sx)<1){
+			float c = 1.0f;
+			if(sx>ex){
+				c=1.0f;
+			}
+			else{
+				c=-1.0f;
+			}
+			drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
+			drawWall2(gl, sx+0.019f*c, sy+0.02f, ex-0.019f*c, ey+0.02f, texture, zfloor, zroof);
+			drawWall2(gl, sx+0.019f*c, sy+0.02f, sx+0.019f*c, sy-0.02f, texture, zfloor, zroof);
+			drawWall2(gl, ex-0.019f*c, ey+0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
+		}
+		else if(Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
+			float c=1.0f;
+			if(sy>ey){
+				c=1.0f;
+			}
+			else{
+				c=-1.0f;
+			}
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+		}
+	}
 
 	
 	public void drawFloor(GL gl, ArrayList<Point2D.Float> p2D, String texture, int z){
@@ -366,7 +368,6 @@ public class Maze  implements VisibleObject {
 				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), floory,(float)(points.get(k).y*SQUARE_SIZE)));
 			}
 			double distance = distToSurfaceSegment(p3d,x,yNew-2.5,z);
-			//System.out.println(distance);
 			if(distance > 0 && distance < Double.MAX_VALUE -1){
 				return true;
 			}
@@ -420,8 +421,6 @@ public class Maze  implements VisibleObject {
 			}
 			
 		}
-
-		//System.out.println("X: "+x+" Z: "+z+" Y: "+y);
 		
 		for(int i = 0; i < o.size(); i++){
 				
@@ -440,47 +439,15 @@ public class Maze  implements VisibleObject {
 			}
 			double[] surface = getSurface(p3d);
 			
-//			float hiX = Integer.MIN_VALUE;
-//			float hiZ = Integer.MIN_VALUE;
-//			
-//			float loX = Integer.MAX_VALUE;
-//			float loZ = Integer.MAX_VALUE;
-//			
-//			for(int j = 0; j < points.size(); j++){
-//				
-//				if(points.get(j).x > hiX)
-//					hiX = points.get(j).x;
-//				
-//				if(points.get(j).y > hiZ)
-//					hiZ = points.get(j).y;
-//				
-//				if(points.get(j).x < loX)
-//					loX = points.get(j).x;
-//				
-//				if(points.get(j).y < loZ)
-//					loZ = points.get(j).y;
-//					
-//			}
-//			
-//			//System.out.println("HiX: "+hiX+" LoX: "+loX+" HiZ: "+hiZ+" LoZ: "+loZ);
-//			
-//			hiX = hiX * (float) SQUARE_SIZE;
-//			loX = loX * (float) SQUARE_SIZE;
-//			hiZ = hiZ * (float) SQUARE_SIZE;
-//			loZ = loZ * (float) SQUARE_SIZE;
-			
 			// Check if on ramp
-			//System.out.println(distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z));
-			//System.out.println(surface[0] +" " + surface[1] +" " + surface[2] +" " + surface[3] +" " + x +" " + y + " " +z);
-			//double distance = distToSurface(surface[0],surface[1],surface[2],surface[3],x,y-2.5,z);
 			double distance = distToSurfaceSegment(p3d,x,y-2.5,z);
-			if(distance < 1.5 && distance > -0.5){
+			if(distance < 0.5 && distance > -0.5){
 				double dy = (- surface[3]- surface[0]*x - surface[2]*z)/surface[1] - (y -2.5);
-				//System.out.println(" OnRamp: "+ y);
-				return dy;
-								
+				return dy;				
 			}
-			//System.out.println("OffRamp: "+ y);
+			else if(distance < 2.5 && distance >= 0.5){
+				return Double.MIN_VALUE;
+			}
 			
 		}
 		return Double.MAX_VALUE;

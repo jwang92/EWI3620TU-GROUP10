@@ -180,48 +180,25 @@ public class Player extends GameObject {
 		{
 			control.update();
 			
-			// TODO: Rotate the player, according to control
 			setHorAngle( getHorAngle() + control.getdX() * 30*speed);
 			setVerAngle( getVerAngle() + control.getdY() * 30*speed);
 			
-//			// TODO: Move the player, according to control
-//			if(control.getForward())
-//			{
-//				setLocationX(getLocationX()-Math.sin(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//				setLocationZ(getLocationZ()-Math.cos(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//			}
-//			if(control.getBack())
-//			{
-//				setLocationX(getLocationX()+Math.sin(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//				setLocationZ(getLocationZ()+Math.cos(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//
-//			}
-//			if(control.getRight())
-//			{
-//				setLocationZ(getLocationZ()-Math.sin(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//				setLocationX(getLocationX()+Math.cos(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//			}
-//			if(control.getLeft())
-//			{
-//				setLocationZ(getLocationZ()+Math.sin(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//				setLocationX(getLocationX()-Math.cos(Math.PI*getHorAngle()/180)*getSpeed()*deltaTime);
-//			}
-
-//			// TODO: Adjust player viewing angle
-//			setHorAngle( horAngle + control.getdX() * speed/3.0);
-//			setVerAngle( verAngle + control.getdY() * speed/3.0);
-			
-			// TODO: Move the player, according to control
 			double speed = this.speed * speedadjust;
 			double newLocationY = locationY;
 			boolean throughFloor = false;
 			boolean throughRoof = false;
-			
+			boolean throughRampTest1 = false;
+			boolean throughRampTest2 = false;
 			
 			double dY = maze.isRamp(locationX, locationY, locationZ);
 			if(dY != Double.MAX_VALUE){
-				verticalSpeed = 0;
-				locationY += dY;
+				if(dY == Double.MIN_VALUE){
+					throughRampTest1 = true;
+				}
+				else{
+					verticalSpeed = 0;
+					locationY += dY;
+				}
 			}
 			else if(maze.isFloor(locationX, locationY, locationZ)){
 				locationY = maze.getFloorHeight(locationY)+2.5;
@@ -235,7 +212,6 @@ public class Player extends GameObject {
 			else{
 				
 				verticalSpeed -= gravity*deltaTime;
-				System.out.println(verticalSpeed);
 				newLocationY += verticalSpeed*deltaTime;
 				if(verticalSpeed<0){
 					throughFloor = maze.throughFloor(locationX, newLocationY, locationY, locationZ);
@@ -245,7 +221,6 @@ public class Player extends GameObject {
 				}
 			}
 			if(throughFloor){
-				System.out.println("floor");
 				locationY = maze.getFloorHeight(locationY)+2.5;
 			}
 			else if(throughRoof){
@@ -261,52 +236,76 @@ public class Player extends GameObject {
 			if(control.getForward()){
 				newX = locationX - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.cos(horAngle*Math.PI/180);
-				// Move only to new coördinates if there is no wall there
-				if(!checkWall(newX, newZ, deltaTime)){
+				// Move only to new coördinates if there is no wall or ramp there
+				if(throughRampTest1){
+					double d = maze.isRamp(newX, locationY, newZ);
+					if(d == Double.MIN_VALUE){
+						throughRampTest2 = true;
+					}					
+				}
+				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime)){
+				}else if(!checkWall(newX, locationZ, deltaTime)&& !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime)){
+				}else if(!checkWall(locationX, newZ, deltaTime)&& !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
 			if(control.getLeft()){
 				newX = locationX - speed * deltaTime * Math.cos(horAngle*Math.PI/180);
 				newZ = locationZ + speed * deltaTime * Math.sin(horAngle*Math.PI/180);
-				// Move only to new coördinates if there is no wall there
-				if(!checkWall(newX, newZ, deltaTime)){
+				// Move only to new coördinates if there is no wall or ramp there
+				if(throughRampTest1){
+					double d = maze.isRamp(newX, locationY, newZ);
+					if(d == Double.MIN_VALUE){
+						throughRampTest2 = true;
+					}					
+				}
+				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime)){
+				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime)){
+				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
 			if(control.getBack()){
 				newX = locationX + speed * deltaTime * Math.sin(horAngle*Math.PI/180);
 				newZ = locationZ + speed * deltaTime * Math.cos(horAngle*Math.PI/180);
-				// Move only to new coördinates if there is no wall there
-				if(!checkWall(newX, newZ, deltaTime)){
+				// Move only to new coördinates if there is no wall or ramp there
+				if(throughRampTest1){
+					double d = maze.isRamp(newX, locationY, newZ);
+					if(d == Double.MIN_VALUE){
+						throughRampTest2 = true;
+					}					
+				}
+				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime)){
+				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime)){
+				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
 			if(control.getRight()){
 				newX = locationX + speed * deltaTime * Math.cos(horAngle*Math.PI/180);
 				newZ = locationZ - speed * deltaTime * Math.sin(horAngle*Math.PI/180);
-				// Move only to new coördinates if there is no wall there
-				if(!checkWall(newX, newZ, deltaTime)){
+				// Move only to new coördinates if there is no wall or ramp there
+				if(throughRampTest1){
+					double d = maze.isRamp(newX, locationY, newZ);
+					if(d == Double.MIN_VALUE){
+						throughRampTest2 = true;
+					}					
+				}
+				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime)){
+				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime)){
+				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
