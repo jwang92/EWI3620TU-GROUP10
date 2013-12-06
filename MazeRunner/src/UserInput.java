@@ -1,10 +1,14 @@
 import java.awt.AWTException;
+import java.awt.Dimension;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.media.opengl.GLCanvas;
+
+//import com.sun.media.sound.Toolkit;
 
 /**
  * The UserInput class is an extension of the Control class. It also implements three 
@@ -33,6 +37,8 @@ public class UserInput extends Control
 	int sx=0;
 	int sy=0;
 	
+	private int defX, defY;
+	
 	private CursorHandler c = new CursorHandler(MainClass.canvas);
 	
 	protected boolean lookback = false;
@@ -52,6 +58,11 @@ public class UserInput extends Control
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
+	}
+	
+	public void setDefMouse(MouseEvent me){
+		defX = me.getXOnScreen();
+		defY = me.getYOnScreen();
 	}
 	
 	/*
@@ -94,37 +105,40 @@ public class UserInput extends Control
 	@Override
 	public void mouseDragged(MouseEvent event)
 	{		
-		if(MainClass.state.getState() == 1){
-			
-			c.setCursor(2);
-			
-			int midX = Math.round(MainClass.screenWidth / 2);
-			int midY = Math.round(MainClass.screenHeight / 2);
-					
-			dx = event.getX() - midX;
-			dy = event.getY() - midY + 22;
-			
-			x = midX;
-			y = midY;
-			
-			Robot r = null;
-			try {
-				r = new Robot();
-			} catch (AWTException e) {
-				e.printStackTrace();
-			}
-			r.mouseMove(midX, midY);
-		
-		}else{
-			
-				
-			dx=event.getX() -x;
-			dy=event.getY() -y;
-			x=event.getX();
-			y=event.getY();
-			
-		}
-		
+//		if(MainClass.state.getState() == 1){
+//			
+//			c.setCursor(2);
+//			
+//			int midX = Math.round(MainClass.screenWidth / 2);
+//			int midY = Math.round(MainClass.screenHeight / 2);
+//					
+//			dx = event.getX() - midX;
+//			dy = event.getY() - midY +22;
+//			
+//			System.out.println("x: "+dx+", y: "+dy);
+//			
+//			x = midX;
+//			y = midY;
+//			
+//			Robot r = null;
+//			try {
+//				r = new Robot();
+//			} catch (AWTException e) {
+//				e.printStackTrace();
+//			}
+//			r.mouseMove(midX, midY);
+//		
+//		}else{
+//			
+//				
+//			dx=event.getX() -x;
+//			dy=event.getY() -y;
+//			x=event.getX();
+//			y=event.getY();
+//			
+//		}
+//		
+		this.mouseMoved(event);
 	}
 
 	@Override
@@ -238,14 +252,25 @@ public class UserInput extends Control
 			
 			c.setCursor(2);
 			
-			int midX = Math.round(MainClass.screenWidth / 2);
-			int midY = Math.round(MainClass.screenHeight / 2);
-					
-			dx = event.getX() - midX;
-			dy = event.getY() - midY + 22;
+//			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//			double width = screenSize.getWidth();
+//			double height = screenSize.getHeight();
 			
-			x = midX;
-			y = midY;
+//			System.out.println(width + ", " + height);
+			int screenx = event.getXOnScreen();
+			int screeny = event.getYOnScreen();
+			
+//			int midX = Math.round( Math.round(MainClass.screenWidth / 4) + Math.round(width / 4) );
+//			int midY = Math.round( Math.round(MainClass.screenHeight / 4) + Math.round(height / 4) );
+					
+			dx = screenx - defX;
+			dy = screeny - defY;
+			
+//			x = midX;
+//			y = midY;
+			
+			x = defX;
+			y = defY;
 			
 			Robot r = null;
 			try {
@@ -253,7 +278,7 @@ public class UserInput extends Control
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}
-			r.mouseMove(midX, midY);
+			r.mouseMove(defX, defY);
 		
 		}else{
 			

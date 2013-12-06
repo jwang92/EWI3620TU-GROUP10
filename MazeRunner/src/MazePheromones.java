@@ -27,7 +27,7 @@ public class MazePheromones {
 		if(pheromonesOrder.size() > 1){
 			if(pherDistance(lastPher, newpheromone) > 1){
 				pheromonesOrder.add(newpheromone);
-				System.out.println(newpheromone.x +", "+newpheromone.z+", "+newpheromone.y);
+//				System.out.println(newpheromone.x +", "+newpheromone.z+", "+newpheromone.y);
 				lastPher = newpheromone;
 			}
 		}

@@ -107,6 +107,28 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		drawbuttonSizeY = buttonSizeY;
 	}
 	
+//	public void adjustToScreen( int screenHeight, int screenWidth ){
+//		ScreenWidth = screenWidth;
+//		ScreenHeight = screenHeight;
+//		int buttonSizeX = (int) (ScreenWidth/7);
+//		int buttonSizeY = (int) (ScreenHeight/13);
+//		int bPosX = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
+//		int b1PosY = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
+//		int b2PosY = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
+//		int b3PosY = (int) (ScreenHeight/1.2f - 2.7f*buttonSizeY);
+//		
+//		drawScreenHeight = ScreenHeight;
+//		drawScreenWidth = ScreenWidth;
+//		
+//		drawPosX = bPosX;
+//		draw1PosY = b1PosY;
+//		draw2PosY = b2PosY;
+//		draw3PosY = b3PosY;
+//		drawbuttonSizeX = buttonSizeX;
+//		drawbuttonSizeY = buttonSizeY;
+//		
+//	}
+	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
@@ -392,6 +414,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			MainClass.canvas.removeGLEventListener(this);
 			
 			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
+			MainClass.input.setDefMouse(me);
 			MainClass.state.setStopTitle(true);
 			MainClass.state.setStopMainGame(false);
 		}
