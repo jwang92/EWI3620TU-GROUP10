@@ -213,6 +213,8 @@ public class Player extends GameObject {
 			
 			// TODO: Move the player, according to control
 			double speed = this.speed * speedadjust;
+			double newLocationY = locationY;
+			boolean fellThroughFloor = false;
 			
 			
 			double dY = maze.isRamp(locationX, locationY, locationZ);
@@ -232,8 +234,17 @@ public class Player extends GameObject {
 			else{
 				verticalSpeed -= gravity*deltaTime;
 			}
-			locationY += verticalSpeed*deltaTime;
-			
+			newLocationY += verticalSpeed*deltaTime;
+			if(verticalSpeed<=0){
+				fellThroughFloor = maze.fellThroughFloor(locationX, newLocationY, locationY, locationZ);
+			}
+			if(fellThroughFloor){
+				locationY = maze.getFloorHeight(locationY)+2.5;
+			}
+			else{
+				locationY += verticalSpeed*deltaTime;
+			}
+
 			double oldX = locationX;
 			double oldZ = locationZ;
 

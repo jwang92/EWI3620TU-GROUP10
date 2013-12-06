@@ -265,7 +265,6 @@ public class Maze  implements VisibleObject {
 				floory = storey.getFloorHeight();
 			}
 		}
-		Point3D q= new Point3D(x,y,z);
 		for(int i = 0; i < f.size(); i++){
 			
 			ArrayList<Point2D.Float> points = f.get(i).getPoints();
@@ -276,6 +275,32 @@ public class Maze  implements VisibleObject {
 			double distance = distToSurfaceSegment(p3d,x,y-2.5,z);
 			if(distance < 0.5 && distance > -0.0001){
 				return true;	
+			}
+		}
+		return false;
+	}
+	
+	public boolean fellThroughFloor(double x, double yNew, double yOld,double z){
+		ArrayList<Floor> f = new ArrayList<Floor>();
+		float floory = Float.MIN_VALUE;
+		for(int i=0;i<storeys.size();i++){
+			storey = storeys.get(i);
+			if(yOld>storey.getFloorHeight()&&yOld<storey.getRoofHeight()){
+				f = storey.getFloorList().getFloors();
+				floory = storey.getFloorHeight();
+			}
+		}
+		for(int i = 0; i < f.size(); i++){
+			
+			ArrayList<Point2D.Float> points = f.get(i).getPoints();
+			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
+			for(int k = 0; k < points.size(); k++){
+				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), floory,(float)(points.get(k).y*SQUARE_SIZE)));
+			}
+			double distance = distToSurfaceSegment(p3d,x,yNew-2.5,z);
+			//System.out.println(distance);
+			if(distance < 0){
+				return true;
 			}
 		}
 		return false;
