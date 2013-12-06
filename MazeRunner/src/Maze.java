@@ -78,27 +78,19 @@ public class Maze  implements VisibleObject {
 	}
 	
 	public void drawPickup(GL gl, Point2D.Float p, int z2, int type){
-		
-		double x = p.x * SQUARE_SIZE - 0.5;
-		double y = p.y * SQUARE_SIZE - 0.5;
-		
-		double z = z2 - 3.5;
-		
-		double s = 1;
-		
 		String texture = "";
-		
 		if(type == 1)
 			texture = "textures/upgrade_speed.png";
 		else if(type == 2)
 			texture = "textures/upgrade_sword.png";
-		
-		
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
+		double x = p.x * SQUARE_SIZE - 0.5;
+		double y = p.y * SQUARE_SIZE - 0.5;
+		double z = z2 - 3.5;
+		double s = 1;
+		
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		
-		
 		MainClass.textures.get(textureID).bind();
 		
 		gl.glBegin(GL.GL_QUADS);
@@ -107,14 +99,14 @@ public class Maze  implements VisibleObject {
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y +s);
 			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
-		
+					
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
 			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
-		
+				
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y + s);
@@ -128,14 +120,14 @@ public class Maze  implements VisibleObject {
 			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y + s);
 		gl.glEnd();
-	
+		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z , y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
 			gl.glTexCoord2f(1, 0); gl.glVertex3d(x , z + s, y + s);
 		gl.glEnd();
-			
+				
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
@@ -144,8 +136,8 @@ public class Maze  implements VisibleObject {
 		gl.glEnd();
 		
 		MainClass.textures.get(textureID).disable();
-		
-		
+
+
 	}
 	
 	public void drawWall2(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
@@ -269,14 +261,7 @@ public class Maze  implements VisibleObject {
 			}
 			
 		}
-//		if(y < 5){
-//			storey = storeys.get(0);
-//			w = storey.getWallList().getWalls();
-//		}
-//		else{
-//			storey = storeys.get(1);
-//			w = storey.getWallList().getWalls();
-//		}			
+		
 		double distance;
 		
 		for(int i = 0; i < w.size(); i++){
@@ -303,9 +288,9 @@ public class Maze  implements VisibleObject {
 				double ycor = storeys.get(i).getPickupList().getPickups().get(j).getPoint().y;
 				int ret = storeys.get(i).getPickupList().getPickups().get(j).getType();
 				
-				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE, ycor * SQUARE_SIZE, storeys.get(i).getFloorHeight() + 2.5)) <= 1){
+				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE, ycor * SQUARE_SIZE, 
+						storeys.get(i).getFloorHeight() + 2.5)) <= 1){
 					storeys.get(i).getPickupList().getPickups().remove(j);
-
 					return ret;
 				}
 								
@@ -342,7 +327,7 @@ public class Maze  implements VisibleObject {
 		return false;
 	}
 	
-	public boolean fellThroughFloor(double x, double yNew, double yOld,double z){
+	public boolean throughFloor(double x, double yNew, double yOld,double z){
 		ArrayList<Floor> f = new ArrayList<Floor>();
 		float floory = Float.MIN_VALUE;
 		for(int i=0;i<storeys.size();i++){
@@ -361,7 +346,31 @@ public class Maze  implements VisibleObject {
 			}
 			double distance = distToSurfaceSegment(p3d,x,yNew-2.5,z);
 			//System.out.println(distance);
-			if(distance < 0){
+			if(distance > 0 && distance < Double.MAX_VALUE -1){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean throughRoof(double x, double yNew, double yOld,double z){
+		ArrayList<Roof> r = new ArrayList<Roof>();
+		float roofy = Float.MIN_VALUE;
+		for(int i=0;i<storeys.size();i++){
+			storey = storeys.get(i);
+			if(yOld>storey.getFloorHeight()&&yOld<storey.getRoofHeight()){
+				r = storey.getRoofList().getRoofs();
+				roofy = storey.getRoofHeight();
+			}
+		}
+		for(int i = 0; i < r.size(); i++){
+			ArrayList<Point2D.Float> points = r.get(i).getPoints();
+			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
+			for(int k = 0; k < points.size(); k++){
+				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), roofy,(float)(points.get(k).y*SQUARE_SIZE)));
+			}
+			double distance = distToSurfaceSegment(p3d,x,yNew+0.1,z);
+			if(distance < 0 && distance < Double.MAX_VALUE-1){
 				return true;
 			}
 		}
