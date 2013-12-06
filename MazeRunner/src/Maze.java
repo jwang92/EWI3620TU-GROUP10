@@ -166,22 +166,43 @@ public class Maze  implements VisibleObject {
 	
 	public void drawWall(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
 			if(Math.abs(ex-sx)==0){
-				drawWall2(gl, sx-0.02f, sy, ex-0.02f, ey, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.02f, sy, ex+0.02f, ey, texture, zfloor, zroof);
-				drawWall2(gl, sx-0.02f, sy, sx+0.02f, sy, texture, zfloor, zroof);
-				drawWall2(gl, ex-0.02f, ey, ex+0.02f, ey, texture, zfloor, zroof);
+				float c=1.0f;
+				if(sy>ey){
+					c=1.0f;
+				}
+				else{
+					c=-1.0f;
+				}
+				drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
 			}
 			else if(Math.abs(ey-sy)/Math.abs(ex-sx)<1){
-				drawWall2(gl, sx, sy-0.02f, ex, ey-0.02f, texture, zfloor, zroof);
-			drawWall2(gl, sx, sy+0.02f, ex, ey+0.02f, texture, zfloor, zroof);
-				drawWall2(gl, sx, sy+0.02f, sx, sy-0.02f, texture, zfloor, zroof);
-				drawWall2(gl, ex, ey+0.02f, ex, ey-0.02f, texture, zfloor, zroof);
+				float c = 1.0f;
+				if(sx>ex){
+					c=1.0f;
+				}
+				else{
+					c=-1.0f;
+				}
+				drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
+				drawWall2(gl, sx+0.019f*c, sy+0.02f, ex-0.019f*c, ey+0.02f, texture, zfloor, zroof);
+				drawWall2(gl, sx+0.019f*c, sy+0.02f, sx+0.019f*c, sy-0.02f, texture, zfloor, zroof);
+				drawWall2(gl, ex-0.019f*c, ey+0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
 			}
 			else if(Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
-				drawWall2(gl, sx-0.02f, sy, ex-0.02f, ey, texture, zfloor, zroof);
-				drawWall2(gl, sx+0.02f, sy, ex+0.02f, ey, texture, zfloor, zroof);
-				drawWall2(gl, sx-0.02f, sy, sx+0.02f, sy, texture, zfloor, zroof);
-				drawWall2(gl, ex-0.02f, ey, ex+0.02f, ey, texture, zfloor, zroof);
+				float c=1.0f;
+				if(sy>ey){
+					c=1.0f;
+				}
+				else{
+					c=-1.0f;
+				}
+				drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
+				drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
 			}
 		}
 
