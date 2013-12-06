@@ -280,7 +280,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 			gl.glRotated(angle,0, 1, 0);
 			
-			gl.glEnable(gl.GL_COLOR_MATERIAL);
+			gl.glEnable(GL.GL_COLOR_MATERIAL);
 			
 			gl.glColor3f(0.2f, 0.2f, 0.2f);
 			
@@ -299,8 +299,9 @@ public class Enemy extends GameObject implements VisibleObject {
 				gl.glVertex3d(0.0, 0.5, 1.0);
 			gl.glEnd();
 			gl.glColor3f(1.0f, 1.0f, 1.0f);
-			
+			gl.glDisable(GL.GL_COLOR_MATERIAL);
 			gl.glPopMatrix();
+			
 		}
 	}
 	
