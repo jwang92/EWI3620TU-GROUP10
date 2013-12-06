@@ -135,10 +135,12 @@ public class Sword extends GameObject implements VisibleObject {
 						d = 20;
 						break;
 					}
-					MainClass.enemy.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
-							player.getLocationY(),
-							player.getLocationZ()-Math.cos(player.getHorAngle()*Math.PI/180), 
-							player.getHorAngle(), d);
+					for(Enemy e: MainClass.enemies){
+						e.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
+								player.getLocationY(),
+								player.getLocationZ()-Math.cos(player.getHorAngle()*Math.PI/180), 
+								player.getHorAngle(), d);
+					}
 				}
 					
 			}

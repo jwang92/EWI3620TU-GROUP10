@@ -39,7 +39,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Maze maze;
 	public static MazePheromones mazePheromones;
 	public static Player player;
-	public static Enemy enemy;
+	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public static Camera camera;
 	public static UserInput input;
 	public static Pause pause;
@@ -355,9 +355,13 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 
 
-		enemy = new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+		enemies.add(new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 				0.01 * maze.SQUARE_SIZE,							// y-position
-				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,0, true);	// z-position, texture boolean
+				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,0, true));	// z-position, texture boolean
+		
+		enemies.add(new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+				0.01 * maze.SQUARE_SIZE,							// y-position
+				3 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,0, true));
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
 				             player.getHorAngle(), player.getVerAngle() );
