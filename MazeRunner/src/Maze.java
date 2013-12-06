@@ -71,13 +71,13 @@ public class Maze  implements VisibleObject {
 				
 			}
 			for(int j = 0; j < p1.size(); j++){
-				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight());				
+				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight(), p1.get(j).getType());				
 			}
 
 		}
 	}
 	
-	public void drawPickup(GL gl, Point2D.Float p, int z2){
+	public void drawPickup(GL gl, Point2D.Float p, int z2, int type){
 		
 		double x = p.x * SQUARE_SIZE - 0.5;
 		double y = p.y * SQUARE_SIZE - 0.5;
@@ -86,7 +86,15 @@ public class Maze  implements VisibleObject {
 		
 		double s = 1;
 		
-		int textureID = MainClass.textureNames.lastIndexOf("textures/upgrade_sword.png");
+		String texture = "";
+		
+		if(type == 1)
+			texture = "textures/upgrade_speed.png";
+		else if(type == 2)
+			texture = "textures/upgrade_sword.png";
+		
+		
+		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		
@@ -122,10 +130,10 @@ public class Maze  implements VisibleObject {
 		gl.glEnd();
 	
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y + s);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z , y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x , z + s, y + s);
 		gl.glEnd();
 			
 		gl.glBegin(GL.GL_QUADS);
