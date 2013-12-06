@@ -106,7 +106,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
-		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 		drawBackground(gl);
@@ -226,12 +226,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		String texNaam = null;
 		switch(boxnum){
 		case 1:
-			texNaam = "start";
+			texNaam = "resume";
 			break;
 		case 2:
-			texNaam = "editor";
-			break;
-		case 3:
 			texNaam = "exit";
 			break;
 			
