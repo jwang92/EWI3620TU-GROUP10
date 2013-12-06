@@ -299,9 +299,9 @@ public void drawUpgrades(GL gl, TextRenderer t){
 	for(int i = 0; i < ups.size(); i++){
 		
 		if(ups.get(i)[1] == -1)
-			t.draw("Superzwaard", screenWidth - 200, screenHeight - 20);
+			t.draw("Superzwaard", screenWidth - 200, screenHeight - 20 - (i * 20));
 		else
-			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 200, screenHeight - 20);
+			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 200, screenHeight - 20 - (i * 20));
 		
 	}
 	
