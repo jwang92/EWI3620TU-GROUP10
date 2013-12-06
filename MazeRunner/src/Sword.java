@@ -19,6 +19,8 @@ public class Sword extends GameObject implements VisibleObject {
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	
+	private int type;
+	
 	//Shaders
 	private int shaderProgram = 0;
 	
@@ -26,6 +28,7 @@ public class Sword extends GameObject implements VisibleObject {
 		super(x, y, z);
 		texture = tex;
 		String file = "3d_object/sword/sword.obj";
+		this.type = type;
 		switch(type){
 		case 1:
 			file = "3d_object/sword/sword.obj";
@@ -122,11 +125,20 @@ public class Sword extends GameObject implements VisibleObject {
 				gl.glRotated(-5*attackCounter,1,0,0);
 				gl.glTranslated(0, 0.8, 0);
 				attackCounter +=1;
-				if(attackCounter==18 || attackCounter==17 || attackCounter==16){
+				if(attackCounter==18){
+					int d = 0;
+					switch(type){
+					case 1:
+						d = 10;
+						break;
+					case 2:
+						d = 20;
+						break;
+					}
 					MainClass.enemy.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
 							player.getLocationY(),
 							player.getLocationZ()-Math.cos(player.getHorAngle()*Math.PI/180), 
-							player.getHorAngle());
+							player.getHorAngle(), d);
 				}
 					
 			}

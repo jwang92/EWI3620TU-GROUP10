@@ -29,6 +29,8 @@ public class Enemy extends GameObject implements VisibleObject {
 	//Attack
 	private int attackPower = 10;
 	
+	private int health = 100;
+	
 	public Enemy(double x, double y, double z, double angle,boolean tex){
 		super(x, y, z);
 		sx=x;
@@ -83,9 +85,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
-		//px=player.locationX;
-		//py=player.locationY;
-		//pz=player.locationZ;
+		px = player.locationX;
+		py = player.locationY;
+		pz = player.locationZ;
 		if(!dood){
 			if(alerted(player)){
 				alert = alerted(player);
@@ -169,6 +171,10 @@ public class Enemy extends GameObject implements VisibleObject {
 					double lengteW = Math.sqrt(Math.pow(highestPher.x-locationX, 2)+Math.pow(highestPher.z-locationZ, 2));
 					double test = inP/Math.max(lengteV*lengteW, 00001);
 					angle = Math.acos(test)*180/Math.PI;
+					if(highestPher.x<locationX){
+						angle = -angle;
+					}
+					
 				}
 			else if(dood){
 				if(deathAngle>-90){
@@ -255,6 +261,47 @@ public class Enemy extends GameObject implements VisibleObject {
 		gl.glUseProgram(0);	
 		
 		gl.glPopMatrix();
+		
+		
+		//healthbar enemy
+		if(!dood){
+			gl.glPushMatrix();
+			
+			gl.glTranslated(locationX, locationY+5,locationZ);
+			
+			//berekening hoek
+				double inP = px-locationX;
+				double lengteV = 1;
+				double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
+				double test = inP/Math.max(lengteV*lengteW, 00001);
+				angle = Math.acos(test)*180/Math.PI;
+				if(pz>locationZ){
+					angle = -angle;
+				}
+			gl.glRotated(angle,0, 1, 0);
+			
+			gl.glEnable(gl.GL_COLOR_MATERIAL);
+			
+			gl.glColor3f(0.2f, 0.2f, 0.2f);
+			
+			gl.glBegin(GL.GL_QUADS);
+				gl.glVertex3d(-0.001, -0.05, 1.05);
+				gl.glVertex3d(-0.001, -0.05, -1.05);
+				gl.glVertex3d(-0.001, 0.55, -1.05);
+				gl.glVertex3d(-0.001, 0.55, 1.05);
+			gl.glEnd();
+			
+			gl.glColor3f(1.0f, 0.0f, 0.0f);
+			gl.glBegin(GL.GL_QUADS);
+				gl.glVertex3d(0.0, 0.0, 1.0);
+				gl.glVertex3d(0.0, 0.0, 1.0-(2.0*health/100.0));
+				gl.glVertex3d(0.0, 0.5, 1.0-(2.0*health/100.0));
+				gl.glVertex3d(0.0, 0.5, 1.0);
+			gl.glEnd();
+			gl.glColor3f(1.0f, 1.0f, 1.0f);
+			
+			gl.glPopMatrix();
+		}
 	}
 	
 	public void getMaze(Maze maze){
@@ -284,11 +331,14 @@ public class Enemy extends GameObject implements VisibleObject {
 		 return res;
 	}
 	
-	public void damage(double x, double y, double z, double h){
+	public void damage(double x, double y, double z, double h, double d){
 		if(locationX+3>x && x>locationX-3){
 			double r=Math.sqrt(Math.pow(3,2)+Math.pow(x,2));
 			if(locationZ+r>z && z>locationZ-r){
-				dood =true;
+				health -=d;
+				if(health<=0){
+					dood = true;
+				}
 			}
 		}
 	}
