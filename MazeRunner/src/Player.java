@@ -218,7 +218,7 @@ public class Player extends GameObject {
 			
 			
 			double dY = maze.isRamp(locationX, locationY, locationZ);
-			if(dY != 0){
+			if(dY != Double.MAX_VALUE){
 				verticalSpeed = 0;
 				locationY += dY;
 			}
@@ -233,12 +233,13 @@ public class Player extends GameObject {
 			}
 			else{
 				verticalSpeed -= gravity*deltaTime;
-			}
-			newLocationY += verticalSpeed*deltaTime;
-			if(verticalSpeed<=0){
-				fellThroughFloor = maze.fellThroughFloor(locationX, newLocationY, locationY, locationZ);
+				newLocationY += verticalSpeed*deltaTime;
+				if(verticalSpeed<0){
+					fellThroughFloor = maze.fellThroughFloor(locationX, newLocationY, locationY, locationZ);
+				}
 			}
 			if(fellThroughFloor){
+				System.out.println("test");
 				locationY = maze.getFloorHeight(locationY)+2.5;
 			}
 			else{

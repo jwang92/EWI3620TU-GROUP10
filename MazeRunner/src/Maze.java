@@ -391,7 +391,7 @@ public class Maze  implements VisibleObject {
 			//System.out.println("OffRamp: "+ y);
 			
 		}
-		return 0;
+		return Double.MAX_VALUE;
 		
 		
 	}
