@@ -77,13 +77,66 @@ public class Maze  implements VisibleObject {
 		}
 	}
 	
-	public void drawPickup(GL gl, Point2D.Float p, int z){
+	public void drawPickup(GL gl, Point2D.Float p, int z2){
 		
-		GLUT glut = new GLUT();
-		gl.glPushMatrix();
-		gl.glTranslated(p.x * SQUARE_SIZE, z - 2.5, p.y * SQUARE_SIZE);
-		glut.glutSolidCube(1.0f);
-		gl.glPopMatrix();
+		double x = p.x * SQUARE_SIZE - 0.5;
+		double y = p.y * SQUARE_SIZE - 0.5;
+		
+		double z = z2 - 3.5;
+		
+		double s = 1;
+		
+		int textureID = MainClass.textureNames.lastIndexOf("textures/upgrade_sword.png");
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		
+		
+		MainClass.textures.get(textureID).bind();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y +s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y + s);
+		gl.glEnd();
+	
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y + s);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y + s);
+		gl.glEnd();
+			
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
+		gl.glEnd();
+		
+		MainClass.textures.get(textureID).disable();
+		
 		
 	}
 	
