@@ -401,8 +401,15 @@ public void setSwordloader(boolean tf){
         // Display all the visible objects of MazeRunner.
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
-        	for(Enemy e: MainClass.enemies){
-        		e.display(gl);
+        	for(int i=0;i<MainClass.enemies.size();i++){
+        		Enemy e = MainClass.enemies.get(i);
+        		if(e.needRemoval()){
+        			MainClass.enemies.remove(e);
+        			i--;
+        		}
+        		else{
+        			e.display(gl);
+        		}
         	}
             MainClass.sword.display(gl);
             MainClass.shield.display(gl);

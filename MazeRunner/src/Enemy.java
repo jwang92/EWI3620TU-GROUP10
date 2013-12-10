@@ -16,12 +16,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	private int displayList;
 	private double sx, sy,sz, px, py,pz;
 	private boolean alert;
-	public boolean dood = false;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private int attackTimeout = 0;
 	private double angle, healthAngle;
-	private int deathAngle = 0;
+	
 	private Pheromone highestPher;
 	//Shaders
 	private int shaderProgram = 0;
@@ -29,7 +28,13 @@ public class Enemy extends GameObject implements VisibleObject {
 	//Attack
 	private int attackPower = 10;
 	
+	//Health
 	private int health = 100;
+	
+	//Death
+	private int deathAngle = 0;
+	public boolean dood = false;
+	private boolean remove = false;
 	
 	public Enemy(double x, double y, double z, double angle,boolean tex){
 		super(x, y, z);
@@ -82,6 +87,10 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public void genVBO(GL gl){
 		vboHandle = OBJLoader.createVBO(m, gl);
+	}
+	
+	public boolean needRemoval(){
+		return remove;
 	}
 		
 	public void update(int deltaTime, Player player){
@@ -181,6 +190,7 @@ public class Enemy extends GameObject implements VisibleObject {
 					deathAngle -= 2.5;
 				}
 				else if(deathAngle<=-90){
+					remove = true;
 					MainClass.enemies.remove(this);
 				}
 			}
