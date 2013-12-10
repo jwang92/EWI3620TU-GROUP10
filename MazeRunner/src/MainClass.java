@@ -354,7 +354,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 
-
+		enemies.removeAll(enemies);
 		enemies.add(new Enemy(	2 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 				0.01 * maze.SQUARE_SIZE,							// y-position
 				5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,0, true));	// z-position, texture boolean

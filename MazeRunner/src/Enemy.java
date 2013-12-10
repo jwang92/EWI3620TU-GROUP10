@@ -337,7 +337,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public void damage(double x, double y, double z, double h, double d){
 		if(locationX+3>x && x>locationX-3){
-			double r=Math.sqrt(Math.pow(3,2)+Math.pow(x,2));
+			double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
 			if(locationZ+r>z && z>locationZ-r){
 				health -=d;
 				if(health<=0){
