@@ -20,7 +20,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private int attackTimeout = 0;
-	private double angle;
+	private double angle, healthAngle;
 	private int deathAngle = 0;
 	private Pheromone highestPher;
 	//Shaders
@@ -180,6 +180,9 @@ public class Enemy extends GameObject implements VisibleObject {
 				if(deathAngle>-90){
 					deathAngle -= 2.5;
 				}
+				else if(deathAngle<=-90){
+					MainClass.enemies.remove(this);
+				}
 			}
 			gl.glRotated(angle,0, 1, 0);
 			gl.glRotated(deathAngle, 1, 0, 0);
@@ -274,11 +277,11 @@ public class Enemy extends GameObject implements VisibleObject {
 				double lengteV = 1;
 				double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
 				double test = inP/Math.max(lengteV*lengteW, 00001);
-				angle = Math.acos(test)*180/Math.PI;
+				healthAngle = Math.acos(test)*180/Math.PI;
 				if(pz>locationZ){
-					angle = -angle;
+					healthAngle = -healthAngle;
 				}
-			gl.glRotated(angle,0, 1, 0);
+			gl.glRotated(healthAngle,0, 1, 0);
 			
 			gl.glEnable(GL.GL_COLOR_MATERIAL);
 			
