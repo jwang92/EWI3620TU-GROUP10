@@ -268,6 +268,7 @@ public class OBJLoader {
     public static Model loadTexturedModel(File f) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(f));
         Model m = new Model();
+        m.setModelName(f.getAbsolutePath());
         ModelPart part = new ModelPart();
         Model.Material currentMaterial = new Model.Material();
         String line;

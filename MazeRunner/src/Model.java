@@ -38,6 +38,9 @@ import com.sun.opengl.util.texture.Texture;
 
 /** @author Oskar */
 public class Model {
+	
+	//Name:
+	private String modelName;
 	private final List<ModelPart> parts = new ArrayList<ModelPart>();
 	private int[] verticesOffsetArray;
 	private int[] normalOffsetArray;
@@ -62,6 +65,10 @@ public class Model {
         } else {
             gl.glShadeModel(GL.GL_FLAT);
         }
+    }
+    
+    public void setModelName(String name){
+    	modelName = name;
     }
     
     public void addModelPart(ModelPart p){
@@ -232,5 +239,13 @@ public class Model {
             this.normalIndices[2] = normalIndices[2];
             this.material = material;
         }
+    }
+    
+    public boolean equals(Object other){
+    	if(other instanceof Model){
+    		Model that = (Model)other;
+    		return this.modelName.equals(that.modelName);
+    	}
+    	return false;
     }
 }

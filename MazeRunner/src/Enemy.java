@@ -12,7 +12,12 @@ public class Enemy extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 	private double speed = 0.0015;
+	
+	//Model
+	private String type;
 	private Model m ;
+	
+	//
 	private int displayList;
 	private double sx, sy,sz, px, py,pz;
 	private boolean alert;
@@ -46,7 +51,17 @@ public class Enemy extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/Predator_Youngblood/Predator_Youngblood.obj")));
+				String modelName =  "3d_object/Predator_Youngblood/Predator_Youngblood.obj";
+				if(!MainClass.enemieModelNames.contains(modelName)){
+					MainClass.enemieModelNames.add(modelName);
+					Model tempmodel = OBJLoader.loadTexturedModel((new File(modelName)));
+					MainClass.enemieModels.add(tempmodel);
+				}
+				if(MainClass.enemieModelNames.contains(modelName)){
+					int modelID = MainClass.enemieModelNames.lastIndexOf(modelName);
+					type = modelName;
+					m = MainClass.enemieModels.get(modelID);
+				}
 			}
 			else{
 				m = OBJLoader.loadModel((new File("3d_object/Predator_Youngblood/Predator_Youngblood.obj")));
@@ -56,6 +71,10 @@ public class Enemy extends GameObject implements VisibleObject {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String getType(){
+		return type;
 	}
 	
 	public double getSpeed() {
@@ -87,6 +106,14 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public void genVBO(GL gl){
 		vboHandle = OBJLoader.createVBO(m, gl);
+	}
+	
+	public IntBuffer getVBOHandle(){
+		return vboHandle;
+	}
+	
+	public void setVBOHandle(IntBuffer vbo){
+		vboHandle = vbo;
 	}
 	
 	public boolean needRemoval(){
@@ -191,7 +218,6 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 				else if(deathAngle<=-90){
 					remove = true;
-					MainClass.enemies.remove(this);
 					MainClass.player.setScore(100);
 				}
 			}

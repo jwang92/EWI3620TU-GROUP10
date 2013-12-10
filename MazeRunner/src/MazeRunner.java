@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.IntBuffer;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
@@ -201,8 +202,21 @@ public class MazeRunner implements GLEventListener{
         
         // Set the shading model.
         gl.glShadeModel( GL.GL_SMOOTH );
+        ArrayList<String> loadedModels = new ArrayList<String>();
+        ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
         for(Enemy e: MainClass.enemies){
-        	e.genVBO(gl);
+        	if(!loadedModels.contains(e.getType())){
+            	e.genVBO(gl);
+            	loadedModels.add(e.getType());
+            	tempEnemies.add(e);
+        	}
+        	else{
+        		int modelID = loadedModels.indexOf(e.getType());
+        		IntBuffer vbo = tempEnemies.get(modelID).getVBOHandle();
+        		e.setVBOHandle(vbo);
+        	}
+        	System.out.println(e.getVBOHandle().get(0));
+
         }
         MainClass.sword.genVBO(gl);
         MainClass.shield.genVBO(gl);
@@ -333,6 +347,7 @@ public void drawScore(GL gl, TextRenderer t){
 	t.draw(Integer.toString(score), screenWidth - 100, 10);
 	t.endRendering();
 }
+
 
 public void drawHealthbar(GL gl, TextRenderer t){
 	
