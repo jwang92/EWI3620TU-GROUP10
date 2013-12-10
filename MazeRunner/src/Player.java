@@ -133,7 +133,10 @@ public class Player extends GameObject {
 	}
 
 	public void setDeltaHealth(int health){
-		this.health += health;
+		if(this.health + health > 100)
+			this.health = 100;
+		else
+			this.health += health;
 	}
 	
 	public int getHealth(){
@@ -388,6 +391,9 @@ public class Player extends GameObject {
 				temp[0] = 2; // type 2
 				temp[1] = -1; //tijd voor upgrade 2 seconden
 				currentUpgrades.add(temp);
+				break;
+			case 3: // Health
+				setDeltaHealth(30);
 				break;
 			default:
 				// niets doen
