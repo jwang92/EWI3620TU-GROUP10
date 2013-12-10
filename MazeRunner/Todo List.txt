@@ -1,0 +1,31 @@
+ToDo list Mediavel Invasion	(++ done, -- not done, +- incomplete)
+
+
+Game Fundamentals:
++- Level editor (moet nog uitgebreid worden)
+++ Loading Level from file
+++ Game states
+-- Maze Layout changeable during gameplay
+-- Game Objective
++- Enemies
+-- Scoring
+
+Computational Intelligence
+-+ Swarm intelligence
+
+Web and Database
+-- Database scoring
+
+Computer graphics
+++ Simple animation
+++ Textures
+
+Miscellaneous
++- Path finding
++- Pick-ups
++- Weapons (ranged weapon)
++- Sound effects
+++ Improved collision detection
+
+
+
