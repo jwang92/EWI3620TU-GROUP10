@@ -57,7 +57,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private static final byte DM_FLOOR = 2;
 	private static final byte DM_ROOF = 3;
 	private static final byte DM_ERASE = 4;
-	private byte drawMode = DM_OBJECT;
+	private static final byte DM_LVLINFO = 5;
+	private byte drawMode = DM_WALL;
+	
 	
 	// 1 = Draw, 2 = Erase
 	private int mode = 1;
@@ -89,6 +91,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private Storey storey = new Storey();
 	private ArrayList<Storey> storeys;
 	private int storeyNumber = 1;
+	private LevelInfo lvlinfo;
 	
 	
 	//Texture
@@ -103,6 +106,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//private int textureID;
 
 	private int objectToDraw;
+	private int lvlinfoToDraw;
 	private int wallToHighlight = -1;
 	private int floorToHighlight = -1;
 	private int roofToHighlight = -1;
@@ -281,6 +285,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		case DM_OBJECT:
 			drawFloors(gl);
 			break;
+		case DM_LVLINFO:
+			drawFloors(gl);
+			break;
 		case DM_WALL:
 			drawFloors(gl);
 			break;
@@ -298,8 +305,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		drawObjects(gl);
 		
 		//Draw the grid
-		
 		drawGrid(gl);
+		
+		// Draw levelinfo
+		drawLevelInfo(gl);
 		
 		//Delete the old points if neccesary
 		deletePoints();
@@ -328,6 +337,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	public LevelInfo getLevelInfo(){
+		return lvlinfo;
+	}
+	
 	public ArrayList<Storey> getStoreys(){
 		return storeys;
 	}
@@ -339,10 +352,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	public boolean loadFromFolder(String loadfolder) throws FileNotFoundException{
 		grid.clear();
 		storeys = new ArrayList<Storey>();
+		lvlinfo = new LevelInfo();
 		try {
 		    File folder = new File(loadfolder);
 		    File[] tList = folder.listFiles();
-		    int numberOfStoreys = tList.length;
+		    int numberOfStoreys = tList.length - 1; // -1 for LevelInfo.txt
 		    for(int i = 0; i<tList.length;i++){
 			    if(tList[i].getName().equals("Thumbs.db")){
 			    	numberOfStoreys -= 1;
@@ -360,7 +374,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					return false;
 				}
 
-			}			
+			}	
+			
+			lvlinfo.Read(loadfolder + "/LevelInfo.txt");
+			
 		} catch (FileNotFoundException e) {
 			storeys = new ArrayList<Storey>();
 			return false;
@@ -414,6 +431,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			// Object tekenen
 			drawMode = DM_OBJECT;
 		}
+		else if(i == 6){
+			drawMode = DM_LVLINFO;			
+		}
 	}
 	
 	public void setMode(int i){
@@ -426,6 +446,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	public void setWhatObject(int i){
 		
 		objectToDraw = i; // 1 = Ramp
+		
+	}
+	
+	public void setWhatLevelinfo(int i){
+		
+		lvlinfoToDraw = i; // 1 = Ramp
 		
 	}
 	
@@ -467,6 +493,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 				Object obj = new ObjectRamp(temp, "brick.png");
 				storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+				
+			}
+			break;
+		case DM_LVLINFO:
+			if (points.size() >= 1) {
+
+				p1 = gridpoints.get(0);
+
+				lvlinfo.setPlayerPos(new Point3D(p1.x, p1.y, storeyNumber));
 				
 			}
 			break;
@@ -540,6 +575,35 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y, false);
 			}
 		}
+	}
+	
+	public void drawLevelInfo(GL gl){
+		
+		if(storeys.size()>0){
+			
+			Point3D pPos = lvlinfo.getPlayerPos();
+			
+			// Draw player position
+			if(pPos.z == storeyNumber){
+				
+				ArrayList<Point2D.Float> drawP = new ArrayList<Point2D.Float>();
+				Point2D.Float p1 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - (gridDistance / 8), 	screenHeight - gridOffsetY - pPos.y * gridDistance + gridDistance - (gridDistance / 8) + (gridDistance / 4));
+				drawP.add(p1);
+				Point2D.Float p2 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - gridDistance + (gridDistance / 8), 					screenHeight - gridOffsetY - pPos.y * gridDistance + gridDistance - (gridDistance / 8) + (gridDistance / 4));
+				drawP.add(p2);
+				Point2D.Float p3 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - gridDistance + (gridDistance / 8),					screenHeight - gridOffsetY - pPos.y * gridDistance + (gridDistance / 8) + (gridDistance / 4));
+				drawP.add(p3);
+				Point2D.Float p4 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - (gridDistance / 8), 	screenHeight - gridOffsetY - pPos.y * gridDistance + (gridDistance / 8) + (gridDistance / 4));
+				drawP.add(p4);
+				
+				int textureID = textureNames.lastIndexOf("textures/playerposition.png");
+				
+				polygonOnScreen(gl, drawP, textureID, true, false);
+				
+			}
+			
+		}
+		
 	}
 	
 	private void drawObjects(GL gl){
@@ -675,6 +739,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			gl.glColor3f(1.0f, 1.0f, 1.0f);
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		//gl.glTexEnvf(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_DECAL);
 		
 		//Apply texture
@@ -768,6 +834,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		if (drawMode == DM_OBJECT && points.size() >= 1) {
 			points.clear();
 			gridpoints.clear();
+		} else if (drawMode == DM_LVLINFO && points.size() >= 1) {
+			points.clear();
+			gridpoints.clear();
 		} else if (drawMode == DM_WALL && points.size() >= 2) {
 			// If we're drawing lines and two points were already stored, reset the points list
 			points.clear();
@@ -853,7 +922,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 			}
 			// Objecten tekenen
-			else if (drawMode == DM_OBJECT && points.size() == 0){
+			else if ((drawMode == DM_OBJECT || drawMode == DM_LVLINFO) && points.size() == 0){
 					
 				ArrayList<Object> tempList = objectList.getObjects();
 				

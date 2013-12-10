@@ -16,12 +16,13 @@ import javax.swing.*;
 public class LevelEditor implements ActionListener{
 	
 	private LevelEditorFrame le;
-	private String savefolder = "savefiles/testlevel8";
+	private String savefolder = "savefiles/kasteel";
 	private String defaultLoadFolder = "savefiles";
 	private int verdiepingNummer = 1;
 	private int numberOfStoreys = 4;
 	private JPanel opties1;
 	private JPanel opties2;
+	private JPanel opties2b;
 	private JPanel opties3;
 	private JPanel opties4;
 	private JPanel controlArea;
@@ -119,6 +120,9 @@ public class LevelEditor implements ActionListener{
 	    JRadioButton option5 = new JRadioButton("Object");
 	    bg.add(option5);
 	    opties1.add(option5);
+	    JRadioButton option6 = new JRadioButton("LevelInfo");
+	    bg.add(option6);
+	    opties1.add(option6);
 	    
 	    cons.ipady = 0;
         cons.ipadx = 0;
@@ -139,6 +143,9 @@ public class LevelEditor implements ActionListener{
 	    
 	    option5.setActionCommand("Object");
 	    option5.addActionListener(this);
+	    
+	    option6.setActionCommand("LevelInfo");
+	    option6.addActionListener(this);
 	    
 	    //System.out.println();
 	    
@@ -164,7 +171,7 @@ public class LevelEditor implements ActionListener{
             	
         }
 	    
-	    opties2 = new JPanel(new GridLayout(4, 1));
+	    opties2 = new JPanel(new GridLayout(1, 1));
 	    opties2.setBorder(BorderFactory.createTitledBorder("Texture:"));
 	    //String[] textures = {"brick.png", "wood.png", "trees.png", "water.png"};
 	    
@@ -181,6 +188,25 @@ public class LevelEditor implements ActionListener{
         gridBag.setConstraints(opties2, cons);
 		
 		controlArea.add(opties2);
+		
+		opties2b = new JPanel(new GridLayout(1, 1));
+	    opties2b.setBorder(BorderFactory.createTitledBorder("Level info:"));
+	    
+	    String[] opties = {"Startpositie"};
+	    
+		c = new JComboBox(opties);
+		c.addActionListener(this);
+		c.setActionCommand("LevelInfo");
+		opties2b.add(c);
+		
+		cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 4;
+        gridBag.setConstraints(opties2b, cons);
+		
+		controlArea.add(opties2b);
 		
 		opties3 = new JPanel(new GridLayout(4,1));
 	    opties3.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
@@ -201,7 +227,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 0.3;
         cons.gridx = 1;
-        cons.gridy = 4;
+        cons.gridy = 5;
         gridBag.setConstraints(opties3, cons);
 	    controlArea.add(opties3);
 	    
@@ -218,7 +244,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 1;
         cons.gridx = 1;
-        cons.gridy = 5;
+        cons.gridy = 6;
         gridBag.setConstraints(opties4, cons);
 	    controlArea.add(opties4);
 		
@@ -308,6 +334,10 @@ public class LevelEditor implements ActionListener{
 			le.setDrawMode(5);
 			le.setWhatObject(1);
 		}
+		else if(cmd.equals("LevelInfo")){
+			le.setDrawMode(6);
+			le.setWhatLevelinfo(1);
+		}
 		else if(cmd.equals("save")){
 			
 			JFileChooser fc = new JFileChooser(defaultLoadFolder);
@@ -329,7 +359,7 @@ public class LevelEditor implements ActionListener{
 			JFileChooser fc = new JFileChooser(defaultLoadFolder);
 			fc.setDialogTitle("Map openen");
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int retrival = fc.showSaveDialog(null);
+			int retrival = fc.showOpenDialog(null);
 			
 			if (retrival == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -426,11 +456,15 @@ public class LevelEditor implements ActionListener{
 	
 	private void saveToFile(String selectedFolder) throws IOException{
 		ArrayList<Storey> storeys = le.getStoreys();
-		for(int i = 0;i<numberOfStoreys;i++){
+		for(int i = 0;i<numberOfStoreys - 1;i++){
 			File f = new File(selectedFolder + "/Floor " + (i+1));
 			f.mkdirs();
 			storeys.get(i).WriteToFile(selectedFolder + "/Floor " + (i+1));
 		}	
+		
+		// Levelinfo wegschrijven
+		le.getLevelInfo().WriteToFile(selectedFolder + "/LevelInfo.txt");
+		
 		savefolder = selectedFolder;
 	}
 	

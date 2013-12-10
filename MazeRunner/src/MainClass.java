@@ -349,9 +349,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		maze = new Maze();
 		mazePheromones = new MazePheromones();
-		player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
-							 maze.SQUARE_SIZE / 2,							// y-position
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+		
+		player = new Player( maze.getLevelInfo().getPlayerPos().x * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+							maze.getLevelInfo().getPlayerPos().z * 5 - 2.5,							// y-position
+							 maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							

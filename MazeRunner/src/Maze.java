@@ -20,25 +20,38 @@ public class Maze  implements VisibleObject {
 	private ArrayList<Storey> storeys;
 	private String loadfolder = "savefiles/kasteel";
 	private int numberOfStoreys;
+	private LevelInfo lvlinfo;
 	
 	public Maze(){
 		storeys = new ArrayList<Storey>();
 		try {
+			
 		    File folder = new File(loadfolder);
 		    File[] tList = folder.listFiles();
-		    numberOfStoreys = tList.length;
+		    numberOfStoreys = tList.length - 1; // -1 for LevelInfo.txt
+		    
 		    for(int i = 0; i<tList.length;i++){
 			    if(tList[i].getName().equals("Thumbs.db")){
 			    	numberOfStoreys -= 1;
-			    }  
+			    } 
 		    }
+		    
 			for(int i =1;i<numberOfStoreys+1;i++){
 				storey = Storey.Read(loadfolder + "/Floor " + i);
 				storeys.add(storey);
-			}			
+			}
+			
+			lvlinfo = new LevelInfo();
+			lvlinfo.Read(loadfolder + "/LevelInfo.txt");
+			
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public LevelInfo getLevelInfo(){
+		return lvlinfo;
 	}
 	
 	public void display(GL gl){
