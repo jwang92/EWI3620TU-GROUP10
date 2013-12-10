@@ -192,6 +192,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				else if(deathAngle<=-90){
 					remove = true;
 					MainClass.enemies.remove(this);
+					MainClass.player.setScore(100);
 				}
 			}
 			gl.glRotated(angle,0, 1, 0);

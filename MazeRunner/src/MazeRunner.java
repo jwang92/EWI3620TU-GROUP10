@@ -255,6 +255,7 @@ public void draw2D(GL gl){
 		drawHit(gl);
 		drawHealthbar(gl, tr);
 		drawUpgrades(gl, tr);
+		drawScore(gl, tr);
 	
 		
 		gl.glEnable( GL.GL_DEPTH_TEST );
@@ -324,6 +325,13 @@ public void drawUpgrades(GL gl, TextRenderer t){
 		
 	}
 	
+}
+
+public void drawScore(GL gl, TextRenderer t){
+	int score = MainClass.player.getScore();
+	t.beginRendering(screenWidth, screenHeight);
+	t.draw(Integer.toString(score), screenWidth - 100, 10);
+	t.endRendering();
 }
 
 public void drawHealthbar(GL gl, TextRenderer t){

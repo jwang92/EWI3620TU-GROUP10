@@ -26,6 +26,7 @@ public class Player extends GameObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 	private int health;
+	public int score=0;
 	
 	//Defense
 	private int defensePower = 0;
@@ -409,5 +410,13 @@ public class Player extends GameObject {
 	 */
 	public void getMaze(Maze maze){
 		this.maze=maze;
+	}
+	
+	public void setScore(int s){
+		score += s;
+	}
+	
+	public int getScore(){
+		return score;
 	}
 }
