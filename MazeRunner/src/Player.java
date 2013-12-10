@@ -319,6 +319,9 @@ public class Player extends GameObject {
 			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.walking == true){
 				sound.stopWalk();
 			}
+			if(control.getAttack() && MainClass.sword.attackCounter == 9){
+				sound.swing();
+			}
 			
 			// Pickupcheck
 			checkPickup(locationX, locationY, locationZ);
@@ -385,6 +388,7 @@ public class Player extends GameObject {
 			case 2: // Swordupgrade
 				
 				MainClass.sword = new Sword(x, y, z, true, 2);
+				sound.dropSword();
 				MainClass.sword.setMaze(MainClass.maze);
 				MainClass.sword.setPlayer(MainClass.player);
 				MainClass.mazeRunner.setSwordloader(false);
