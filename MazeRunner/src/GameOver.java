@@ -254,6 +254,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 			MainClass.canvas.removeGLEventListener(this);
 			MainClass.initObjects();
 			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
+			MainClass.input.setDefMouse(me);
 			MainClass.state.setStopGameOver(true);
 			MainClass.state.setStopMainGame(false);
 		}
