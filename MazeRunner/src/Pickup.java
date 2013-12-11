@@ -1,4 +1,5 @@
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +13,13 @@ public class Pickup {
 		
 		p = point;
 		type = t;
+		
+	}
+	
+	public Pickup(){
+		
+		p = new Point2D.Float(-1, -1);
+		type = -1;
 		
 	}
 	

@@ -58,6 +58,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private static final byte DM_ROOF = 3;
 	private static final byte DM_ERASE = 4;
 	private static final byte DM_LVLINFO = 5;
+	private static final byte DM_PICKUP = 6;
 	private byte drawMode = DM_WALL;
 	
 	
@@ -87,6 +88,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private Object object = new Object();
 	private ObjectList objectList = new ObjectList();
 	
+	//Pickups
+	private Pickup pickup = new Pickup();
+	private PickupList pickupList = new PickupList();
+	
 	//Storey
 	private Storey storey = new Storey();
 	private ArrayList<Storey> storeys;
@@ -107,6 +112,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 
 	private int objectToDraw;
 	private int lvlinfoToDraw;
+	private int pickupToDraw;
 	private int wallToHighlight = -1;
 	private int floorToHighlight = -1;
 	private int roofToHighlight = -1;
@@ -288,6 +294,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		case DM_LVLINFO:
 			drawFloors(gl);
 			break;
+		case DM_PICKUP:
+			drawFloors(gl);
+			break;
 		case DM_WALL:
 			drawFloors(gl);
 			break;
@@ -309,6 +318,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		// Draw levelinfo
 		drawLevelInfo(gl);
+		
+		// Draw pickups
+		drawPickups(gl);
 		
 		//Delete the old points if neccesary
 		deletePoints();
@@ -434,6 +446,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		else if(i == 6){
 			drawMode = DM_LVLINFO;			
 		}
+		else if(i == 7){
+			drawMode = DM_PICKUP;			
+		}
 	}
 	
 	public void setMode(int i){
@@ -451,7 +466,13 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void setWhatLevelinfo(int i){
 		
-		lvlinfoToDraw = i; // 1 = Ramp
+		lvlinfoToDraw = i; // 1 = PlayerPosition
+		
+	}
+	
+	public void setWhatPickup(int i){
+		
+		pickupToDraw = i; // 1 = Speed
 		
 	}
 	
@@ -502,6 +523,20 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				p1 = gridpoints.get(0);
 
 				lvlinfo.setPlayerPos(new Point3D(p1.x, p1.y, storeyNumber));
+				
+			}
+			break;
+		case DM_PICKUP:
+			if (points.size() >= 1) {
+
+				p1 = gridpoints.get(0);
+
+				double x = p1.x;
+				double y = p1.y;
+				
+				Point2D.Float newP = new Point2D.Float((float) x, (float) y);
+				storeys.get(storeyNumber - 1).getPickupList().addPickup(new Pickup(newP, 1));
+				
 				
 			}
 			break;
@@ -575,6 +610,49 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					wallOnScreen(gl, p1.x, p1.y, p2.x, p2.y, false);
 			}
 		}
+	}
+	
+	public void drawPickups(GL gl){
+		
+		if(storeys.size()>0){
+			
+			pickupList = storeys.get(storeyNumber - 1).getPickupList();
+						
+			for(int i = 0;i< pickupList.getPickups().size();i++){
+				
+				Point2D.Float pPos = pickupList.getPickups().get(i).getPoint();
+				ArrayList<Point2D.Float> drawP = new ArrayList<Point2D.Float>();
+				Point2D.Float p1 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - (gridDistance / 4), 	screenHeight - gridOffsetY - pPos.y * gridDistance + gridDistance - (gridDistance / 4));
+				drawP.add(p1);
+				Point2D.Float p2 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - gridDistance + (gridDistance / 4), 					screenHeight - gridOffsetY - pPos.y * gridDistance + gridDistance - (gridDistance / 4));
+				drawP.add(p2);
+				Point2D.Float p3 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - gridDistance + (gridDistance / 4),					screenHeight - gridOffsetY - pPos.y * gridDistance + (gridDistance / 4));
+				drawP.add(p3);
+				Point2D.Float p4 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - (gridDistance / 4), 	screenHeight - gridOffsetY - pPos.y * gridDistance + (gridDistance / 4));
+				drawP.add(p4);
+				
+				String texture = "upgrade_speed.png";
+				switch(pickupList.getPickups().get(i).getType()){
+				case 1:
+					texture = "upgrade_speed.png";
+					break;
+				case 2:
+					texture = "upgrade_sword.png";
+					break;
+				case 3:
+					texture = "upgrade_health.png";
+					break;
+					
+				}
+				
+				int textureID = textureNames.lastIndexOf("textures/"+texture);
+				
+				polygonOnScreen(gl, drawP, textureID, true, false);
+				
+			}
+			
+		}
+		
 	}
 	
 	public void drawLevelInfo(GL gl){
@@ -837,7 +915,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		} else if (drawMode == DM_LVLINFO && points.size() >= 1) {
 			points.clear();
 			gridpoints.clear();
-		} else if (drawMode == DM_WALL && points.size() >= 2) {
+		} else if (drawMode == DM_PICKUP && points.size() >= 1) {
+			points.clear();
+			gridpoints.clear();
+		}  else if (drawMode == DM_WALL && points.size() >= 2) {
 			// If we're drawing lines and two points were already stored, reset the points list
 			points.clear();
 			gridpoints.clear();

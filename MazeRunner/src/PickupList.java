@@ -18,6 +18,10 @@ public class PickupList {
 		return pickups;
 	}
 
+	public void addPickup(Pickup p){
+		pickups.add(p);
+	}
+	
 	public void Read(String FileName) throws FileNotFoundException{
 		
 		pickups.clear();

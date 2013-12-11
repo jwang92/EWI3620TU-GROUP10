@@ -23,6 +23,7 @@ public class LevelEditor implements ActionListener{
 	private JPanel opties1;
 	private JPanel opties2;
 	private JPanel opties2b;
+	private JPanel opties2c;
 	private JPanel opties3;
 	private JPanel opties4;
 	private JPanel controlArea;
@@ -123,6 +124,9 @@ public class LevelEditor implements ActionListener{
 	    JRadioButton option6 = new JRadioButton("LevelInfo");
 	    bg.add(option6);
 	    opties1.add(option6);
+	    JRadioButton option7 = new JRadioButton("Upgrades");
+	    bg.add(option7);
+	    opties1.add(option7);
 	    
 	    cons.ipady = 0;
         cons.ipadx = 0;
@@ -146,6 +150,9 @@ public class LevelEditor implements ActionListener{
 	    
 	    option6.setActionCommand("LevelInfo");
 	    option6.addActionListener(this);
+	    
+	    option7.setActionCommand("Pickups");
+	    option7.addActionListener(this);
 	    
 	    //System.out.println();
 	    
@@ -208,6 +215,25 @@ public class LevelEditor implements ActionListener{
 		
 		controlArea.add(opties2b);
 		
+		opties2c = new JPanel(new GridLayout(1, 1));
+	    opties2c.setBorder(BorderFactory.createTitledBorder("Pickups:"));
+	    
+	    String[] opties2 = {"Speed", "Zwaard", "Health"};
+	    
+		c = new JComboBox(opties2);
+		c.addActionListener(this);
+		c.setActionCommand("setPickups");
+		opties2c.add(c);
+		
+		cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 5;
+        gridBag.setConstraints(opties2c, cons);
+		
+		controlArea.add(opties2c);
+		
 		opties3 = new JPanel(new GridLayout(4,1));
 	    opties3.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
 	    JButton b = new JButton("Sla map op");
@@ -227,7 +253,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 0.3;
         cons.gridx = 1;
-        cons.gridy = 5;
+        cons.gridy = 6;
         gridBag.setConstraints(opties3, cons);
 	    controlArea.add(opties3);
 	    
@@ -244,7 +270,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 1;
         cons.gridx = 1;
-        cons.gridy = 6;
+        cons.gridy = 7;
         gridBag.setConstraints(opties4, cons);
 	    controlArea.add(opties4);
 		
@@ -337,6 +363,23 @@ public class LevelEditor implements ActionListener{
 		else if(cmd.equals("LevelInfo")){
 			le.setDrawMode(6);
 			le.setWhatLevelinfo(1);
+		}
+		else if(cmd.equals("Pickups")){
+			le.setDrawMode(7);
+		}
+		else if(cmd.equals("setPickups")){
+			JComboBox type = (JComboBox) evt.getSource();
+			String pu =(String)type.getSelectedItem();
+			
+			int whatPickup = 0;
+			if(pu.equals("Speed"))
+				whatPickup = 1;
+			else if(pu.equals("Zwaard"))
+				whatPickup = 2;
+			else if(pu.equals("Health"))
+				whatPickup = 3;
+			
+			le.setWhatPickup(whatPickup);
 		}
 		else if(cmd.equals("save")){
 			
@@ -472,9 +515,9 @@ public class LevelEditor implements ActionListener{
 		File folder = new File(loadfolder);
 		File[] tList = folder.listFiles();
 		
-		numberOfStoreys = tList.length;
+		numberOfStoreys = tList.length - 1;
 
-		for(int j = 0; j<tList.length;j++){
+		for(int j = 0; j < tList.length;j++){
 		    if(tList[j].getName().equals("Thumbs.db")){
 		    	numberOfStoreys -= 1;
 		    }  
