@@ -315,15 +315,31 @@ public void drawUpgrades(GL gl, TextRenderer t){
 	
 	t.beginRendering(screenWidth, screenHeight);
 	
+	boolean swordText = false;
+	
 	for(int i = 0; i < ups.size(); i++){
 		
-		if(ups.get(i)[1] == -1)
-			t.draw("Superzwaard", screenWidth - 200, screenHeight - 20 - (i * 20));
-		else
-			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 200, screenHeight - 20 - (i * 20));
-		
+		switch(ups.get(i)[0]){
+		case 1:
+			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 220, screenHeight - 20 - (i * 20));
+			break;
+		case 2:
+			swordText = true;
+			switch(ups.get(i)[2]){
+			case 2:
+				t.draw("Superzwaard", screenWidth - 220, screenHeight - 20 - (i * 20));
+				break;
+			case 3:
+				t.draw("Leeuwenzwaard :o", screenWidth - 220, screenHeight - 20 - (i * 20));
+			}
+			
+			break;
+		}
+
 	}
 	
+	if(!swordText)
+		t.draw("Kutzwaard", screenWidth - 220, screenHeight - 20);			
 	
 	t.endRendering();
 	

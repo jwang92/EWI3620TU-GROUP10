@@ -21,7 +21,7 @@ public class Player extends GameObject {
 	private double horAngle, verAngle;
 	private double speed;
 	private double verticalSpeed;
-	private double gravity = 0.00005;
+	private double gravity = 0.00003;
 	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
@@ -375,27 +375,31 @@ public class Player extends GameObject {
 		
 		int check = maze.isPickup(x, z, y);
 		
-		int[] temp = new int[2];
-		
 		switch(check){
 		
 			case 1: // Speedupgrade
+							
+				int[] temp = new int[2];
 				this.speed = 0.03;
 				temp[0] = 1; // type 1
 				temp[1] = 2000; //tijd voor upgrade 2 seconden
 				currentUpgrades.add(temp);
 				break;
 			case 2: // Swordupgrade
+
+				int[] temp2 = new int[3];	
+				temp2[0] = 2; // type 2
+				temp2[1] = -1; //tijd voor upgrade 2 seconden
+				temp2[2] = upgradeSword(x, y, z);
 				
-				MainClass.sword = new Sword(x, y, z, true, 2);
-				sound.dropSword();
-				MainClass.sword.setMaze(MainClass.maze);
-				MainClass.sword.setPlayer(MainClass.player);
-				MainClass.mazeRunner.setSwordloader(false);
+				for(int i = 0; i < currentUpgrades.size(); i++){
+					if(currentUpgrades.get(i)[0] == 2){
+						currentUpgrades.remove(i);
+					}
+				}
 				
-				temp[0] = 2; // type 2
-				temp[1] = -1; //tijd voor upgrade 2 seconden
-				currentUpgrades.add(temp);
+				currentUpgrades.add(temp2);
+				
 				break;
 			case 3: // Health
 				setDeltaHealth(30);
@@ -405,6 +409,31 @@ public class Player extends GameObject {
 				break;
 			
 		}
+		
+	}
+	
+	public int upgradeSword(double x, double y, double z){
+		
+		int maxSword = 3;
+		int swordToSet = 2;
+				
+		for(int i = 0; i < currentUpgrades.size(); i++){
+			if(currentUpgrades.get(i)[0] == 2){
+				if(currentUpgrades.get(i)[2] < maxSword){
+					swordToSet = currentUpgrades.get(i)[2] + 1;
+				}else{
+					swordToSet = maxSword;
+				}
+			}
+		}
+				
+		MainClass.sword = new Sword(x, y, z, true, swordToSet);
+		sound.dropSword();
+		MainClass.sword.setMaze(MainClass.maze);
+		MainClass.sword.setPlayer(MainClass.player);
+		MainClass.mazeRunner.setSwordloader(false);
+		
+		return swordToSet;
 		
 	}
 	

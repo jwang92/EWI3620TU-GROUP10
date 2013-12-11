@@ -30,11 +30,15 @@ public class Sword extends GameObject implements VisibleObject {
 		String file = "3d_object/sword/sword.obj";
 		this.type = type;
 		switch(type){
+		// Upgrades
 		case 1:
 			file = "3d_object/sword/sword.obj";
 			break;
 		case 2:
 			file = "3d_object/Killer_Frost_Ice_Sword/Killer_Frost_Ice_Sword.obj";
+			break;
+		case 3:
+			file = "3d_object/lion.obj";
 			break;
 		
 		}
@@ -133,6 +137,9 @@ public class Sword extends GameObject implements VisibleObject {
 						break;
 					case 2:
 						d = 20;
+						break;
+					case 3:
+						d = 30;
 						break;
 					}
 					for(Enemy e: MainClass.enemies){
