@@ -55,6 +55,7 @@ public class MazeRunner implements GLEventListener{
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
 	private boolean swordLoaded = true;
+	private boolean rw = false;
 	
 /*
  * **********************************************
@@ -137,8 +138,14 @@ public class MazeRunner implements GLEventListener{
 		for(Enemy e: MainClass.enemies){
 			e.getMaze(MainClass.maze);
 		}
-		MainClass.sword.setMaze(MainClass.maze);
-		MainClass.sword.setPlayer(MainClass.player);
+		if(!rw){
+			MainClass.sword.setMaze(MainClass.maze);
+			MainClass.sword.setPlayer(MainClass.player);
+		}
+		else{
+			MainClass.rWeapon.setMaze(MainClass.maze);
+			MainClass.rWeapon.setPlayer(MainClass.player);
+		}
 		MainClass.shield.setMaze(MainClass.maze);
 		MainClass.shield.setPlayer(MainClass.player);
 		
@@ -348,7 +355,12 @@ public void drawUpgrades(GL gl, TextRenderer t){
 		
 		if(ups.get(i)[0] == 2 && swordLoaded == false){
 			
-			MainClass.sword.genVBO(gl);
+			if(!rw){
+				MainClass.sword.genVBO(gl);
+			}
+			else{
+				MainClass.rWeapon.genVBO(gl);
+			}
 			swordLoaded = true;
 
 		}
@@ -411,9 +423,13 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	
 }
 
-public void setSwordloader(boolean tf){
-	swordLoaded = tf;
-}
+	public void setSwordloader(boolean tf){
+		swordLoaded = tf;
+	}
+	
+	public void setRW(boolean rw){
+		this.rw=rw;
+	}
 
 	public void render(GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
@@ -450,8 +466,24 @@ public void setSwordloader(boolean tf){
         			e.display(gl);
         		}
         	}
-            MainClass.sword.display(gl);
+        	if(!rw){
+        		MainClass.sword.display(gl);
+        	}
+        	else{
+        		MainClass.rWeapon.display(gl);
+        	}
             MainClass.shield.display(gl);
+            for(int i=0; i<MainClass.bullets.size(); i++){
+            	Bullet b = MainClass.bullets.get(i);
+            	if(b.needRemoval()){
+            		MainClass.bullets.remove(i);
+            		i--;
+            	}
+            	else{
+            		b.display(gl);
+            	}
+            }
+            
         }
         
         draw2D(gl);
@@ -510,9 +542,17 @@ public void setSwordloader(boolean tf){
 		for(Enemy e: MainClass.enemies){
 			e.update(deltaTime, MainClass.player);
 		}
-		MainClass.sword.update(deltaTime, MainClass.player);
+		if(!rw){
+			MainClass.sword.update(deltaTime, MainClass.player);
+		}
+		else{
+			MainClass.rWeapon.update(deltaTime,  MainClass.player);
+		}
 		MainClass.shield.update(deltaTime, MainClass.player);
 		MainClass.mazePheromones.evapPheromones();
+		for(Bullet b: MainClass.bullets){
+			b.update(deltaTime, MainClass.player);
+		}
 	}
 
 	/**

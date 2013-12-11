@@ -44,6 +44,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static ArrayList<Model> enemieModels = new ArrayList<Model>();
 	public static ArrayList<String> enemieModelNames = new ArrayList<String>();
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public static ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
 	
 	public static Camera camera;
@@ -52,6 +53,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static GameOver gameover;
 	public static Sword sword;
 	public static Shield shield;
+	public static RangedWeapons rWeapon;
 	
 	//Load the textures
 	protected static ArrayList<Texture> textures;

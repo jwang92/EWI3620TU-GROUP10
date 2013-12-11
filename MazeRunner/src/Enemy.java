@@ -383,4 +383,21 @@ public class Enemy extends GameObject implements VisibleObject {
 			}
 		}
 	}
+	
+	public boolean hitpointCheck(double x, double y, double z){
+		if(locationX+3>x && x>locationX-3){
+			double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
+			if(locationZ+r>z && z>locationZ-r){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+		
+		
+	}
 }
