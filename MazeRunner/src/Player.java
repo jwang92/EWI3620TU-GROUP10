@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class Player extends GameObject {	
 	private double horAngle, verAngle;
 	private double speed;
+	protected double playersize = 1.0;
 	private double verticalSpeed;
 	private double gravity = 0.00003;
 	public static double speedadjust;
@@ -156,6 +157,22 @@ public class Player extends GameObject {
 		return currentUpgrades;
 	}
 	
+	public boolean checkEnemy(double x, double z, double dT){
+		double dX, dZ, distance;
+		
+		for(Enemy foe : MainClass.enemies){
+			if(foe.alert){
+				dX = Math.abs(x - foe.locationX);
+				dZ = Math.abs(z - foe.locationZ);
+				distance = Math.sqrt(dZ*dZ + dX*dX);
+				if(distance <= foe.enemysize + playersize)
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Check whether the player is near a wall
 	 * @param x
@@ -172,6 +189,10 @@ public class Player extends GameObject {
 				res = true;
 		
 		return res;
+	}
+	
+	public boolean collision(double x, double z, double dT){
+			return checkWall(x, z, dT) || checkEnemy(x, z, dT);
 	}
 
 	/**
@@ -247,12 +268,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime)&& !throughRampTest2){
+				}else if(!collision(newX, locationZ, deltaTime)&& !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime)&& !throughRampTest2){
+				}else if(!collision(locationX, newZ, deltaTime)&& !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -266,12 +287,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -285,12 +306,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -304,12 +325,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!checkWall(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!checkWall(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!checkWall(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}

@@ -11,7 +11,8 @@ import com.sun.opengl.util.texture.Texture;
 public class Enemy extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
-	private double speed = 0.0015;
+	private double speed = 0.0025;
+	protected double enemysize = 1.0;
 	
 	//Model
 	private String type;
@@ -20,7 +21,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	//
 	private int displayList;
 	private double sx, sy,sz, px, py,pz;
-	private boolean alert;
+	protected boolean alert;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private int attackTimeout = 0;
@@ -88,16 +89,60 @@ public class Enemy extends GameObject implements VisibleObject {
 	public void setShaderProgram(int program){
 		shaderProgram = program;
 	}
+
+	public boolean equals(Object that){
+		if(that instanceof Enemy){
+			Enemy other = (Enemy) that;
+			
+			return (this.locationX == other.locationX 
+					&& this.locationY == other.locationY 
+					&& this.locationZ == other.locationZ);
+		}
+		
+		return false;
+	}
+
+	public boolean checkEnemy(double x, double z, double dT){
+		double dX, dZ, distance;
+		
+		for(Enemy foe : MainClass.enemies){
+			if(!this.equals(foe) && foe.alert){
+				dX = Math.abs(x - foe.locationX);
+				dZ = Math.abs(z - foe.locationZ);
+				distance = Math.sqrt(dZ*dZ + dX*dX);
+				if(distance <= foe.enemysize + enemysize)
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean checkPlayer(double x, double z, double dT){
+		double dX = Math.abs(x - MainClass.player.locationX);
+		double dZ = Math.abs(z - MainClass.player.locationZ);
+		double distance = Math.sqrt(dZ*dZ + dX*dX);
+		
+		if(distance <= MainClass.player.playersize + enemysize)
+			return true;
+		
+		return false;
+	}
 	
 	public boolean checkWall(double x, double z, double dT){
-		double d = 2.0d; 		//distance from the wall
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 15)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z-0.8f+d*Math.cos(i*Math.PI/180) ))
+			if(maze.isWall( x+enemysize*Math.sin(i*Math.PI/180) , locationY , z-0.8f+enemysize*Math.cos(i*Math.PI/180) ))
 				res = true;
 		
 		return res;
+	}
+	
+	public boolean collision(double x, double z, double dT){
+		return checkWall(x, z, dT)
+				|| checkEnemy(x, z, dT)
+				|| checkPlayer(x, z, dT);
 	}
 	
 //	public void genDisplayList(GL gl){
@@ -147,7 +192,7 @@ public class Enemy extends GameObject implements VisibleObject {
 					newX += dX;
 					newZ += dZ;
 					
-					if(!checkWall(newX, newZ, deltaTime)){
+					if(!collision(newX, newZ, deltaTime)){
 						locationX = newX;
 						locationZ = newZ;
 					}
@@ -170,9 +215,9 @@ public class Enemy extends GameObject implements VisibleObject {
 							newZ -= speed * deltaTime;
 						}
 				
-						if(!checkWall(newX, locationZ, deltaTime)){
+						if(!collision(newX, locationZ, deltaTime)){
 							locationX = newX;
-						}else if(!checkWall(locationX, newZ, deltaTime)){
+						}else if(!collision(locationX, newZ, deltaTime)){
 							locationZ = newZ;
 						}
 					}
@@ -350,12 +395,15 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 
 	public void caught(Player player){
-		if( Math.abs(locationX - player.locationX) < 1
-				&& Math.abs(locationZ - player.locationZ) < 1
-				&& Math.abs(locationY - player.locationY) < 0.8*maze.SQUARE_SIZE ){
+		double dX = player.locationX - locationX;				
+		double dZ = player.locationZ - locationZ;				
+		double distance = Math.sqrt(dZ*dZ + dX*dX);
+		System.out.println("distance: "+distance);
+		
+		if( distance < (player.playersize + enemysize + 0.1) && Math.abs(locationY - player.locationY) < 0.6*maze.SQUARE_SIZE ){
 			if(attackTimeout == 0){
 				player.setDeltaHealth(Math.min(0, -attackPower+player.getDefensePower()));
-				attackTimeout = 10;
+				attackTimeout = 15;
 			} else{
 				attackTimeout--;
 			}
