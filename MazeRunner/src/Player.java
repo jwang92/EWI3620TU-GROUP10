@@ -431,17 +431,20 @@ public class Player extends GameObject {
 			case 3: // Health
 				setDeltaHealth(30);
 				
-//				int[] temp3 = new int[3];	
-//				temp3[0] = 3; // type 3
-//				temp3[2] = 1;
-//				currentUpgrades.add(temp3);
-//				
-//				
-//				MainClass.rWeapon = new RangedWeapons(x,y,z,true);
-//				sound.dropSword();
-//				MainClass.rWeapon.setPlayer(MainClass.player);
-//				MainClass.mazeRunner.setRW(true);
-//				MainClass.mazeRunner.setSwordloader(false);
+
+				break;
+			case 4: // Ranged weapong
+				
+				int[] temp3 = new int[3];	
+				temp3[0] = 4; // type 3
+				temp3[2] = 1;
+				currentUpgrades.add(temp3);
+
+				MainClass.rWeapon = new RangedWeapons(x,y,z,true);
+				sound.dropSword();
+				MainClass.rWeapon.setPlayer(MainClass.player);
+				MainClass.mazeRunner.setRW(true);
+				MainClass.mazeRunner.setSwordloader(false);
 				break;
 			default:
 				// niets doen
