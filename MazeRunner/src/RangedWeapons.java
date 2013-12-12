@@ -9,7 +9,6 @@ import com.sun.opengl.util.texture.Texture;
 
 public class RangedWeapons extends GameObject implements VisibleObject {
 	
-	private Maze maze; 										// The maze.
 	private Model m ;
 	private int displayList;
 	private Player player;
@@ -22,13 +21,13 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 	public RangedWeapons(double x, double y, double z, boolean tex) {
 		super(x,y,z);
 		texture = tex;
-		String file = "3d_object/Revolver/Revolver.obj";
+		String file = "3d_object/raygun/raygun_mark2.obj";
 		try {
 			if(texture){
 				m = OBJLoader.loadTexturedModel((new File(file)));
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/Revolver/Revolver")));
+				m = OBJLoader.loadModel((new File("3d_object/raygun/raygun_mark2.obj")));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -37,12 +36,13 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 	}
 
 	
-	public void update(int deltaTime, Player player){
+	public void update(int deltaTime){
 		locationX=player.locationX;
 		locationY=player.locationY;
 		locationZ=player.locationZ;
 		if(player.control.getAttack()){
-			MainClass.bullets.add(new Bullet(locationX,locationY,locationZ));
+			MainClass.bullets.add(new Bullet(locationX,locationY,locationZ, player));
+			player.sound.photon();
 			player.control.setAttack(false);
 		}
 	}
@@ -168,9 +168,6 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 		shaderProgram = program;
 	}
 	
-	public void setMaze(Maze maze){
-		this.maze = maze;
-	}
 
 	public void setPlayer(Player player){
 		this.player=player;

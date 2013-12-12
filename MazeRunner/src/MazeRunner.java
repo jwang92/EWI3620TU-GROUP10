@@ -141,13 +141,13 @@ public class MazeRunner implements GLEventListener{
 		if(!rw){
 			MainClass.sword.setMaze(MainClass.maze);
 			MainClass.sword.setPlayer(MainClass.player);
+			MainClass.shield.setMaze(MainClass.maze);
+			MainClass.shield.setPlayer(MainClass.player);
 		}
 		else{
-			MainClass.rWeapon.setMaze(MainClass.maze);
 			MainClass.rWeapon.setPlayer(MainClass.player);
 		}
-		MainClass.shield.setMaze(MainClass.maze);
-		MainClass.shield.setPlayer(MainClass.player);
+		
 		
 	}
 
@@ -222,7 +222,6 @@ public class MazeRunner implements GLEventListener{
         		IntBuffer vbo = tempEnemies.get(modelID).getVBOHandle();
         		e.setVBOHandle(vbo);
         	}
-        	System.out.println(e.getVBOHandle().get(0));
 
         }
         MainClass.sword.genVBO(gl);
@@ -353,7 +352,7 @@ public void drawUpgrades(GL gl, TextRenderer t){
 	
 	for(int i = 0; i < ups.size(); i++){
 		
-		if(ups.get(i)[0] == 2 && swordLoaded == false){
+		if(ups.get(i)[0] == 3 && swordLoaded == false){
 			
 			if(!rw){
 				MainClass.sword.genVBO(gl);
@@ -468,11 +467,11 @@ public void drawHealthbar(GL gl, TextRenderer t){
         	}
         	if(!rw){
         		MainClass.sword.display(gl);
+        		MainClass.shield.display(gl);
         	}
         	else{
         		MainClass.rWeapon.display(gl);
         	}
-            MainClass.shield.display(gl);
             for(int i=0; i<MainClass.bullets.size(); i++){
             	Bullet b = MainClass.bullets.get(i);
             	if(b.needRemoval()){
@@ -544,11 +543,11 @@ public void drawHealthbar(GL gl, TextRenderer t){
 		}
 		if(!rw){
 			MainClass.sword.update(deltaTime, MainClass.player);
+			MainClass.shield.update(deltaTime, MainClass.player);
 		}
 		else{
-			MainClass.rWeapon.update(deltaTime,  MainClass.player);
+			MainClass.rWeapon.update(deltaTime);
 		}
-		MainClass.shield.update(deltaTime, MainClass.player);
 		MainClass.mazePheromones.evapPheromones();
 		for(Bullet b: MainClass.bullets){
 			b.update(deltaTime, MainClass.player);

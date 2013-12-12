@@ -398,7 +398,6 @@ public class Enemy extends GameObject implements VisibleObject {
 		double dX = player.locationX - locationX;				
 		double dZ = player.locationZ - locationZ;				
 		double distance = Math.sqrt(dZ*dZ + dX*dX);
-		System.out.println("distance: "+distance);
 		
 		if( distance < (player.playersize + enemysize + 0.1) && Math.abs(locationY - player.locationY) < 0.6*maze.SQUARE_SIZE ){
 			if(attackTimeout == 0){
@@ -420,32 +419,16 @@ public class Enemy extends GameObject implements VisibleObject {
 		 return res;
 	}
 	
-	public void damage(double x, double y, double z, double h, double d){
-		if(locationX+3>x && x>locationX-3){
-			double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
-			if(locationZ+r>z && z>locationZ-r){
-				health -=d;
-				if(health<=0){
-					dood = true;
-				}
+	public boolean damage(double x, double y, double z, double h, double d){
+		double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
+		if(locationX+3>x && x>locationX-3 && locationZ+r>z && z>locationZ-r){
+			health -=d;
+			if(health<=0){
+				dood = true;
 			}
+			return true;
 		}
+		return false;
 	}
 	
-	public boolean hitpointCheck(double x, double y, double z){
-		if(locationX+3>x && x>locationX-3){
-			double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
-			if(locationZ+r>z && z>locationZ-r){
-				return true;
-			}
-			else{
-				return false;
-			}
-		}
-		else{
-			return false;
-		}
-		
-		
-	}
 }

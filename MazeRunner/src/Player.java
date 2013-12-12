@@ -407,6 +407,7 @@ public class Player extends GameObject {
 				currentUpgrades.add(temp);
 				break;
 			case 2: // Swordupgrade
+				MainClass.mazeRunner.setRW(false);
 
 				int[] temp2 = new int[3];	
 				temp2[0] = 2; // type 2
@@ -424,6 +425,18 @@ public class Player extends GameObject {
 				break;
 			case 3: // Health
 				setDeltaHealth(30);
+				
+//				int[] temp3 = new int[3];	
+//				temp3[0] = 3; // type 3
+//				temp3[2] = 1;
+//				currentUpgrades.add(temp3);
+//				
+//				
+//				MainClass.rWeapon = new RangedWeapons(x,y,z,true);
+//				sound.dropSword();
+//				MainClass.rWeapon.setPlayer(MainClass.player);
+//				MainClass.mazeRunner.setRW(true);
+//				MainClass.mazeRunner.setSwordloader(false);
 				break;
 			default:
 				// niets doen
