@@ -18,7 +18,7 @@ public class Maze  implements VisibleObject {
 	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "savefiles/kasteel";
+	private String loadfolder = "savefiles/pickups2";
 	private int numberOfStoreys;
 	private LevelInfo lvlinfo;
 	
@@ -98,6 +98,9 @@ public class Maze  implements VisibleObject {
 			texture = "textures/upgrade_sword.png";
 		else if(type == 3)
 			texture = "textures/upgrade_health.png";
+		else if(type == 4)
+			texture = "textures/upgrade_gun.png";
+		
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
 		double x = p.x * SQUARE_SIZE - 0.5;

@@ -353,7 +353,7 @@ public void drawUpgrades(GL gl, TextRenderer t){
 	
 	for(int i = 0; i < ups.size(); i++){
 		
-		if(ups.get(i)[0] == 2 && swordLoaded == false){
+		if((ups.get(i)[0] == 2 || ups.get(i)[0] == 4) && swordLoaded == false){
 			
 			if(!rw){
 				MainClass.sword.genVBO(gl);
