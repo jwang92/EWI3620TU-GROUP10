@@ -403,7 +403,12 @@ public class Player extends GameObject {
 				int[] temp = new int[2];
 				this.speed = 0.03;
 				temp[0] = 1; // type 1
-				temp[1] = 2000; //tijd voor upgrade 2 seconden
+				temp[1] = 5000; //tijd voor upgrade 5 seconden
+				for(int i = 0; i < currentUpgrades.size(); i++){
+					if(currentUpgrades.get(i)[0] == 1){
+						currentUpgrades.remove(i);
+					}
+				}
 				currentUpgrades.add(temp);
 				break;
 			case 2: // Swordupgrade
