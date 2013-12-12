@@ -1,0 +1,7 @@
+Leveleditor:
+- Savefiles not working (ignores a floor)
+- Pick ups file writing
+
+Wallcollision:
+- No collision between floors, jump through walls is possible
+
