@@ -1,5 +1,6 @@
-NumberOfPickups: 3;
+NumberOfPickups: 4;
 2: 5 5;
 3: 10 10;
 2: 11 11;
+4: 12 12;
 End;

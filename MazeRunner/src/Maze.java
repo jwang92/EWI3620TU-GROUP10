@@ -46,7 +46,6 @@ public class Maze  implements VisibleObject {
 			lvlinfo = new LevelInfo();
 			lvlinfo.Read(loadfolder + "/LevelInfo.txt");
 			
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -102,7 +101,7 @@ public class Maze  implements VisibleObject {
 			texture = "textures/upgrade_health.png";
 		else if(type == 4)
 			texture = "textures/upgrade_gun.png";
-		
+
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
 		double x = p.x * SQUARE_SIZE - 0.5;
@@ -655,5 +654,26 @@ public class Maze  implements VisibleObject {
 		double r = Math.sqrt(Math.pow((p2.y - p1.y), 2) + Math.pow((p2.x - p1.x), 2) + Math.pow((p2.z - p1.z), 2));	
 		r = Math.round(r);
 		return r;		
+	}
+	
+	public ArrayList<Enemy> loadEnemies(){
+		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+		for(int i = 0; i<numberOfStoreys;i++){
+			storey = storeys.get(i);
+			ArrayList<Object> o1 = storey.getObjectList().getObjects();
+			for(int j = 0; j < o1.size(); j++){	
+				if(o1.get(j) instanceof ObjectEnemy){
+					
+					ObjectEnemy t = (ObjectEnemy) o1.get(j);
+					Point2D.Float p = t.getPoints().get(0); 
+					enemies.add(new Enemy(	p.x * MainClass.maze.SQUARE_SIZE + MainClass.maze.SQUARE_SIZE / 2, 	// x-position
+							storey.getFloorHeight()+ 0.01 * MainClass.maze.SQUARE_SIZE,							// y-position
+							p.y * MainClass.maze.SQUARE_SIZE + MainClass.maze.SQUARE_SIZE / 2,0, true, t.getModel()));	// z-position, texture boolean				 				
+				}
+			}
+		}
+		
+		
+		return enemies;
 	}
 }

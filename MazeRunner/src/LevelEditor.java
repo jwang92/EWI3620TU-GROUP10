@@ -24,6 +24,7 @@ public class LevelEditor implements ActionListener{
 	private JPanel opties2;
 	private JPanel opties2b;
 	private JPanel opties2c;
+	private JPanel opties2d;
 	private JPanel opties3;
 	private JPanel opties4;
 	private JPanel controlArea;
@@ -234,6 +235,25 @@ public class LevelEditor implements ActionListener{
 		
 		controlArea.add(opties2c);
 		
+		opties2d = new JPanel(new GridLayout(1, 1));
+	    opties2d.setBorder(BorderFactory.createTitledBorder("Objects:"));
+	    
+	    String[] optiesString2d = {"Ramp", "Predator", "Lion"};
+	    
+		c = new JComboBox(optiesString2d);
+		c.addActionListener(this);
+		c.setActionCommand("setObjects");
+		opties2d.add(c);
+		
+		cons.ipady = 0;
+        cons.ipadx = 0;
+        cons.weighty = 0.1;
+        cons.gridx = 1;
+        cons.gridy = 6;
+        gridBag.setConstraints(opties2d, cons);
+		
+		controlArea.add(opties2d);
+		
 		opties3 = new JPanel(new GridLayout(4,1));
 	    opties3.setBorder(BorderFactory.createTitledBorder("Opslaan/Laden:"));
 	    JButton b = new JButton("Sla map op");
@@ -253,7 +273,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 0.3;
         cons.gridx = 1;
-        cons.gridy = 6;
+        cons.gridy = 7;
         gridBag.setConstraints(opties3, cons);
 	    controlArea.add(opties3);
 	    
@@ -270,7 +290,7 @@ public class LevelEditor implements ActionListener{
         cons.ipadx = 0;
         cons.weighty = 1;
         cons.gridx = 1;
-        cons.gridy = 7;
+        cons.gridy = 8;
         gridBag.setConstraints(opties4, cons);
 	    controlArea.add(opties4);
 		
@@ -380,6 +400,21 @@ public class LevelEditor implements ActionListener{
 				whatPickup = 3;
 			
 			le.setWhatPickup(whatPickup);
+		}
+		else if(cmd.equals("setObjects")){
+			System.out.println("test");
+			JComboBox type = (JComboBox) evt.getSource();
+			String pu =(String)type.getSelectedItem();
+			
+			int whatObject = 0;
+			if(pu.equals("Ramp"))
+				whatObject = 1;
+			else if(pu.equals("Predator"))
+				whatObject = 2;
+			else if(pu.equals("Lion"))
+				whatObject = 3;
+			
+			le.setWhatObject(whatObject);
 		}
 		else if(cmd.equals("save")){
 			

@@ -42,7 +42,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean dood = false;
 	private boolean remove = false;
 	
-	public Enemy(double x, double y, double z, double angle,boolean tex){
+	public Enemy(double x, double y, double z, double angle,boolean tex,String modelName){
 		super(x, y, z);
 		sx=x;
 		sy=y;
@@ -52,7 +52,6 @@ public class Enemy extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				String modelName =  "3d_object/Predator_Youngblood/Predator_Youngblood.obj";
 				if(!MainClass.enemieModelNames.contains(modelName)){
 					MainClass.enemieModelNames.add(modelName);
 					Model tempmodel = OBJLoader.loadTexturedModel((new File(modelName)));

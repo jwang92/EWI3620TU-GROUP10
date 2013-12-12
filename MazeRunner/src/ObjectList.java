@@ -38,6 +38,9 @@ public class ObjectList {
 			if(nextObj.equals("Ramp:")){
 				objects.add(ObjectRamp.Read(s));				
 			}
+			if(nextObj.equals("Enemy:")){
+				objects.add(ObjectEnemy.Read(s));				
+			}
 			
 		}
 		
@@ -57,9 +60,13 @@ public class ObjectList {
 		
 		for(int i = 0; i < objects.size(); i++)
 		{
-			
-			r += ((ObjectRamp) objects.get(i)).toFileFormat();			
-			
+			if(objects.get(i) instanceof ObjectRamp){
+				r += ((ObjectRamp) objects.get(i)).toFileFormat();		
+			}
+			else if(objects.get(i) instanceof ObjectEnemy){
+				r += ((ObjectEnemy) objects.get(i)).toFileFormat();
+			}
+	
 		}
 		
 		r += "End;";

@@ -110,7 +110,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private float textureTop, textureBottom, textureLeft, textureRight;
 	//private int textureID;
 
-	private int objectToDraw;
+	private int objectToDraw = 1;
 	private int lvlinfoToDraw;
 	private int pickupToDraw;
 	private int wallToHighlight = -1;
@@ -461,7 +461,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void setWhatObject(int i){
 		
-		objectToDraw = i; // 1 = Ramp
+		objectToDraw = i; // 1 = Ramp, 2 = Predator, 3 = Lion
 		
 	}
 	
@@ -513,9 +513,18 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				temp.add(p3);
 				temp.add(p4);
 				
-				Object obj = new ObjectRamp(temp, "brick.png");
-				storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
-				
+				if(objectToDraw == 1){
+					Object obj = new ObjectRamp(temp, "textureFileName");
+					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+				}
+				else if(objectToDraw == 2){
+					Object obj = new ObjectEnemy(temp,"3d_object/Predator_Youngblood/Predator_Youngblood.obj");
+					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+				}
+				else if(objectToDraw == 3){
+					Object obj = new ObjectEnemy(temp,"3d_object/lion/lion.obj");
+					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+				}
 			}
 			break;
 		case DM_LVLINFO:
@@ -589,7 +598,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			
 			// Erase dingen?
 			// Niet nodig meer denk ik - Ruben
-			
 			break;
 			}
 		}
@@ -648,6 +656,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				}
 				
 				int textureID = textureNames.lastIndexOf("textures/"+texture);
+				
 				if(pickupToHighlight == i)
 					polygonOnScreen(gl, drawP, textureID, true, true);
 				else
@@ -693,11 +702,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		if(storeys.size()>0){
 			objectList = storeys.get(storeyNumber - 1).getObjectList();
 			ArrayList<Point2D.Float> p = new ArrayList<Point2D.Float>();
-			
+			int textureID = textureNames.lastIndexOf("textures/arrow.png");
 			for(int i = 0; i < objectList.getObjects().size();i++){
 				
 				if(objectList.getObjects().get(i) instanceof ObjectRamp){
-					
+					textureID = textureNames.lastIndexOf("textures/arrow.png");
 					ObjectRamp or = (ObjectRamp) objectList.getObjects().get(i);
 					
 					for(int j = 0; j < or.getPoints().size(); j++){
@@ -706,9 +715,25 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						p1.x = gridOffsetX + (or.getPoints().get(j).x-1)*gridDistance;
 						p1.y = screenHeight - gridOffsetY - (or.getPoints().get(j).y-1)*gridDistance;
 						p.add(p1);
-						
 					}
-					
+				}
+				if(objectList.getObjects().get(i) instanceof ObjectEnemy){
+					textureID = textureNames.lastIndexOf("textures/predator.png");
+					ObjectEnemy or = (ObjectEnemy) objectList.getObjects().get(i);
+					String model = or.getModel();
+					if(model.equals("3d_object/Predator_Youngblood/Predator_Youngblood.obj")){
+						textureID = textureNames.lastIndexOf("textures/predator.png");
+					}
+					if(model.equals("3d_object/lion/lion.obj")){
+						textureID = textureNames.lastIndexOf("textures/lion.png");
+					}
+					for(int j = 0; j < or.getPoints().size(); j++){
+						
+						Point2D.Float p1 = new Point2D.Float();
+						p1.x = gridOffsetX + (or.getPoints().get(j).x-1)*gridDistance;
+						p1.y = screenHeight - gridOffsetY - (or.getPoints().get(j).y-1)*gridDistance;
+						p.add(p1);
+					}
 				}
 				
 				/*
@@ -722,7 +747,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				}
 				*/
 				
-				int textureID = textureNames.lastIndexOf("textures/arrow.png");
+				
 				if(objectToHighlight == i)
 					polygonOnScreen(gl,p,textureID, true, true);
 				else
@@ -1019,6 +1044,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						ObjectRamp temp = (ObjectRamp) tempList.get(i);
 						ps = temp.getPoints();
 					}
+					else if(tempList.get(i) instanceof ObjectEnemy){
+						ObjectEnemy temp = (ObjectEnemy) tempList.get(i);
+						ps = temp.getPoints();
+					}
 					
 					float hiX = Integer.MIN_VALUE;
 					float hiZ = Integer.MIN_VALUE;
@@ -1172,6 +1201,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					
 					if(tempList.get(i) instanceof ObjectRamp){
 						ObjectRamp temp = (ObjectRamp) tempList.get(i);
+						ps = temp.getPoints();
+					}
+					if(tempList.get(i) instanceof ObjectEnemy){
+						ObjectEnemy temp = (ObjectEnemy) tempList.get(i);
 						ps = temp.getPoints();
 					}
 					
@@ -1354,7 +1387,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		wallToHighlight = -1;
 		objectToHighlight = -1;
 		pickupToHighlight = -1;
-		//floorToHighlight = -1;
 		
 	}
 	

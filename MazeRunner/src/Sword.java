@@ -38,7 +38,7 @@ public class Sword extends GameObject implements VisibleObject {
 			file = "3d_object/Killer_Frost_Ice_Sword/Killer_Frost_Ice_Sword.obj";
 			break;
 		case 3:
-			file = "3d_object/lion.obj";
+			file = "3d_object/lion/lion.obj";
 			break;
 		
 		}
