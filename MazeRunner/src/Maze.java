@@ -21,6 +21,8 @@ public class Maze  implements VisibleObject {
 	private String loadfolder = "savefiles/kasteel";
 	private int numberOfStoreys;
 	private LevelInfo lvlinfo;
+	private double pickupColor = 0.0;
+	private boolean colorUp = true;
 	
 	public Maze(){
 		storeys = new ArrayList<Storey>();
@@ -107,6 +109,30 @@ public class Maze  implements VisibleObject {
 		double y = p.y * SQUARE_SIZE - 0.5;
 		double z = z2 - 3.5;
 		double s = 1;
+				
+		if(colorUp){
+			
+			if(pickupColor >= 1){
+				colorUp = false;
+				pickupColor = 1;
+			}else{
+				pickupColor += 0.01;				
+			}
+			
+		}
+		else{
+			
+			if(pickupColor <= 0){
+				colorUp = true;
+				pickupColor = 0;
+			}else{
+				pickupColor -= 0.01;				
+			}
+			
+		}
+		
+		gl.glEnable(GL.GL_COLOR_MATERIAL);
+		gl.glColor3d(pickupColor, 1f, 1f);
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		MainClass.textures.get(textureID).bind();
@@ -154,7 +180,8 @@ public class Maze  implements VisibleObject {
 		gl.glEnd();
 		
 		MainClass.textures.get(textureID).disable();
-
+		gl.glColor3f(1f, 1f, 1f);
+		gl.glDisable(GL.GL_COLOR_MATERIAL);
 
 	}
 	
