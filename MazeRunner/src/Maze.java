@@ -25,6 +25,15 @@ public class Maze  implements VisibleObject {
 	private boolean colorUp = true;
 	
 	public Maze(){
+		createMaze();
+	}
+	
+	public Maze(String loadfolder){
+		this.loadfolder = loadfolder;
+		createMaze();
+	}
+	
+	public void createMaze(){
 		storeys = new ArrayList<Storey>();
 		try {
 			
@@ -64,6 +73,7 @@ public class Maze  implements VisibleObject {
 			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
 			ArrayList<Object> o1 = storey.getObjectList().getObjects();
 			ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
+			ArrayList<LevelExit> e1 = storey.getLevelExitList().getExits();
 			for(int j = 0; j < w1.size(); j++){
 				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
 			}
@@ -86,6 +96,9 @@ public class Maze  implements VisibleObject {
 			}
 			for(int j = 0; j < p1.size(); j++){
 				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight(), p1.get(j).getType());				
+			}
+			for(LevelExit exit : e1){
+				drawLevelExit(gl, exit, storey.getRoofHeight());
 			}
 
 		}
@@ -180,7 +193,34 @@ public class Maze  implements VisibleObject {
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
 
 	}
-	
+
+	public void drawLevelExit(GL gl, LevelExit exit, int z2){
+		Point2D.Float p = exit.getPoint();
+		double s = exit.exitsize;
+		double x = p.x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+		double z = p.y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+		double y = z2 - 3.5;
+
+		gl.glPushMatrix();
+		gl.glTranslated(x, y, z);
+		gl.glEnable(GL.GL_COLOR_MATERIAL);
+		gl.glColor3f(1.0f, 1.0f, 1.0f);
+		gl.glLineWidth(20);
+		
+		gl.glBegin(GL.GL_LINE_LOOP);
+			gl.glVertex3d(0, 0, 0);
+			gl.glVertex3d(s, 0, 0);
+			gl.glVertex3d(s, 0, s);
+			gl.glVertex3d(0, 0, s);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_COLOR_MATERIAL);
+		gl.glLineWidth(1);
+
+		gl.glPopMatrix();
+		
+	}
+
 	public void drawWall2(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
 		ArrayList<Point3D> p = new ArrayList<Point3D>();
 		Point3D p1 = new Point3D(); Point3D p2 = new Point3D(); Point3D p3 = new Point3D(); Point3D p4 = new Point3D();
@@ -363,7 +403,34 @@ public class Maze  implements VisibleObject {
 		return 0;
 		
 	}
-	
+
+	public LevelExit isExit(double x, double y, double z){
+		
+		for(int i = 0; i < storeys.size(); i++){
+			
+			for(LevelExit exit : storeys.get(i).getLevelExitList().getExits()){
+				
+				double s = exit.exitsize;
+				double xcor = exit.getPoint().x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+				double zcor = exit.getPoint().y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+				double dy = storeys.get(i).getRoofHeight() - y;
+
+//				System.out.print(x + " , " + y + "	|	");
+//				System.out.println(i+ " : "+ xcor + " , " + zcor + " , " + dy);
+				
+				if( xcor < x && x < xcor+s 
+						&& zcor < z && z < zcor+s
+						&&	0 < dy && dy < SQUARE_SIZE ){
+					return exit;
+				}
+
+			}
+			
+		}
+
+		return null;
+	}
+
 	public boolean isFloor(double x, double y, double z){
 		ArrayList<Floor> f = new ArrayList<Floor>();
 		float floory = Float.MIN_VALUE;

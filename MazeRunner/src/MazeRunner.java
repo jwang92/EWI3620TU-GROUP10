@@ -276,6 +276,7 @@ public void draw2D(GL gl){
 		drawHealthbar(gl, tr);
 		drawUpgrades(gl, tr);
 		drawScore(gl, tr);
+		drawLevelExit(gl, tr);
 	
 		
 		gl.glEnable( GL.GL_DEPTH_TEST );
@@ -376,6 +377,20 @@ public void drawScore(GL gl, TextRenderer t){
 	t.endRendering();
 }
 
+public void drawLevelExit(GL gl, TextRenderer t){
+	if(MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ) != null){
+		f = f.deriveFont(36f);
+		
+		t = new TextRenderer(f);
+
+		t.beginRendering(screenWidth, screenHeight);
+		t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
+		t.endRendering();
+		
+		f = f.deriveFont(14f);
+		
+	}
+}
 
 public void drawHealthbar(GL gl, TextRenderer t){
 	

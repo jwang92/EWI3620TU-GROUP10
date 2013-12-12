@@ -1,3 +1,4 @@
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -15,6 +16,7 @@ public class Storey {
 	private RoofList roofs;
 	private ObjectList objects;
 	private PickupList pickups;
+	private LevelExitList exits;
 	
 	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof, ObjectList object, PickupList pickup){
 		xSize = sizeX;
@@ -27,6 +29,9 @@ public class Storey {
 		objects = object;
 		pickups = pickup;
 		
+		exits = new LevelExitList();
+		LevelExit exit = new LevelExit(new Point2D.Float(8, 8));
+		exits.addExit(exit);
 	}
 	
 	public Storey(){
@@ -39,6 +44,8 @@ public class Storey {
 		roofs = new RoofList();
 		objects = new ObjectList();
 		pickups = new PickupList();
+		
+		exits = new LevelExitList();
 	}
 	
 	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey){
@@ -51,6 +58,10 @@ public class Storey {
 		roofs = new RoofList();
 		objects = new ObjectList();
 		pickups = new PickupList();
+		
+		exits = new LevelExitList();
+		LevelExit exit = new LevelExit(new Point2D.Float(8, 8));
+		exits.addExit(exit);
 	}
 	
 	public int getSizeX(){
@@ -87,6 +98,10 @@ public class Storey {
 	
 	public PickupList getPickupList(){
 		return pickups;
+	}
+	
+	public LevelExitList getLevelExitList(){
+		return exits;
 	}
 	
 	public RoofList getRoofList(){
