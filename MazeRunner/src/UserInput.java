@@ -42,6 +42,7 @@ public class UserInput extends Control
 	private CursorHandler c = new CursorHandler(MainClass.canvas);
 	
 	protected boolean lookback = false;
+	protected boolean rUpgrade = false;
 	
     private final Set<Character> pressed = new HashSet<Character>(); // Currently pressed keys
     
@@ -185,6 +186,14 @@ public class UserInput extends Control
         		}
         		else if(keyCode == KeyEvent.VK_SPACE){
         			jump = true;
+        		}
+        		else if(keyCode =='q'){
+        			MainClass.mazeRunner.setRW(false);
+        		}
+        		else if(keyCode =='r'){
+        			if(rUpgrade){
+        				MainClass.mazeRunner.setRW(true);
+        			}
         		}
         		
         		if(keyCode== KeyEvent.VK_ESCAPE && MainClass.state.getState() == 1){

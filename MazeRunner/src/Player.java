@@ -445,6 +445,7 @@ public class Player extends GameObject {
 				MainClass.rWeapon.setPlayer(MainClass.player);
 				MainClass.mazeRunner.setRW(true);
 				MainClass.mazeRunner.setSwordloader(false);
+				MainClass.input.rUpgrade=true;
 				break;
 			default:
 				// niets doen
@@ -474,6 +475,7 @@ public class Player extends GameObject {
 		MainClass.sword.setMaze(MainClass.maze);
 		MainClass.sword.setPlayer(MainClass.player);
 		MainClass.mazeRunner.setSwordloader(false);
+		
 		
 		return swordToSet;
 		

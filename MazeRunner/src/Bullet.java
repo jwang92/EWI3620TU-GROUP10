@@ -15,7 +15,7 @@ public class Bullet extends GameObject implements VisibleObject {
 	private int teller=0;
 	
 	public Bullet(double x, double y, double z, Player player){
-		super(x,y,z);
+		super(x,y-0.2,z);
 		double h = Math.toRadians(player.getHorAngle());
 		double v = Math.toRadians(player.getVerAngle());
 		tx = -Math.cos(v)*Math.sin(h);
