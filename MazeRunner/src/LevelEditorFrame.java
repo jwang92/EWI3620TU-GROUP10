@@ -117,6 +117,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private int floorToHighlight = -1;
 	private int roofToHighlight = -1;
 	private int objectToHighlight = -1;
+	private int pickupToHighlight = -1;
 	
 	private CursorHandler c;
 	
@@ -535,7 +536,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				double y = p1.y;
 				
 				Point2D.Float newP = new Point2D.Float((float) x, (float) y);
-				storeys.get(storeyNumber - 1).getPickupList().addPickup(new Pickup(newP, 1));
+				storeys.get(storeyNumber - 1).getPickupList().addPickup(new Pickup(newP, pickupToDraw));
 				
 				
 			}
@@ -587,6 +588,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		case DM_ERASE:
 			
 			// Erase dingen?
+			// Niet nodig meer denk ik - Ruben
 			
 			break;
 			}
@@ -646,8 +648,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				}
 				
 				int textureID = textureNames.lastIndexOf("textures/"+texture);
-				
-				polygonOnScreen(gl, drawP, textureID, true, false);
+				if(pickupToHighlight == i)
+					polygonOnScreen(gl, drawP, textureID, true, true);
+				else
+					polygonOnScreen(gl, drawP, textureID, true, false);
 				
 			}
 			
@@ -1003,7 +1007,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 			}
 			// Objecten tekenen
-			else if ((drawMode == DM_OBJECT || drawMode == DM_LVLINFO) && points.size() == 0){
+			else if ((drawMode == DM_OBJECT) && points.size() == 0){
 					
 				ArrayList<Object> tempList = objectList.getObjects();
 				
@@ -1091,6 +1095,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				objectList.getObjects().remove(objectToHighlight);
 				
 				objectToHighlight = -1;
+
+			}
+			
+			if(pickupToHighlight != -1){
+				
+				pickupList.getPickups().remove(pickupToHighlight);
+				
+				pickupToHighlight = -1;
 
 			}
 			
@@ -1300,6 +1312,34 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					
 				}
 				
+			}else if(drawMode == DM_PICKUP){
+				
+				ArrayList<Pickup> tempList = storeys.get(storeyNumber - 1).getPickupList().getPickups();
+				
+				pickupToHighlight = -1;
+				
+				for(int i = 0; i < tempList.size(); i++){
+					
+					
+					Point2D.Float pPos = tempList.get(i).getPoint();
+					Point2D.Float[] tempPoints = new Point2D.Float[4];
+					Point2D.Float p1b = new Point2D.Float(pPos.x, pPos.y);
+					tempPoints[0] = p1b;
+					Point2D.Float p2 = new Point2D.Float(pPos.x + 1, pPos.y);
+					tempPoints[1] = p2;
+					Point2D.Float p3 = new Point2D.Float(pPos.x + 1, pPos.y + 1);
+					tempPoints[2] = p3;
+					Point2D.Float p4 = new Point2D.Float(pPos.x, pPos.y + 1);
+					tempPoints[3] = p4;
+				
+					if(inPolygon(mouseInGrid, tempPoints)){
+
+						pickupToHighlight = i;
+						
+					}
+					
+				}
+				
 			}
 			
 		}
@@ -1312,6 +1352,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		floorToHighlight = -1;
 		roofToHighlight = -1;
 		wallToHighlight = -1;
+		objectToHighlight = -1;
+		pickupToHighlight = -1;
 		//floorToHighlight = -1;
 		
 	}

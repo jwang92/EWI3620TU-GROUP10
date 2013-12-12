@@ -31,13 +31,21 @@ public class Pickup {
 		return type;
 	}
 	
+	public String toFileFormat()
+	{
+		
+		return type + ": " + (int) p.x + " " + (int) p.y + ";\r\n";
+		
+	}
+	
 	public static Pickup Read(Scanner s){
 		
 		s.useDelimiter(": | |; |;\r\n");
 		
 		int t = s.nextInt();
 
-		Point2D.Float p = new Point2D.Float(s.nextFloat(), s.nextFloat());
+		
+		Point2D.Float p = new Point2D.Float(s.nextInt(), s.nextInt());
 		
 		return new Pickup(p, t);
 	}

@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -38,6 +40,35 @@ public class PickupList {
 			
 		}
 				
+	}
+	
+	 void WriteToFile(String FileName) throws IOException{
+		
+		String r = "NumberOfPickups: " + pickups.size() + ";\r\n";
+		
+		for(int i = 0; i < pickups.size(); i++)
+		{
+			
+			r += pickups.get(i).toFileFormat();			
+			
+		}
+		
+		r += "End;";
+		
+		File f = new File(FileName);
+		
+		// Create new file with the given name if it doesn't exist yet
+		if(!f.exists())
+		{
+			
+			f.createNewFile();
+			
+		}
+		
+		FileWriter w = new FileWriter(f);
+		w.write(r);
+		w.close();
+		
 	}
 	
 }
