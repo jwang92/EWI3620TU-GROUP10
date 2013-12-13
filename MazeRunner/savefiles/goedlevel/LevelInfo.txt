@@ -1,0 +1,3 @@
+LevelInfo;
+PlayerPos: 7 13 1;
+End;
