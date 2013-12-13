@@ -350,11 +350,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mainMenu.setDrawButtons();
 		
 		maze = new Maze();
+		
 		mazePheromones = new MazePheromones();
 		
 		player = new Player( maze.getLevelInfo().getPlayerPos().x * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							maze.getLevelInfo().getPlayerPos().z * 5 - 2.5,							// y-position
-							 maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+							maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
@@ -377,11 +378,43 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 
+	public static void initObjects(String newloadfolder){
+		mainMenu.setDrawButtons();
+		
+		maze = new Maze(newloadfolder);
+		
+		mazePheromones = new MazePheromones();
+		
+		player = new Player( maze.getLevelInfo().getPlayerPos().x * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
+							maze.getLevelInfo().getPlayerPos().z * 5 - 2.5,							// y-position
+							maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
+							 90, 0 );										// horizontal and vertical angle
+		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
+							 maze.SQUARE_SIZE / 2 -1,							
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 1);
+		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
+				 maze.SQUARE_SIZE / 2 -1,							
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
+
+		enemies.removeAll(enemies);
+		enemies = maze.loadEnemies();
+		
+		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
+				             player.getHorAngle(), player.getVerAngle() );
+		
+//		input = new UserInput(canvas);
+		
+		mazeRunner = new MazeRunner(screenHeight, screenWidth);
+		pause = new Pause(screenHeight, screenWidth);
+		gameover = new GameOver(screenHeight, screenWidth);
+
+	}
+
 	public void setScreenSize(int ScreenHeight, int ScreenWidth){//, int y, int x){
 		screenHeight = ScreenHeight;
 		screenWidth = ScreenWidth;
 //		screenY = y;
 //		screenX = x;
 	}
-	
+
 }

@@ -245,6 +245,12 @@ public class UserInput extends Control
 			jump=false;
 		}
 		
+		if(event.getKeyCode()==KeyEvent.VK_ENTER){
+			LevelExit exit = MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ);
+			if(exit != null){
+				MainClass.initObjects(exit.newloadfolder);
+			}
+		}
 	}
 
 	/*

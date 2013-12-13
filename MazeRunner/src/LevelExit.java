@@ -6,7 +6,7 @@ public class LevelExit {
 	
 	private Point2D.Float p;
 	protected double exitsize = 2;
-	private String newloadfolder = "savefiles/testlevel9";
+	protected String newloadfolder = "savefiles/kasteel";
 	
 	public LevelExit(Point2D.Float point){
 		
