@@ -514,7 +514,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				temp.add(p4);
 				
 				if(objectToDraw == 1){
-					Object obj = new ObjectRamp(temp, "textureFileName");
+					Object obj = new ObjectRamp(temp, textureFileName);
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
 				else if(objectToDraw == 2){
@@ -525,6 +525,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					Object obj = new ObjectEnemy(temp,"3d_object/lion/lion.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
+				
 			}
 			break;
 		case DM_LVLINFO:

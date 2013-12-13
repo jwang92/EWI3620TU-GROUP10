@@ -41,7 +41,9 @@ public class ObjectList {
 			if(nextObj.equals("Enemy:")){
 				objects.add(ObjectEnemy.Read(s));				
 			}
-			
+			if(nextObj.equals("Exit:")){
+				objects.add(LevelExit.Read(s));
+			}
 		}
 		
 	}
@@ -65,6 +67,9 @@ public class ObjectList {
 			}
 			else if(objects.get(i) instanceof ObjectEnemy){
 				r += ((ObjectEnemy) objects.get(i)).toFileFormat();
+			}
+			else if(objects.get(i) instanceof LevelExit){
+				r += ((LevelExit) objects.get(i)).toFileFormat();
 			}
 	
 		}

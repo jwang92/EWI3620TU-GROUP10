@@ -64,7 +64,7 @@ public class Maze  implements VisibleObject {
 		return lvlinfo;
 	}
 	
-	public void drawBackground(GL gl){
+public void drawBackground(GL gl){
 		
 		gl.glDisable(GL.GL_LIGHTING);
 		gl.glDisable(GL.GL_LIGHT0);
@@ -143,8 +143,7 @@ public class Maze  implements VisibleObject {
 	
 	public void display(GL gl){
 		gl.glDisable(GL.GL_CULL_FACE);
-		
-		 drawBackground(gl);
+		drawBackground(gl);
 		
 		for(int i = 0; i<numberOfStoreys;i++){
 			storey = storeys.get(i);
@@ -153,7 +152,6 @@ public class Maze  implements VisibleObject {
 			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
 			ArrayList<Object> o1 = storey.getObjectList().getObjects();
 			ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
-			ArrayList<LevelExit> e1 = storey.getLevelExitList().getExits();
 			for(int j = 0; j < w1.size(); j++){
 				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
 			}
@@ -172,15 +170,15 @@ public class Maze  implements VisibleObject {
 					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
 						
 				}
+				if(o1.get(j) instanceof LevelExit){
+					LevelExit exit = (LevelExit) o1.get(j);
+					drawLevelExit(gl, exit, storey.getRoofHeight());
+				}
 				
 			}
 			for(int j = 0; j < p1.size(); j++){
 				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight(), p1.get(j).getType());				
 			}
-			for(LevelExit exit : e1){
-				drawLevelExit(gl, exit, storey.getRoofHeight());
-			}
-
 		}
 	}
 	
@@ -488,21 +486,29 @@ public class Maze  implements VisibleObject {
 		
 		for(int i = 0; i < storeys.size(); i++){
 			
-			for(LevelExit exit : storeys.get(i).getLevelExitList().getExits()){
-				
-				double s = exit.exitsize;
-				double xcor = exit.getPoint().x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
-				double zcor = exit.getPoint().y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
-				double dy = storeys.get(i).getRoofHeight() - y;
 
-//				System.out.print(x + " , " + y + "	|	");
-//				System.out.println(i+ " : "+ xcor + " , " + zcor + " , " + dy);
 				
-				if( xcor < x && x < xcor+s 
-						&& zcor < z && z < zcor+s
-						&&	0 < dy && dy < SQUARE_SIZE ){
-					return exit;
+//			}
+//			for(LevelExit exit : storeys.get(i).getLevelExitList().getExits()){
+			for(Object o1: storeys.get(i).getObjectList().getObjects()){
+				
+				if(o1 instanceof LevelExit){
+					LevelExit exit = (LevelExit) o1; 
+					double s = exit.exitsize;
+					double xcor = exit.getPoint().x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+					double zcor = exit.getPoint().y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
+					double dy = storeys.get(i).getRoofHeight() - y;
+
+//					System.out.print(x + " , " + y + "	|	");
+//					System.out.println(i+ " : "+ xcor + " , " + zcor + " , " + dy);
+					
+					if( xcor < x && x < xcor+s 
+							&& zcor < z && z < zcor+s
+							&&	0 < dy && dy < SQUARE_SIZE ){
+						return exit;
+					}
 				}
+
 
 			}
 			
