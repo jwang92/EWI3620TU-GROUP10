@@ -64,8 +64,88 @@ public class Maze  implements VisibleObject {
 		return lvlinfo;
 	}
 	
+	public void drawBackground(GL gl){
+		
+		gl.glDisable(GL.GL_LIGHTING);
+		gl.glDisable(GL.GL_LIGHT0);
+		gl.glDisable(GL.GL_LIGHT1);
+		gl.glDisable( GL.GL_DEPTH_TEST );
+		
+		int textureID = MainClass.textureNames.lastIndexOf("textures/sky.png");
+		
+		double x = MainClass.player.locationX - 1;
+		double z = MainClass.player.locationY - 1;
+		double y = MainClass.player.locationZ - 1;
+		double s = 2;
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		MainClass.textures.get(textureID).bind();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y +s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
+		gl.glEnd();
+					
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
+		gl.glEnd();
+				
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z , y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x , z + s, y + s);
+		gl.glEnd();
+				
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
+		gl.glEnd();
+		
+		MainClass.textures.get(textureID).disable();
+		
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		
+		int textureID2 = MainClass.textureNames.lastIndexOf("textures/sky_top.png");
+		MainClass.textures.get(textureID2).bind();
+		
+		// Top
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z + s, y + s);
+		gl.glEnd();
+		
+		MainClass.textures.get(textureID2).disable();
+		
+		gl.glEnable(GL.GL_LIGHTING);
+		gl.glEnable(GL.GL_LIGHT0);
+		gl.glEnable(GL.GL_LIGHT1);
+		gl.glEnable( GL.GL_DEPTH_TEST );
+		
+	}
+	
 	public void display(GL gl){
 		gl.glDisable(GL.GL_CULL_FACE);
+		
+		 drawBackground(gl);
+		
 		for(int i = 0; i<numberOfStoreys;i++){
 			storey = storeys.get(i);
 			ArrayList<Wall> w1 = storey.getWallList().getWalls();
@@ -127,20 +207,20 @@ public class Maze  implements VisibleObject {
 				colorUp = false;
 				pickupColor = 1;
 			}else{
-				pickupColor += 0.001;				
+				pickupColor += 0.005;				
 			}
 		}
 		else{
-			if(pickupColor <= 0){
+			if(pickupColor <= 0.1){
 				colorUp = true;
-				pickupColor = 0;
+				pickupColor = 0.1;
 			}else{
-				pickupColor -= 0.001;				
+				pickupColor -= 0.005;				
 				}
 			}
 				
 		gl.glEnable(GL.GL_COLOR_MATERIAL);
-		gl.glColor3d(pickupColor, 1f, 1f);
+		gl.glColor3d(1, pickupColor, pickupColor);
 
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		MainClass.textures.get(textureID).bind();
