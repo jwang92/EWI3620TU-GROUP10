@@ -320,7 +320,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		if(tel==0 && state.getStopTitle()==false){
 			mainMenu.init(drawable);
 		}
-		if(tel==1 && state.getStopMainGame()==false ){
+		if(tel==1 && state.getStopMainGame()==false){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
 		}
 		else if(tel==2 && state.getStopPause()==false){

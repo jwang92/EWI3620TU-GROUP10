@@ -250,6 +250,7 @@ public class UserInput extends Control
 			if(exit != null){
 				System.out.println(exit.newLoadFolder);
 				MainClass.initObjects(exit.newLoadFolder);
+				MainClass.state.sMainGame = false;
 			}
 		}
 	}
