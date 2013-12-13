@@ -28,7 +28,7 @@ public class Bullet extends GameObject implements VisibleObject {
 			removal = true;
 		}
 		locationX += speed*tx;
-		locationY += speed*ty;
+		locationY += speed*ty-0.2;
 		locationZ += speed*tz;
 		for(Enemy e: MainClass.enemies){
 			if(e.damage(locationX, locationY,locationZ,player.getHorAngle(),50)){
@@ -54,7 +54,7 @@ public class Bullet extends GameObject implements VisibleObject {
 	
 	public boolean checkWall(double x, double y, double z){
 		double d1 = speed*tx/100;
-		double d2 = speed*ty/100;
+		double d2 = (speed*ty-0.2)/100;
 		double d3 = speed*tz/100;
 		for(int i =0; i<100; i++){
 			if(MainClass.maze.isWall(x+i*d1, y+i*d2, z+i*d3)){
