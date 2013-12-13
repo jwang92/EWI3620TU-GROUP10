@@ -534,7 +534,7 @@ public class LevelEditor implements ActionListener{
 	
 	private void saveToFile(String selectedFolder) throws IOException{
 		ArrayList<Storey> storeys = le.getStoreys();
-		for(int i = 0;i<numberOfStoreys - 1;i++){
+		for(int i = 0;i<numberOfStoreys;i++){
 			File f = new File(selectedFolder + "/Floor " + (i+1));
 			f.mkdirs();
 			storeys.get(i).WriteToFile(selectedFolder + "/Floor " + (i+1));
@@ -550,10 +550,13 @@ public class LevelEditor implements ActionListener{
 		File folder = new File(loadfolder);
 		File[] tList = folder.listFiles();
 		
-		numberOfStoreys = tList.length - 1;
+		numberOfStoreys = tList.length;
 
 		for(int j = 0; j < tList.length;j++){
 		    if(tList[j].getName().equals("Thumbs.db")){
+		    	numberOfStoreys -= 1;
+		    }  
+		    else if(tList[j].getName().equals("LevelInfo.txt")){
 		    	numberOfStoreys -= 1;
 		    }  
 		}

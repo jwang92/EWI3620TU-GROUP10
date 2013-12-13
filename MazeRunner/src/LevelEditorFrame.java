@@ -1322,20 +1322,25 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 				for(int i = 0; i < tempList.size(); i++){
 					
-					ObjectRamp tempObject = null;
-					
-					if(tempList.get(i) instanceof ObjectRamp){
-						tempObject = (ObjectRamp) tempList.get(i);
-					}
-						
-					
 					Point2D.Float[] tempPoints = new Point2D.Float[4];
-					
-					for(int j = 0; j < tempObject.getPoints().size(); j++){
+					if(tempList.get(i) instanceof ObjectRamp){
+						ObjectRamp tempObject = (ObjectRamp) tempList.get(i);
 						
-						tempPoints[j] = tempObject.getPoints().get(j);
-						
+						for(int j = 0; j < tempObject.getPoints().size(); j++){
+							tempPoints[j] = tempObject.getPoints().get(j);					
+						}
 					}
+					else if(tempList.get(i) instanceof ObjectEnemy){
+						ObjectEnemy tempObject = (ObjectEnemy) tempList.get(i);
+						for(int j = 0; j < tempObject.getPoints().size(); j++){
+							tempPoints[j] = tempObject.getPoints().get(j);
+						}
+					}
+						
+					
+					
+					
+
 					
 					if(inPolygon(mouseInGrid, tempPoints)){
 						

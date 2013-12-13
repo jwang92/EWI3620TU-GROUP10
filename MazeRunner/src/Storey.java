@@ -187,7 +187,7 @@ public class Storey {
 		floors.WriteToFile(FileName + "/Floor.txt");
 		roofs.WriteToFile(FileName + "/Roof.txt");
 		objects.WriteToFile(FileName + "/Objects.txt");
-		
+		pickups.WriteToFile(FileName + "/Pickups.txt");
 	} 
 
 }
