@@ -1,0 +1,62 @@
+# Blender MTL File: 'None'
+# Material Count: 6
+
+newmtl Predatorarmour
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_armour_D.tga
+
+newmtl Predatorbody1
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_body_D.tga
+
+newmtl Predatorbody2
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_body_D.tga
+
+newmtl Predatorconsoletickers
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_console_tickers_D.tga
+
+newmtl Predatorhead
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_head_D.tga
+
+newmtl Predatormask
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Guido\Documents\TU Delft\TU Delft - 2013-2014\EWI3620TU - Minor project\MazeRunner\3d_object\Predator_Youngblood\Predator_mask_D.tga
