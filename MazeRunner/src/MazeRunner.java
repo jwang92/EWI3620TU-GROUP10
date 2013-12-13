@@ -486,6 +486,7 @@ public void drawHealthbar(GL gl, TextRenderer t){
         		MainClass.shield.display(gl);
         	}
         	else{
+        		MainClass.player.setDefensePower(0);
         		MainClass.rWeapon.display(gl);
         	}
             for(int i=0; i<MainClass.bullets.size(); i++){

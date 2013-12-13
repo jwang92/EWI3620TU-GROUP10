@@ -42,7 +42,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean dood = false;
 	private boolean remove = false;
 	
-	public Enemy(double x, double y, double z, double angle,boolean tex,String modelName){
+	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName){
 		super(x, y, z);
 		sx=x;
 		sy=y;
@@ -420,7 +420,15 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public boolean damage(double x, double y, double z, double h, double d){
 		double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
-		if(locationX+3>x && x>locationX-3 && locationZ+r>z && z>locationZ-r){
+		double yDet;
+		System.out.println(locationY);
+		if(type.equals("3d_object/Predator_Youngblood/Predator_Youngblood.obj")){
+			yDet = 4.5;
+		}
+		else{
+			yDet=2.5;
+		}
+		if(locationX+3>x && x>locationX-3 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
 			health -=d;
 			if(health<=0){
 				dood = true;
