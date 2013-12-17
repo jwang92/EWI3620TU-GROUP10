@@ -165,6 +165,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
+		px = player.locationX;
+		py = player.locationY;
+		pz = player.locationZ;
 
 		if(!dood){
 			if(alerted(player)){
@@ -263,6 +266,7 @@ public class Enemy extends GameObject implements VisibleObject {
 					MainClass.player.setScore(100);
 				}
 			}
+			
 			gl.glRotated(angle,0, 1, 0);
 			gl.glRotated(deathAngle, 1, 0, 0);
 			//Reset the color to white
@@ -343,8 +347,6 @@ public class Enemy extends GameObject implements VisibleObject {
 		gl.glUseProgram(0);	
 		
 		gl.glPopMatrix();
-		
-		
 		//healthbar enemy
 		if(!dood){
 			gl.glPushMatrix();
@@ -425,7 +427,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		else{
 			yDet=2.5;
 		}
-		if(locationX+3>x && x>locationX-3 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
+		System.out.println(x);
+		System.out.println(y);
+		System.out.println(z);
+		System.out.println(locationX);
+		System.out.println(locationY);
+		System.out.println(locationZ);
+		if(locationX+5>x && x>locationX-5 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
 			health -=d;
 			if(health<=0){
 				dood = true;

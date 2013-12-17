@@ -152,7 +152,7 @@ public class Sword extends GameObject implements VisibleObject {
 				attackCounter +=1;
 				if(attackCounter==18){
 					int d = 0;
-					switch(type){
+					switch(currentSword+1){
 					case 1:
 						d = 10;
 						break;
