@@ -5,3 +5,6 @@ Leveleditor:
 Wallcollision:
 - No collision between floors, jump through walls is possible
 
+Game
+-gameOver scherm start soms automatisch nieuw spel
+
