@@ -54,6 +54,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static Sword sword;
 	public static Shield shield;
 	public static RangedWeapons rWeapon;
+	public static Door door;
+	public static DoorSwitch doorSwitch;
 	
 	//Load the textures
 	protected static ArrayList<Texture> textures;
@@ -320,7 +322,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		if(tel==0 && state.getStopTitle()==false){
 			mainMenu.init(drawable);
 		}
-		if(tel==1 && state.getStopMainGame()==false){
+		if(tel==1 && state.getStopMainGame()==false ){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
 		}
 		else if(tel==2 && state.getStopPause()==false){
@@ -363,6 +365,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
+		
+		door = new Door(40,0,50);
+		doorSwitch = new DoorSwitch(25,0,50);
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
@@ -375,6 +380,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
 		gameover = new GameOver(screenHeight, screenWidth);
+
 
 	}
 
@@ -395,6 +401,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
+		
+		door = new Door(40,0,50);
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
@@ -407,6 +415,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
 		gameover = new GameOver(screenHeight, screenWidth);
+
 
 	}
 

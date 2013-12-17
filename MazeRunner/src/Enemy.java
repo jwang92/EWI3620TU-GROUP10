@@ -421,7 +421,6 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean damage(double x, double y, double z, double h, double d){
 		double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
 		double yDet;
-		System.out.println(locationY);
 		if(type.equals("3d_object/Predator_Youngblood/Predator_Youngblood.obj")){
 			yDet = 4.5;
 		}

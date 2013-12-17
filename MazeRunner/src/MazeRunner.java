@@ -135,6 +135,7 @@ public class MazeRunner implements GLEventListener{
 		MainClass.player.setControl(MainClass.input);
 		MainClass.player.getMaze(MainClass.maze);
 		
+		
 		for(Enemy e: MainClass.enemies){
 			e.getMaze(MainClass.maze);
 		}
@@ -148,7 +149,8 @@ public class MazeRunner implements GLEventListener{
 			MainClass.rWeapon.setPlayer(MainClass.player);
 		}
 		
-		
+		MainClass.door.setPlayer(MainClass.player);
+		MainClass.doorSwitch.setPlayer(MainClass.player);
 	}
 
 /*
@@ -499,7 +501,8 @@ public void drawHealthbar(GL gl, TextRenderer t){
             		b.display(gl);
             	}
             }
-            
+            MainClass.door.display(gl);
+            MainClass.doorSwitch.display(gl);
         }
         
         draw2D(gl);
