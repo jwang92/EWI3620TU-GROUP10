@@ -23,6 +23,7 @@ public class Maze  implements VisibleObject {
 	private LevelInfo lvlinfo;
 	private double pickupColor = 0.0;
 	private boolean colorUp = true;
+	private int displayList = 0;
 	
 	public Maze(){
 		createMaze();
@@ -147,37 +148,41 @@ public void drawBackground(GL gl){
 		gl.glDisable(GL.GL_CULL_FACE);
 		drawBackground(gl);
 		
+		if(displayList>0){
+			gl.glCallList(displayList);
+		}
+
 		for(int i = 0; i<numberOfStoreys;i++){
 			storey = storeys.get(i);
-			ArrayList<Wall> w1 = storey.getWallList().getWalls();
-			ArrayList<Floor> f1 = storey.getFloorList().getFloors();
-			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
-			ArrayList<Object> o1 = storey.getObjectList().getObjects();
+//			ArrayList<Wall> w1 = storey.getWallList().getWalls();
+//			ArrayList<Floor> f1 = storey.getFloorList().getFloors();
+//			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
+//			ArrayList<Object> o1 = storey.getObjectList().getObjects();
 			ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
-			for(int j = 0; j < w1.size(); j++){
-				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
-			}
-			for(int j = 0; j< f1.size(); j++){
-				drawFloor(gl,f1.get(j).getPoints(),f1.get(j).getTexture(), storey.getFloorHeight());
-			}
-			for(int j = 0; j <r1.size(); j++){
-				drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
-			}
-			for(int j = 0; j < o1.size(); j++){
-					
-				if(o1.get(j) instanceof ObjectRamp){
-						
-					ObjectRamp t = (ObjectRamp) o1.get(j);
-									 
-					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
-						
-				}
-				if(o1.get(j) instanceof LevelExit){
-					LevelExit exit = (LevelExit) o1.get(j);
-					drawLevelExit(gl, exit, storey.getRoofHeight());
-				}
-				
-			}
+//			for(int j = 0; j < w1.size(); j++){
+//				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
+//			}
+//			for(int j = 0; j< f1.size(); j++){
+//				drawFloor(gl,f1.get(j).getPoints(),f1.get(j).getTexture(), storey.getFloorHeight());
+//			}
+//			for(int j = 0; j <r1.size(); j++){
+//				drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
+//			}
+//			for(int j = 0; j < o1.size(); j++){
+//					
+//				if(o1.get(j) instanceof ObjectRamp){
+//						
+//					ObjectRamp t = (ObjectRamp) o1.get(j);
+//									 
+//					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
+//						
+//				}
+//				if(o1.get(j) instanceof LevelExit){
+//					LevelExit exit = (LevelExit) o1.get(j);
+//					drawLevelExit(gl, exit, storey.getRoofHeight());
+//				}
+//				
+//			}
 			for(int j = 0; j < p1.size(); j++){
 				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight(), p1.get(j).getType());				
 			}
@@ -408,7 +413,6 @@ public void drawBackground(GL gl){
 		
 		//Apply texture
 		MainClass.textures.get(textureID).getTarget();
-		//brickTexture.enable();
 		
 		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 2);
 		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 2);
@@ -487,11 +491,6 @@ public void drawBackground(GL gl){
 	public LevelExit isExit(double x, double y, double z){
 		
 		for(int i = 0; i < storeys.size(); i++){
-			
-
-				
-//			}
-//			for(LevelExit exit : storeys.get(i).getLevelExitList().getExits()){
 			for(Object o1: storeys.get(i).getObjectList().getObjects()){
 				
 				if(o1 instanceof LevelExit){
@@ -500,9 +499,6 @@ public void drawBackground(GL gl){
 					double xcor = exit.getPoint().x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
 					double zcor = exit.getPoint().y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
 					double dy = storeys.get(i).getRoofHeight() - y;
-
-//					System.out.print(x + " , " + y + "	|	");
-//					System.out.println(i+ " : "+ xcor + " , " + zcor + " , " + dy);
 					
 					if( xcor < x && x < xcor+s 
 							&& zcor < z && z < zcor+s
@@ -669,6 +665,62 @@ public void drawBackground(GL gl){
 		polygonOnScreen(gl,p3D, 1);	
 		
 	}
+	/**
+	 * Check if the walls of this maze blocks the vision between point 1 and 2
+	 * @param x1 x coordinate of point 1 (in case of pheromone: enemyX)
+	 * @param z1 z coordinate of point 1 (in case of pheromone: enemyY)
+	 * @param x2 x coordinate of point 2 (in case of pheromone: pheromoneX)
+	 * @param z2 z coordinate of point 2 (in case of pheromone: pheromoneY)
+	 * @return returns true if the vision is blocked by this maze
+	 */
+	public boolean visionBlocked(double x1, double y1, double z1, double x2, double z2){
+		ArrayList<Wall> w = new ArrayList<Wall>();
+		
+		for(int i=0;i<storeys.size();i++){
+			storey = storeys.get(i);
+			if(y1>storey.getFloorHeight()&&y1<storey.getRoofHeight()){
+				w = storey.getWallList().getWalls();
+			}
+		}
+		
+		for(int i = 0; i < w.size(); i++){
+			Wall wall = w.get(i); 
+			if(visionBlockByWall(x1 / SQUARE_SIZE, z1 / SQUARE_SIZE, x2 / SQUARE_SIZE, z2 / SQUARE_SIZE, wall.getStartx(), wall.getStarty(), wall.getEndx(), wall.getEndy())){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	/**
+	 * Check if wall v,w blocks the vision between point 1 and 2
+	 * @param x1 x coordinate of point 1 (in case of pheromone: enemyX)
+	 * @param z1 z coordinate of point 1 (in case of pheromone: enemyY)
+	 * @param x2 x coordinate of point 2 (in case of pheromone: pheromoneX)
+	 * @param z2 z coordinate of point 2 (in case of pheromone: pheromoneY)
+	 * @param vx x coordinate of wallpoint v
+	 * @param vz z coordinate of wallpoint v
+	 * @param wx x coordinate of wallpoint w
+	 * @param wz z coordinate of wallpoint w
+	 * @return return true if the vision between the points is blocked by the wall
+	 */
+	public boolean visionBlockByWall(double x1, double z1, double x2, double z2, double vx, double vz, double wx, double wz){
+		if(((vz-wz)*(x1-vx)+(wx-vx)*(z1-vz))*((vz-wz)*(x2-vx)+(wx-vx)*(z2-vz))<0){
+			boolean sideOfLinePointV = SideOfLine(x2, z2, vx, vz, x1, z1);
+			boolean sideOfLinePointW = SideOfLine(x2, z2, wx, wz, x1, z1);
+			if(sideOfLinePointV == sideOfLinePointW){
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean SideOfLine(double lineX1, double lineY1, double lineX2, double lineY2,double pointX, double pointY){
+	     return ((lineX2 - lineX1)*(pointY - lineY1) - (lineY2 - lineY1)*(pointX - lineX1)) > 0;
+	}
 
 		
 	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
@@ -827,5 +879,45 @@ public void drawBackground(GL gl){
 		
 		
 		return enemies;
+	}
+	
+	public void genDisplayList(GL gl){
+		int tempDisplayList = gl.glGenLists(1);
+	    gl.glNewList(tempDisplayList, GL.GL_COMPILE_AND_EXECUTE);
+	    {			
+			for(int i = 0; i<numberOfStoreys;i++){
+				storey = storeys.get(i);
+				ArrayList<Wall> w1 = storey.getWallList().getWalls();
+				ArrayList<Floor> f1 = storey.getFloorList().getFloors();
+				ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
+				ArrayList<Object> o1 = storey.getObjectList().getObjects();
+				ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
+				for(int j = 0; j < w1.size(); j++){
+					drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
+				}
+				for(int j = 0; j< f1.size(); j++){
+					drawFloor(gl,f1.get(j).getPoints(),f1.get(j).getTexture(), storey.getFloorHeight());
+				}
+				for(int j = 0; j <r1.size(); j++){
+					drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
+				}
+				for(int j = 0; j < o1.size(); j++){
+						
+					if(o1.get(j) instanceof ObjectRamp){
+							
+						ObjectRamp t = (ObjectRamp) o1.get(j);
+										 
+						drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
+							
+					}
+					if(o1.get(j) instanceof LevelExit){
+						LevelExit exit = (LevelExit) o1.get(j);
+						drawLevelExit(gl, exit, storey.getRoofHeight());
+					}
+				}
+			}
+	    }
+		gl.glEndList();
+		displayList = tempDisplayList;
 	}
 }

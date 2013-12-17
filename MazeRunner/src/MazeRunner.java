@@ -230,6 +230,9 @@ public class MazeRunner implements GLEventListener{
         MainClass.rWeapon.genVBO(gl);
         MainClass.shield.genVBO(gl);
         
+        //Load the maze
+        MainClass.maze.genDisplayList(gl);
+        
         //MainClass.enemy.setShaderProgram(shaderProgram);
         
         // Fonts setten

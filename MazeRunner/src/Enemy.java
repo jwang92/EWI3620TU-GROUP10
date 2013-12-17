@@ -106,8 +106,8 @@ public class Enemy extends GameObject implements VisibleObject {
 		
 		for(Enemy foe : MainClass.enemies){
 			if(!this.equals(foe) && foe.alert){
-				dX = Math.abs(x - foe.locationX);
-				dZ = Math.abs(z - foe.locationZ);
+				dX = x - foe.locationX;
+				dZ = z - foe.locationZ;
 				distance = Math.sqrt(dZ*dZ + dX*dX);
 				if(distance <= foe.enemysize + enemysize)
 					return true;
@@ -118,8 +118,8 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public boolean checkPlayer(double x, double z, double dT){
-		double dX = Math.abs(x - MainClass.player.locationX);
-		double dZ = Math.abs(z - MainClass.player.locationZ);
+		double dX = x - MainClass.player.locationX;
+		double dZ = z - MainClass.player.locationZ;
 		double distance = Math.sqrt(dZ*dZ + dX*dX);
 		
 		if(distance <= MainClass.player.playersize + enemysize)
@@ -165,9 +165,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 		
 	public void update(int deltaTime, Player player){
-		px = player.locationX;
-		py = player.locationY;
-		pz = player.locationZ;
+
 		if(!dood){
 			if(alerted(player)){
 				alert = alerted(player);

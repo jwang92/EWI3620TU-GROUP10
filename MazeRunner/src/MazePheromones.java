@@ -71,12 +71,17 @@ public class MazePheromones {
 		return Math.sqrt(dx*dx + dy+dy);
 	}
 	
-	public boolean obstructed(double x, double deltaX, double z, double deltaZ, double y){
-		for( int i = 0; i < 200; i++ ){
-			double tx = x + deltaX*i/200.0;
-			double tz = z + deltaZ*i/200.0;
-			if( MainClass.maze.isWall(tx, y, tz) )
-				return true;
+	public boolean obstructed(double x, double pherX, double z, double pherZ, double y){
+		
+//		for( int i = 0; i < 200; i++ ){
+//			double tx = x + deltaX*i/200.0;
+//			double tz = z + deltaZ*i/200.0;
+//			if( MainClass.maze.isWall(tx, y, tz) )
+//				return true;
+//		}
+//		return false;
+		if(MainClass.maze.visionBlocked(x, y, z, pherX, pherZ)){
+			return true;
 		}
 		return false;
 //		System.out.println(obstructed);
@@ -102,8 +107,7 @@ public class MazePheromones {
 			
 			if( distance <= vision && Math.abs(dy) <= (MainClass.maze.SQUARE_SIZE/2.0) ){	//pheromone within vision?
 				if( pher.pheromone > highestPher.pheromone ){		//current pheromone higher than highest?
-//					System.out.println(!obstructed(x, dx, z, dz, y));
-					if(!obstructed(x, dx, z, dz, y))
+					if(!obstructed(x, pher.x, z, pher.z, y))
 						highestPher = pher;
 				}
 			}
