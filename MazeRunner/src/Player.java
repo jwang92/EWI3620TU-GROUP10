@@ -180,19 +180,20 @@ public class Player extends GameObject {
 	 * @param dT
 	 * @return
 	 */
-	public boolean checkWall(double x, double z, double dT){
+	public boolean checkWallOrDoor(double x, double z, double dT){
 		double d = 1 * speed * dT; 		//distance from the wall
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 45)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) ,locationY,  z+d*Math.cos(i*Math.PI/180) ))
+			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) ,locationY,  z+d*Math.cos(i*Math.PI/180) )
+					|| maze.isDoor( x+d*Math.sin(i*Math.PI/180) ,locationY,  z+d*Math.cos(i*Math.PI/180) ) )
 				res = true;
 		
 		return res;
 	}
 	
 	public boolean collision(double x, double z, double dT){
-			return checkWall(x, z, dT) || checkEnemy(x, z, dT);
+			return checkWallOrDoor(x, z, dT) || checkEnemy(x, z, dT);
 	}
 
 	/**

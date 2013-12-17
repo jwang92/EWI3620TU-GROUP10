@@ -464,6 +464,25 @@ public void drawBackground(GL gl){
 		
 	}
 	
+	public boolean isDoor(double x, double y, double z)
+	{
+		Door w = MainClass.door;
+		
+		double distance;
+		
+			
+			distance = distToSegment(x / SQUARE_SIZE, z / SQUARE_SIZE, w.getStartX(), w.getStartZ(), w.getEndX(), w.getEndZ());
+		
+			if(distance < 0.1){
+				return true;
+			}
+			
+
+		return false;		
+		
+	}
+	
+	
 	public int isPickup(double x, double y, double z){
 		
 		for(int i = 0; i < storeys.size(); i++){

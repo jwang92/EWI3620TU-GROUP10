@@ -9,7 +9,7 @@ import com.sun.opengl.util.texture.Texture;
 
 public class Door extends GameObject implements VisibleObject {
 	
-	private double scale=1;
+	public double scale=1.0;
 	public Player player;
 	public boolean inArea= false;
 	
@@ -21,7 +21,7 @@ public class Door extends GameObject implements VisibleObject {
 		checkPlayer();
 		gl.glPushMatrix();
 		gl.glTranslated(locationX, locationY, locationZ);
-		if(!(scale<=0.01)  && inArea){
+		if(!(scale<=0.0)  && inArea){
 			scale -=0.01;
 		}
 		drawDoor(gl,scale);
@@ -87,6 +87,23 @@ public class Door extends GameObject implements VisibleObject {
 	public void setPlayer(Player player){
 		this.player = player;
 	}
+	
+	public double getStartX(){
+		return locationX/MainClass.maze.SQUARE_SIZE;
+	}
+	
+	public double getStartZ(){
+		return locationZ/MainClass.maze.SQUARE_SIZE;
+	}
+	
+	public double getEndX(){
+		return (locationX + MainClass.maze.SQUARE_SIZE*scale)/MainClass.maze.SQUARE_SIZE;
+	}
+	
+	public double getEndZ(){
+		return locationZ/MainClass.maze.SQUARE_SIZE ;
+	}
+			
 	
 
 }
