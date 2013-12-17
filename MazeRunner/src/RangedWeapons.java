@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 
@@ -9,25 +10,40 @@ import com.sun.opengl.util.texture.Texture;
 
 public class RangedWeapons extends GameObject implements VisibleObject {
 	
-	private Model m ;
 	private int displayList;
 	private Player player;
 	private boolean texture;
-	private IntBuffer vboHandle = IntBuffer.allocate(10);
+	
+	private ArrayList<Model> models;
+	private ArrayList<IntBuffer> handles;
+	private int currentGun = 0;
 	
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public RangedWeapons(double x, double y, double z, boolean tex) {
+	public RangedWeapons(double x, double y, double z, boolean tex, int type) {
 		super(x,y,z);
+		currentGun = type;
+		handles = new ArrayList<IntBuffer>();
+		models = new ArrayList<Model>();
+	
+		String[] modelNames = new String[1];
+		modelNames[0] = "3d_object/raygun/raygun_mark2.obj";
+		
 		texture = tex;
-		String file = "3d_object/raygun/raygun_mark2.obj";
+		
 		try {
+			
 			if(texture){
-				m = OBJLoader.loadTexturedModel((new File(file)));
+				
+				for (String mName : modelNames) {
+					Model m = OBJLoader.loadTexturedModel((new File(mName)));
+					models.add(m);
+				}
+				
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/raygun/raygun_mark2.obj")));
+				Model m = OBJLoader.loadModel((new File("3d_object/raygun/raygun_mark2.obj")));
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -36,7 +52,8 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 	}
 
 	
-	public void update(int deltaTime){
+	public void update(int deltaTime, Player player){
+		this.player = player;
 		locationX=player.locationX;
 		locationY=player.locationY;
 		locationZ=player.locationZ;
@@ -45,6 +62,10 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 			player.sound.photon();
 			player.control.setAttack(false);
 		}
+	}
+	
+	public void switchGun(int g){
+		currentGun = g;
 	}
 	
 	public void display(GL gl) {
@@ -56,11 +77,14 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 		}
 		
 		//Draw nothing if the vboHandle are not loaded
-		if(vboHandle.get(0)<=0||vboHandle.get(1)<=0){
+		if(handles.size() == 0){
 			
 		}
 		
-		else{		
+		else{	
+			IntBuffer vboHandle = IntBuffer.allocate(10);
+			vboHandle = handles.get(currentGun);
+			
 			//Translate the model
 			gl.glTranslated(locationX, locationY, locationZ);
 			double h = Math.toRadians(player.getHorAngle());
@@ -87,6 +111,7 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 			
 			//Initialize the texture
 			Texture tempTexture = null;
+			Model m = models.get(currentGun);
 			for(int i=0;i<m.getModelParts().size();i++){
 				ModelPart p = m.getModelParts().get(i);
 				ModelPart.Face face = p.getFaces().get(0);
@@ -161,7 +186,16 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 	}
 	
 	public void genVBO(GL gl){
-		vboHandle = OBJLoader.createVBO(m, gl);
+		
+		for(int i = 0; i < models.size(); i++){
+			
+			IntBuffer buf = IntBuffer.allocate(10);
+			buf = OBJLoader.createVBO(models.get(i), gl);
+			
+			handles.add(buf);
+			
+		}
+		
 	}
 	
 	public void setShaderProgram(int program){

@@ -225,6 +225,7 @@ public class MazeRunner implements GLEventListener{
 
         }
         MainClass.sword.genVBO(gl);
+        MainClass.rWeapon.genVBO(gl);
         MainClass.shield.genVBO(gl);
         
         //MainClass.enemy.setShaderProgram(shaderProgram);
@@ -357,10 +358,10 @@ public void drawUpgrades(GL gl, TextRenderer t){
 		if((ups.get(i)[0] == 2 || ups.get(i)[0] == 4) && swordLoaded == false){
 			
 			if(!rw){
-				MainClass.sword.genVBO(gl);
+				//MainClass.sword.genVBO(gl);
 			}
 			else{
-				MainClass.rWeapon.genVBO(gl);
+				//MainClass.rWeapon.genVBO(gl);
 			}
 			swordLoaded = true;
 
@@ -563,7 +564,7 @@ public void drawHealthbar(GL gl, TextRenderer t){
 			MainClass.shield.update(deltaTime, MainClass.player);
 		}
 		else{
-			MainClass.rWeapon.update(deltaTime);
+			MainClass.rWeapon.update(deltaTime, MainClass.player);
 		}
 		MainClass.mazePheromones.evapPheromones();
 		for(Bullet b: MainClass.bullets){

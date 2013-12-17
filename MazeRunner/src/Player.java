@@ -440,12 +440,12 @@ public class Player extends GameObject {
 				temp3[2] = 1;
 				currentUpgrades.add(temp3);
 
-				MainClass.rWeapon = new RangedWeapons(x,y,z,true);
 				sound.dropSword();
-				MainClass.rWeapon.setPlayer(MainClass.player);
+				
+				MainClass.rWeapon.switchGun(0);
 				MainClass.mazeRunner.setRW(true);
-				MainClass.mazeRunner.setSwordloader(false);
-				MainClass.input.rUpgrade=true;
+				MainClass.input.rUpgrade = true;
+			
 				break;
 			default:
 				// niets doen
@@ -470,11 +470,9 @@ public class Player extends GameObject {
 			}
 		}
 				
-		MainClass.sword = new Sword(x, y, z, true, swordToSet);
 		sound.dropSword();
-		MainClass.sword.setMaze(MainClass.maze);
-		MainClass.sword.setPlayer(MainClass.player);
-		MainClass.mazeRunner.setSwordloader(false);
+		
+		MainClass.sword.switchSword(swordToSet - 1);
 		
 		
 		return swordToSet;

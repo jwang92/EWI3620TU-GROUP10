@@ -358,8 +358,13 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
-							 maze.SQUARE_SIZE / 2 -1,							
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 1);
+				 maze.SQUARE_SIZE / 2 -1,							
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+
+		rWeapon = new RangedWeapons( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
+			 maze.SQUARE_SIZE / 2 -1,							
+			 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
@@ -391,7 +396,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 							 90, 0 );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 1);
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+		
+		rWeapon = new RangedWeapons( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
+				 maze.SQUARE_SIZE / 2 -1,							
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+		
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
