@@ -18,7 +18,7 @@ public class Maze  implements VisibleObject {
 	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "savefiles/kasteel";
+	private String loadfolder = "savefiles/goedlevel";
 	private int numberOfStoreys;
 	private LevelInfo lvlinfo;
 	private double pickupColor = 0.0;
@@ -81,38 +81,40 @@ public void drawBackground(GL gl){
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		MainClass.textures.get(textureID).bind();
 		
+		int numTex = 2;
+		
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z, y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y +s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
 					
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z + s, y);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
 				
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y + s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z + s, y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y);
 		gl.glEnd();
 		
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z , y + s);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x + s, z , y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x , z + s, y + s);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x , z + s, y + s);
 		gl.glEnd();
 				
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z, y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
 		gl.glEnd();
 		
@@ -126,10 +128,10 @@ public void drawBackground(GL gl){
 		
 		// Top
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z + s, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z + s, y);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z + s, y + s);
+			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z + s, y + s);
 		gl.glEnd();
 		
 		MainClass.textures.get(textureID2).disable();
@@ -195,8 +197,8 @@ public void drawBackground(GL gl){
 
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		
-		double x = p.x * SQUARE_SIZE - 0.5;
-		double y = p.y * SQUARE_SIZE - 0.5;
+		double x = p.x * SQUARE_SIZE + 2;
+		double y = p.y * SQUARE_SIZE + 2;
 		double z = z2 - 3.5;
 		double s = 1;
 		
@@ -468,7 +470,7 @@ public void drawBackground(GL gl){
 				double ycor = storeys.get(i).getPickupList().getPickups().get(j).getPoint().y;
 				int ret = storeys.get(i).getPickupList().getPickups().get(j).getType();
 				
-				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE, ycor * SQUARE_SIZE, 
+				if(disPoints(new Point3D(x, y, z), new Point3D(xcor * SQUARE_SIZE + 2, ycor * SQUARE_SIZE + 2, 
 						storeys.get(i).getFloorHeight() + 2.5)) <= 1){
 					storeys.get(i).getPickupList().getPickups().remove(j);
 					return ret;
