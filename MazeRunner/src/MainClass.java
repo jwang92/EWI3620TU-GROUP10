@@ -46,7 +46,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public static ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
-	
 	public static CursorHandler cursor;
 	public static Camera camera;
 	public static UserInput input;
@@ -110,10 +109,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		state = new GameStateManager();
 		cursor = new CursorHandler(MainClass.canvas);
 		
-		initObjects();
-		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
+		initObjects();
 		setVisible(true);
+		
 		
 	}
 	
@@ -374,7 +373,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 		
-		door = new Door(40,0,50);
+		door = new Door(40,0,50, 40, 5 ,45);
 		doorSwitch = new DoorSwitch(25,0,50);
 
 		enemies.removeAll(enemies);
@@ -415,7 +414,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
 		
-		door = new Door(40,0,50);
+		door = new Door(40,0,50, 45, 5, 50);
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
