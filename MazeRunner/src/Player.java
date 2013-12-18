@@ -22,12 +22,13 @@ public class Player extends GameObject {
 	private double speed;
 	protected double playersize = 1.0;
 	private double verticalSpeed;
-	private double gravity = 0.00003;
+	private double gravity = 0.00004;
 	public static double speedadjust;
 	private Maze maze; 										// The maze.
 	private double newX, newZ;
 	private int health;
 	public int score=0;
+	private int sensitivity = 10;
 	
 	//Defense
 	private int defensePower = 0;
@@ -114,7 +115,7 @@ public class Player extends GameObject {
 	 * @param verAngle the verAngle to set
 	 */
 	public void setVerAngle(double verAngle) {
-		if(-45 <= verAngle && verAngle <= 45)
+		if(-70 <= verAngle && verAngle <= 70)
 			this.verAngle = verAngle;
 	}
 	
@@ -206,8 +207,8 @@ public class Player extends GameObject {
 		{
 			control.update();
 			
-			setHorAngle( getHorAngle() + control.getdX() * 30*speed);
-			setVerAngle( getVerAngle() + control.getdY() * 30*speed);
+			setHorAngle( getHorAngle() + control.getdX() * sensitivity * speed);
+			setVerAngle( getVerAngle() + control.getdY() * sensitivity * speed);
 			
 			double speed = this.speed * speedadjust;
 			double newLocationY = locationY;
@@ -338,6 +339,8 @@ public class Player extends GameObject {
 					locationZ = newZ;
 				}
 			}
+			
+			
 			if((Math.abs(locationX - oldX) > 0.01 || Math.abs(locationZ - oldZ) > 0.01) && sound.walking == false){
 				sound.walk();
 			}
