@@ -38,9 +38,7 @@ public class UserInput extends Control
 	int sy=0;
 	
 	private int defX, defY;
-	
-	private CursorHandler c = new CursorHandler(MainClass.canvas);
-	
+		
 	protected boolean lookback = false;
 	protected boolean rUpgrade = false;
 	
@@ -266,9 +264,7 @@ public class UserInput extends Control
 	{
 
 		if(MainClass.state.getState() == 1){
-			
-			c.setCursor(2);
-			
+						
 //			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //			double width = screenSize.getWidth();
 //			double height = screenSize.getHeight();

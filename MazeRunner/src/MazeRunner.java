@@ -453,6 +453,8 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	}
 
 	public void render(GLAutoDrawable drawable){
+		MainClass.cursor.setCursor(2);
+
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);

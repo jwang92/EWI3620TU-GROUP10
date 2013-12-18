@@ -47,6 +47,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
 	
+	public static CursorHandler cursor;
 	public static Camera camera;
 	public static UserInput input;
 	public static Pause pause;
@@ -107,10 +108,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		mainMenu = new MainMenu(screenHeight, screenWidth);
 		state = new GameStateManager();
+		cursor = new CursorHandler(MainClass.canvas);
+		
+		initObjects();
 		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
 		setVisible(true);
-		initObjects();
 		
 	}
 	
