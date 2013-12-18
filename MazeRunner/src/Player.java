@@ -59,7 +59,7 @@ public class Player extends GameObject {
 		super( x, y, z );
 		horAngle = h;
 		verAngle = v;
-		speed = 0.01;
+		speed = 0.02;
 		speedadjust = 1;
 		health = 100;
 		currentUpgrades = new ArrayList<int[]>();
@@ -218,6 +218,7 @@ public class Player extends GameObject {
 			
 			double dY = maze.isRamp(locationX, locationY, locationZ);
 			if(dY != Double.MAX_VALUE){
+				
 				if(dY == Double.MIN_VALUE){
 					throughRampTest1 = true;
 				}
@@ -232,7 +233,7 @@ public class Player extends GameObject {
 					verticalSpeed = 0.025;
 				}
 				else{
-					verticalSpeed = 0;	
+					verticalSpeed = 0;
 				}
 			}
 			else{
@@ -246,6 +247,7 @@ public class Player extends GameObject {
 					throughRoof = maze.throughRoof(locationX, newLocationY, locationY, locationZ);
 				}
 			}
+			
 			if(throughFloor){
 				locationY = maze.getFloorHeight(locationY)+2.5;
 			}
@@ -256,6 +258,7 @@ public class Player extends GameObject {
 				locationY += verticalSpeed*deltaTime;
 			}
 
+			
 			double oldX = locationX;
 			double oldZ = locationZ;
 
