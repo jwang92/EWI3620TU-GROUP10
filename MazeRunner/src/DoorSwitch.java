@@ -101,8 +101,8 @@ public class DoorSwitch extends GameObject implements VisibleObject {
 	}
 	
 	public void checkPlayer(){
-		if(player.locationX >=locationX && player.locationX<= locationX+0.5
-				&& player.locationZ >=locationZ && player.locationZ<= locationZ+0.5){
+		if(player.locationX >=locationX+0.25-0.75 && player.locationX<= locationX+0.25+0.75
+				&& player.locationZ >=locationZ+0.25-0.75 && player.locationZ<= locationZ+0.25+0.75){
 			pressed =  true;
 		}
 	}

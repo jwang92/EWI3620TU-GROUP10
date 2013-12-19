@@ -128,18 +128,19 @@ public class Enemy extends GameObject implements VisibleObject {
 		return false;
 	}
 	
-	public boolean checkWall(double x, double z, double dT){
+	public boolean checkWallOrDoor(double x, double z, double dT){
 		boolean res = false;
 		
 		for(int i = 0; i < 360; i = i + 15)
-			if(maze.isWall( x+enemysize*Math.sin(i*Math.PI/180) , locationY , z-0.8f+enemysize*Math.cos(i*Math.PI/180) ))
+			if(maze.isWall( x+enemysize*Math.sin(i*Math.PI/180) , locationY , z-0.8f+enemysize*Math.cos(i*Math.PI/180) )
+					|| maze.isDoor( x+enemysize*Math.sin(i*Math.PI/180) , locationY , z-0.8f+enemysize*Math.cos(i*Math.PI/180) ))
 				res = true;
 		
 		return res;
 	}
 	
 	public boolean collision(double x, double z, double dT){
-		return checkWall(x, z, dT)
+		return checkWallOrDoor(x, z, dT)
 				|| checkEnemy(x, z, dT)
 				|| checkPlayer(x, z, dT);
 	}

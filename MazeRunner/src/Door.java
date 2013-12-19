@@ -15,7 +15,8 @@ public class Door extends GameObject implements VisibleObject {
 	public double angle=0;
 	public double dx, dy,dz;
 	public double initAngle,totalAngle;
-	double c, signD=1, lengte;	
+	public double c, signD=1, lengte;	
+	public int doorGeluid = 0;
 	
 	public Door(double x, double y, double z, double x2, double y2, double z2){
 		super(x,y,z);
@@ -32,23 +33,26 @@ public class Door extends GameObject implements VisibleObject {
 		}
 		totalAngle = initAngle;
 		lengte = Math.sqrt(Math.pow(dx, 2)+Math.pow(dz, 2));
+		
 	}
 	
 	public void display(GL gl) {
 		checkPlayer();
 		gl.glPushMatrix();
 		gl.glTranslated(locationX, locationY, locationZ);
-//		if(!(scale<=0.0)  && inArea){
-//			scale -=0.01;
-//		}
 		if(angle<90 && angle>-90  && inArea){
-			angle +=signD;
-			totalAngle +=signD;
+			angle +=signD*0.5;
+			totalAngle +=signD*0.5;
+			if(doorGeluid==0){
+				player.sound.creakingDoor();
+				doorGeluid++;
+			}
+			
 		}
 		gl.glRotated(angle,0,1,0);
 		drawDoor(gl);
 		gl.glPopMatrix();
-
+		System.out.println(angle + " " + totalAngle);
 	}
 	
 	public void drawDoor(GL gl){
@@ -100,17 +104,17 @@ public class Door extends GameObject implements VisibleObject {
 	}
 	
 	public void checkPlayer(){
-		System.out.println(dx + " " + " " + dz);
 		if(MainClass.doorSwitch.getPressed()){
 			if(player.locationX >=locationX+0.5*dx-5 && player.locationX<= locationX+0.5*dx+5
 					&& player.locationZ >=locationZ+0.5*dz-5 && player.locationZ<= locationZ+0.5*dz+5){
 				inArea =  true;
-				double s= (player.locationX*dz-player.locationZ*dx+c)/
-						lengte;
-				if(s>0){
-					signD=-1;
+				if(doorGeluid==0){
+					double s= (player.locationX*dz-player.locationZ*dx+c)/
+							lengte;
+					if(s>0){
+						signD=-1;
+					}
 				}
-				
 			}
 		}
 	}
