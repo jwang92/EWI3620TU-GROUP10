@@ -28,10 +28,10 @@ public class LevelExit {
 	
 	public static LevelExit Read(Scanner s){
 		
-		s.useDelimiter(": | |; |;\r\n");
+		s.useDelimiter(" | |; |;\r\n");
 		
 		Point2D.Float p = new Point2D.Float(s.nextFloat(), s.nextFloat());
-		int size = s.nextInt();
+		int size = (int) s.nextInt();
 		String loadfolder = s.next();
 		
 		return new LevelExit(p, size, loadfolder);
@@ -39,9 +39,9 @@ public class LevelExit {
 	
 	public String toFileFormat()
 	{
-		String res = "Enemy: ";
+		String res = "Exit: ";
 		res = res + (int)p.x + " " + (int)p.y + "; ";
-		res = res + exitsize + "; " + " " + newLoadFolder + ";\r\n";
+		res = res + (int)exitsize + "; " + newLoadFolder + ";\r\n";
 		return res;
 	}
 

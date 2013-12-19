@@ -98,6 +98,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private int storeyNumber = 1;
 	private LevelInfo lvlinfo;
 	
+	//LevelExit
+	private String levelExitLoadFolder = "";
+	
 	
 	//Texture
 	private ArrayList<Texture> textures;
@@ -461,8 +464,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void setWhatObject(int i){
 		
-		objectToDraw = i; // 1 = Ramp, 2 = Predator, 3 = Lion
+		objectToDraw = i; // 1 = Ramp, 2 = Predator, 3 = Lion, 4 = Exit
 		
+	}
+	
+	public void setNextLevel(String nextLevel){
+		levelExitLoadFolder = nextLevel;
 	}
 	
 	public void setWhatLevelinfo(int i){
@@ -512,7 +519,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				temp.add(p2);
 				temp.add(p3);
 				temp.add(p4);
-				
 				if(objectToDraw == 1){
 					Object obj = new ObjectRamp(temp, textureFileName);
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
@@ -525,7 +531,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					Object obj = new ObjectEnemy(temp,"3d_object/lion/lion.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
-				
+				else if(objectToDraw == 4){
+					if(!levelExitLoadFolder.equals("")){
+						Object obj = new LevelExit(p1,2,levelExitLoadFolder);
+						storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+					}
+				}				
 			}
 			break;
 		case DM_LVLINFO:
@@ -735,20 +746,28 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						p1.y = screenHeight - gridOffsetY - (or.getPoints().get(j).y-1)*gridDistance;
 						p.add(p1);
 					}
+				}					
+				else if(objectList.getObjects().get(i) instanceof LevelExit){
+					textureID = textureNames.lastIndexOf("textures/levelexit.png");
+					LevelExit tempObject = (LevelExit) objectList.getObjects().get(i);
+					Point2D.Float temp1 = new Point2D.Float();
+					temp1.x = tempObject.getPoint().x;
+					temp1.y = tempObject.getPoint().y;
+					Point2D.Float temp2 = new Point2D.Float(temp1.x + 1, temp1.y);
+					Point2D.Float temp3 = new Point2D.Float(temp1.x + 1, temp1.y + 1);
+					Point2D.Float temp4 = new Point2D.Float(temp1.x, temp1.y + 1);
+					Point2D.Float[] tempPoints = new Point2D.Float[4];
+					tempPoints[0] = temp1;
+					tempPoints[1] = temp2;
+					tempPoints[2] = temp3;
+					tempPoints[3] = temp4;
+					for(int j = 0; j < tempPoints.length; j++){
+						Point2D.Float p1 = new Point2D.Float();
+						p1.x = gridOffsetX + (tempPoints[j].x-1)*gridDistance;
+						p1.y = screenHeight - gridOffsetY - (tempPoints[j].y-1)*gridDistance;
+						p.add(p1);
+					}
 				}
-				
-				/*
-				for(int j = 0; j < objectList.getObjects().get(i).getPoints().size(); j++){
-					
-					Point2D.Float p1 = new Point2D.Float();
-					p1.x = gridOffsetX + (floorList.getFloors().get(i).getPoints().get(j).x-1)*gridDistance;
-					p1.y = screenHeight - gridOffsetY - (floorList.getFloors().get(i).getPoints().get(j).y-1)*gridDistance;
-					p.add(p1);
-					
-				}
-				*/
-				
-				
 				if(objectToHighlight == i)
 					polygonOnScreen(gl,p,textureID, true, true);
 				else
@@ -1039,7 +1058,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 				for(int i = 0; i < tempList.size(); i++){
 		
-					ArrayList<Point2D.Float> ps = null;
+					ArrayList<Point2D.Float> ps = new ArrayList<Point2D.Float>();
 					
 					if(tempList.get(i) instanceof ObjectRamp){
 						ObjectRamp temp = (ObjectRamp) tempList.get(i);
@@ -1048,6 +1067,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					else if(tempList.get(i) instanceof ObjectEnemy){
 						ObjectEnemy temp = (ObjectEnemy) tempList.get(i);
 						ps = temp.getPoints();
+					}
+					else if(tempList.get(i) instanceof LevelExit){
+						LevelExit tempObject = (LevelExit) tempList.get(i);
+						Point2D.Float temp1 = new Point2D.Float();
+						temp1.x = tempObject.getPoint().x;
+						temp1.y = tempObject.getPoint().y;
+						Point2D.Float temp2 = new Point2D.Float(temp1.x + 1, temp1.y);
+						Point2D.Float temp3 = new Point2D.Float(temp1.x + 1, temp1.y + 1);
+						Point2D.Float temp4 = new Point2D.Float(temp1.x, temp1.y + 1);
+						ps.add(temp1);
+						ps.add(temp2);
+						ps.add(temp3);
+						ps.add(temp4);
 					}
 					
 					float hiX = Integer.MIN_VALUE;
@@ -1198,7 +1230,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 				for(int i = 0; i < tempList.size(); i++){
 	
-					ArrayList<Point2D.Float> ps = null;
+					ArrayList<Point2D.Float> ps = new ArrayList<Point2D.Float>();
 					
 					if(tempList.get(i) instanceof ObjectRamp){
 						ObjectRamp temp = (ObjectRamp) tempList.get(i);
@@ -1207,6 +1239,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					if(tempList.get(i) instanceof ObjectEnemy){
 						ObjectEnemy temp = (ObjectEnemy) tempList.get(i);
 						ps = temp.getPoints();
+					}
+					else if(tempList.get(i) instanceof LevelExit){
+						LevelExit tempObject = (LevelExit) tempList.get(i);
+						Point2D.Float temp1 = new Point2D.Float();
+						temp1.x = tempObject.getPoint().x;
+						temp1.y = tempObject.getPoint().y;
+						Point2D.Float temp2 = new Point2D.Float(temp1.x + 1, temp1.y);
+						Point2D.Float temp3 = new Point2D.Float(temp1.x + 1, temp1.y + 1);
+						Point2D.Float temp4 = new Point2D.Float(temp1.x, temp1.y + 1);
+						ps.add(temp1);
+						ps.add(temp2);
+						ps.add(temp3);
+						ps.add(temp4);
 					}
 					
 					float hiX = Integer.MIN_VALUE;
@@ -1337,12 +1382,19 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 							tempPoints[j] = tempObject.getPoints().get(j);
 						}
 					}
-						
-					
-					
-					
-
-					
+					else if(tempList.get(i) instanceof LevelExit){
+						LevelExit tempObject = (LevelExit) tempList.get(i);
+						Point2D.Float temp1 = new Point2D.Float();
+						temp1.x = tempObject.getPoint().x;
+						temp1.y = tempObject.getPoint().y;
+						Point2D.Float temp2 = new Point2D.Float(temp1.x + 1, temp1.y);
+						Point2D.Float temp3 = new Point2D.Float(temp1.x + 1, temp1.y + 1);
+						Point2D.Float temp4 = new Point2D.Float(temp1.x, temp1.y + 1);
+						tempPoints[0] = temp1;
+						tempPoints[1] = temp2;
+						tempPoints[2] = temp3;
+						tempPoints[3] = temp4;
+					}
 					if(inPolygon(mouseInGrid, tempPoints)){
 						
 						objectToHighlight = i;

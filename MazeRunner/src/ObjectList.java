@@ -29,12 +29,10 @@ public class ObjectList {
 		String tempNumber = s.nextLine();
 		
 		int numObjects = Integer.parseInt(tempNumber.substring(17, tempNumber.length()-1));
-		
 				
 		for(int i = 0; i < numObjects; i++){
 			
 			String nextObj = s.next();
-			
 			if(nextObj.equals("Ramp:")){
 				objects.add(ObjectRamp.Read(s));				
 			}
