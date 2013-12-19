@@ -281,7 +281,8 @@ public void draw2D(GL gl){
 		tr = new TextRenderer(f);
 		drawHit(gl);
 		drawHealthbar(gl, tr);
-		drawUpgrades(gl, tr);
+		drawUpgrades(gl);
+		drawWeapons(gl);
 		drawScore(gl, tr);
 		drawLevelExit(gl, tr);
 	
@@ -323,57 +324,46 @@ public void drawHit(GL gl){
 	
 }
 
-public void drawUpgrades(GL gl, TextRenderer t){
+public void drawUpgrades(GL gl){
+	
+	gl.glEnable(GL.GL_BLEND);
+	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 	
 	ArrayList<int[]> ups = MainClass.player.getUpgrades();
-	
-	t.beginRendering(screenWidth, screenHeight);
-	
-	boolean swordText = false;
-	int thingsDrawn = 0;
+
+	int numDrawn = 0;
 	
 	for(int i = 0; i < ups.size(); i++){
 		
-		switch(ups.get(i)[0]){
-		case 1:
-			t.draw("Speed: " + ups.get(i)[1] + "ms", screenWidth - 220, screenHeight - 20 - (thingsDrawn++ * 20));
-			break;
-		case 2:
-			swordText = true;
-			switch(ups.get(i)[2]){
-			case 2:
-				t.draw("Superzwaard", screenWidth - 220, screenHeight - 20 - (thingsDrawn++ * 20));
-				break;
-			case 3:
-				t.draw("Leeuwenzwaard :o", screenWidth - 220, screenHeight - 20 - (thingsDrawn++ * 20));
-			}
+		if(ups.get(i)[0] == 1){
 			
-			break;
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			int textureID = MainClass.textureNames.lastIndexOf("textures/icon_speed.png");
+			MainClass.textures.get(textureID).bind();
+			
+			double alpha = ups.get(i)[1] / 5000.0;
+						
+			int startX = screenWidth - 200;
+			int startY = 55;
+			
+			int drawDis = numDrawn * 42;
+						
+			gl.glColor4f(1, 1, 1, (float) alpha);
+			gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
+			gl.glEnd();
+			
+			gl.glDisable(GL.GL_TEXTURE_2D);
+			
 		}
 
 	}
 	
-	if(!swordText)
-		t.draw("Kutzwaard", screenWidth - 220, screenHeight - 20 - (thingsDrawn++ * 20));	
+	gl.glDisable(GL.GL_BLEND);
 	
-	t.endRendering();
-	
-	
-	for(int i = 0; i < ups.size(); i++){
-		
-		if((ups.get(i)[0] == 2 || ups.get(i)[0] == 4) && swordLoaded == false){
-			
-			if(!rw){
-				//MainClass.sword.genVBO(gl);
-			}
-			else{
-				//MainClass.rWeapon.genVBO(gl);
-			}
-			swordLoaded = true;
-
-		}
-		
-	}
 	
 }
 
@@ -397,6 +387,113 @@ public void drawLevelExit(GL gl, TextRenderer t){
 		f = f.deriveFont(14f);
 		
 	}
+}
+
+public void drawWeapons(GL gl){
+	
+	gl.glEnable(GL.GL_TEXTURE_2D);
+	gl.glEnable(GL.GL_BLEND);
+	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+	
+	int textureID;
+	textureID = MainClass.textureNames.lastIndexOf("textures/icon_sword.png");
+	MainClass.textures.get(textureID).bind();
+	
+	int startX = screenWidth - 200;
+	int startY = 20;
+
+	float alpha = 0.3f;
+	if(!rw){
+		alpha = 1;
+	}
+		
+	gl.glColor4f(1, 1, 1, alpha);
+	gl.glBegin(GL.GL_QUADS);
+		gl.glTexCoord2f(0, 0); gl.glVertex2f(startX, startY);
+		gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42, startY);
+		gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42, startY + 32);
+		gl.glTexCoord2f(0, 1); gl.glVertex2f(startX, startY + 32);
+	gl.glEnd();
+	
+	gl.glDisable(GL.GL_TEXTURE_2D);
+	
+	
+	ArrayList<int[]> ups = MainClass.player.getUpgrades();
+	
+	int numDrawn = 1;
+	
+	for(int i = 0; i < ups.size(); i++){
+		
+		int drawDis = numDrawn * 42;
+		
+		if(ups.get(i)[0] == 2){
+		
+			int numStars = ups.get(i)[2] - 1;
+			
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			textureID = MainClass.textureNames.lastIndexOf("textures/weapon_star.png");
+			MainClass.textures.get(textureID).bind();
+
+			alpha = 0.3f;
+			if(!rw){
+				alpha = 1;
+			}
+			
+			// Een ster
+			if(numStars >= 1){
+				gl.glColor4f(1, 1, 1, alpha);
+				gl.glBegin(GL.GL_QUADS);
+					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 7, startY + 3);
+					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 14, startY + 3);
+					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 14, startY + 10);
+					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 7, startY + 10);
+				gl.glEnd();
+			}
+			
+			// Twee sterren
+			if(numStars >= 2){
+				gl.glBegin(GL.GL_QUADS);
+					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 16, startY + 3);
+					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 23, startY + 3);
+					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 23, startY + 10);
+					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 16, startY + 10);
+				gl.glEnd();
+			}
+				
+			gl.glDisable(GL.GL_TEXTURE_2D);
+			
+						
+		}		
+		else if(ups.get(i)[0] == 4){ // Teken dat je een gun hebt
+			
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			textureID = MainClass.textureNames.lastIndexOf("textures/icon_gun.png");
+			MainClass.textures.get(textureID).bind();
+			
+			alpha = 0.3f;
+			if(rw){
+				alpha = 1;
+			}
+			
+			
+			gl.glColor4f(1, 1, 1, alpha);
+			gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
+			gl.glEnd();
+			
+			gl.glDisable(GL.GL_TEXTURE_2D);
+			
+			numDrawn++;
+			
+		}
+		
+	}
+		
+	gl.glDisable(GL.GL_BLEND);
+
 }
 
 public void drawHealthbar(GL gl, TextRenderer t){
@@ -439,17 +536,15 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	MainClass.textures.get(textureID).bind();
 	
 	
-	for(int i = 0; i < 58; i ++){
+	int offset = (int) Math.floor(MainClass.player.getHealth() * 2.9);
 
-		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 0);gl.glVertex2f(35.0f + (i * 5), 26.0f);
-			gl.glTexCoord2f(1, 0);gl.glVertex2f(40.0f + (i * 5), 26.0f);
-			gl.glTexCoord2f(1, 1);gl.glVertex2f(40.0f + (i * 5), 51.0f);
-			gl.glTexCoord2f(0, 1);gl.glVertex2f(35.0f + (i * 5), 51.0f);
-		gl.glEnd();
-			
-	}
-	
+	gl.glBegin(GL.GL_QUADS);
+		gl.glTexCoord2f(0, 0);gl.glVertex2f(35.0f, 26.0f);
+		gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f + offset, 26.0f);
+		gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f + offset, 51.0f);
+		gl.glTexCoord2f(0, 1);gl.glVertex2f(35.0f, 51.0f);
+	gl.glEnd();
+		
 	gl.glDisable(GL.GL_TEXTURE_2D);
 	gl.glEnable(GL.GL_TEXTURE_2D);
 
@@ -457,46 +552,18 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	MainClass.textures.get(textureID).bind();
 	
 	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0);gl.glVertex2f(324.0f, 26.0f);
-		gl.glTexCoord2f(1, 0);gl.glVertex2f(331.0f, 26.0f);
-		gl.glTexCoord2f(1, 1);gl.glVertex2f(331.0f, 51.0f);
-		gl.glTexCoord2f(0, 1);gl.glVertex2f(324.0f, 51.0f);
+		gl.glTexCoord2f(0, 0);gl.glVertex2f(324.0f - (290 - offset), 26.0f);
+		gl.glTexCoord2f(1, 0);gl.glVertex2f(331.0f - (290 - offset), 26.0f);
+		gl.glTexCoord2f(1, 1);gl.glVertex2f(331.0f - (290 - offset), 51.0f);
+		gl.glTexCoord2f(0, 1);gl.glVertex2f(324.0f - (290 - offset), 51.0f);
 	gl.glEnd();
-	
 
 	gl.glDisable(GL.GL_BLEND);
 	
-	/*
-	
-	float blockWidth = 9;
-	
-	for(int i = 0; i < Math.floor(MainClass.player.getHealth() / 5); i++){
-		
-		gl.glBegin(GL.GL_QUADS);
-			gl.glColor3f(0f, 1f, 0f);
-			gl.glVertex2f(25f + (i * blockWidth) + (i * 2), 25f);
-			gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 25f);
-			gl.glVertex2f(25.0f + (i * blockWidth) + blockWidth + (i * 2), 35.0f);
-			gl.glVertex2f(25.0f + (i * blockWidth) + (i * 2), 35.0f);
-		gl.glEnd();
-		
-		
-	}
-	
-	// Text erbij
-	gl.glBegin(GL.GL_QUADS);
-		gl.glColor3f(0.6f, 0.6f, 0.6f);
-		gl.glVertex2f(194.0f, 40.0f);
-		gl.glVertex2f(248.0f, 40.0f);
-		gl.glVertex2f(248.0f, 60.0f);
-		gl.glVertex2f(194.0f, 60.0f);
-	gl.glEnd();
-			
-	
+	/*	
 	t.beginRendering(screenWidth, screenHeight);
 	t.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
 	t.endRendering();
-	
 	*/
 	previousHealth = MainClass.player.getHealth();
 
@@ -512,6 +579,7 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	}
 
 	public void render(GLAutoDrawable drawable){
+		MainClass.cursor.setCursor(2);
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
