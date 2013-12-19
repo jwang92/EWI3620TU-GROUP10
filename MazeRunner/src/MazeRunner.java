@@ -247,6 +247,7 @@ public class MazeRunner implements GLEventListener{
 		}
         
 		previousHealth = MainClass.player.getHealth();
+			
 	}
 	
 	/**
@@ -400,15 +401,72 @@ public void drawLevelExit(GL gl, TextRenderer t){
 
 public void drawHealthbar(GL gl, TextRenderer t){
 	
+	gl.glEnable(GL.GL_TEXTURE_2D);
+	gl.glEnable(GL.GL_BLEND);
+	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+	
+	int textureID;
+	textureID = MainClass.textureNames.lastIndexOf("textures/health_bg.png");
+	MainClass.textures.get(textureID).bind();
+	
 	// Box met bar tekenen
+	gl.glColor3f(1, 1, 1);
+	gl.glBegin(GL.GL_QUADS);
+		gl.glTexCoord2f(0, 0);gl.glVertex2f(20.0f, 20.0f);
+		gl.glTexCoord2f(1, 0);gl.glVertex2f(341.0f, 20.0f);
+		gl.glTexCoord2f(1, 1);gl.glVertex2f(341.0f, 57.0f);
+		gl.glTexCoord2f(0, 1);gl.glVertex2f(20.0f, 57.0f);
+	gl.glEnd();
+	
+	gl.glDisable(GL.GL_TEXTURE_2D);
+	gl.glEnable(GL.GL_TEXTURE_2D);
+
+	textureID = MainClass.textureNames.lastIndexOf("textures/health_left.png");
+	MainClass.textures.get(textureID).bind();
 	
 	gl.glBegin(GL.GL_QUADS);
-		gl.glColor3f(0.6f, 0.6f, 0.6f);
-		gl.glVertex2f(20.0f, 20.0f);
-		gl.glVertex2f(248.0f, 20.0f);
-		gl.glVertex2f(248.0f, 40.0f);
-		gl.glVertex2f(20.0f, 40.0f);
+		gl.glTexCoord2f(0, 0);gl.glVertex2f(29.0f, 26.0f);
+		gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f, 26.0f);
+		gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f, 51.0f);
+		gl.glTexCoord2f(0, 1);gl.glVertex2f(29.0f, 51.0f);
 	gl.glEnd();
+	
+	
+	gl.glDisable(GL.GL_TEXTURE_2D);
+	gl.glEnable(GL.GL_TEXTURE_2D);
+	
+	textureID = MainClass.textureNames.lastIndexOf("textures/health_center.png");
+	MainClass.textures.get(textureID).bind();
+	
+	
+	for(int i = 0; i < 58; i ++){
+
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0);gl.glVertex2f(35.0f + (i * 5), 26.0f);
+			gl.glTexCoord2f(1, 0);gl.glVertex2f(40.0f + (i * 5), 26.0f);
+			gl.glTexCoord2f(1, 1);gl.glVertex2f(40.0f + (i * 5), 51.0f);
+			gl.glTexCoord2f(0, 1);gl.glVertex2f(35.0f + (i * 5), 51.0f);
+		gl.glEnd();
+			
+	}
+	
+	gl.glDisable(GL.GL_TEXTURE_2D);
+	gl.glEnable(GL.GL_TEXTURE_2D);
+
+	textureID = MainClass.textureNames.lastIndexOf("textures/health_right.png");
+	MainClass.textures.get(textureID).bind();
+	
+	gl.glBegin(GL.GL_QUADS);
+		gl.glTexCoord2f(0, 0);gl.glVertex2f(324.0f, 26.0f);
+		gl.glTexCoord2f(1, 0);gl.glVertex2f(331.0f, 26.0f);
+		gl.glTexCoord2f(1, 1);gl.glVertex2f(331.0f, 51.0f);
+		gl.glTexCoord2f(0, 1);gl.glVertex2f(324.0f, 51.0f);
+	gl.glEnd();
+	
+
+	gl.glDisable(GL.GL_BLEND);
+	
+	/*
 	
 	float blockWidth = 9;
 	
@@ -439,6 +497,7 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	t.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
 	t.endRendering();
 	
+	*/
 	previousHealth = MainClass.player.getHealth();
 
 	
@@ -453,8 +512,6 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	}
 
 	public void render(GLAutoDrawable drawable){
-		MainClass.cursor.setCursor(2);
-
 		GL gl = drawable.getGL();
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
