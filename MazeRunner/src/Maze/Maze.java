@@ -24,7 +24,7 @@ public class Maze  implements VisibleObject {
 	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "savefiles/goedlevel";
+	private String loadfolder = "savefiles/kasteel";
 	private int numberOfStoreys;
 	private LevelInfo lvlinfo;
 	private double pickupColor = 0.0;
@@ -118,27 +118,29 @@ public void drawBackground(GL gl){
 			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x , z + s, y + s);
 		gl.glEnd();
 				
-		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z, y + s);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
-		gl.glEnd();
 		
 		MainClass.textures.get(textureID).disable();
 		
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		
-		int textureID2 = MainClass.textureNames.lastIndexOf("textures/sky_top.png");
+		int textureID2 = MainClass.textureNames.lastIndexOf("textures/sky_top_big.png");
 		MainClass.textures.get(textureID2).bind();
 		
 		// Top
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(numTex, numTex); gl.glVertex3d(x, z + s, y);
-			gl.glTexCoord2f(numTex, 0); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(0, numTex); gl.glVertex3d(x, z + s, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z + s, y + s);
+		gl.glEnd();
+		
+		// Bottom
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
 		gl.glEnd();
 		
 		MainClass.textures.get(textureID2).disable();
