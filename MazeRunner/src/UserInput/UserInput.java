@@ -33,7 +33,7 @@ import Maze.LevelExit;
  *
  */
 public class UserInput extends Control 
-		implements MouseListener, MouseMotionListener, KeyListener
+		implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener
 {
 	// TODO: Add fields to help calculate mouse movement
 	int x=0;
@@ -63,6 +63,7 @@ public class UserInput extends Control
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
+		canvas.addMouseWheelListener(this);
 	}
 	
 	public void setDefMouse(MouseEvent me){
@@ -336,6 +337,20 @@ public class UserInput extends Control
 		if(event.getButton()==3 && MainClass.state.getState() == 1 && defense){
 			defense = false;
 		}
+	}
+	
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent me) {
+		
+		if(rUpgrade){
+			
+			if(MainClass.mazeRunner.getRW()){
+				MainClass.mazeRunner.setRW(false);
+			} else {
+				MainClass.mazeRunner.setRW(true);
+			}
+		}
+		
 	}
 
 

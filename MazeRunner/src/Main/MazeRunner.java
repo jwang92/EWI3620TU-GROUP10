@@ -583,6 +583,10 @@ public void drawHealthbar(GL gl, TextRenderer t){
 	public void setRW(boolean rw){
 		this.rw=rw;
 	}
+	
+	public boolean getRW(){
+		return rw;
+	}
 
 	public void render(GLAutoDrawable drawable){
 		MainClass.cursor.setCursor(2);
