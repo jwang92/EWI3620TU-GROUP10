@@ -51,6 +51,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	public static MazeRunner mazeRunner;
 	public static GameStateManager state;
+	public static Login login;
 	public static MainMenu mainMenu;
 	public static Maze maze;
 	public static MazePheromones mazePheromones;
@@ -121,6 +122,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// to mouse events that happen inside the GLCanvas.
 		canvas.addMouseListener(this);
 		
+		login = new Login(screenHeight, screenWidth);
 		mainMenu = new MainMenu(screenHeight, screenWidth);
 		state = new GameStateManager();
 		cursor = new CursorHandler(MainClass.canvas);
@@ -150,6 +152,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		case 4:
 			gameover.reshape(drawable, 0, 0, screenWidth, screenHeight);
 			break;
+		case 5:
+			login.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
 		}
 	}
 	
@@ -174,6 +179,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			case 4:
 				setScreenSize(gameover.ScreenHeight, gameover.ScreenWidth);
 				break;
+			case 5:
+				setScreenSize(login.ScreenHeight, login.ScreenWidth);
+				break;
 			}
 			rendersize(drawable, state.getState());
 		}
@@ -196,6 +204,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if (tel==4){
 			gameover.render(drawable);
 			gameover.init(drawable);
+		}
+		else if (tel==5){
+			login.render(drawable);
 		}
 		
 		initUpdater(drawable,0,0, screenWidth, screenHeight);
@@ -286,7 +297,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel == 4){
 			gameover.reshape(arg0, arg1, arg2, arg3, arg4);
 		}
-		
+		else if(tel == 5){
+			login.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
 		
 	}
 
@@ -332,6 +345,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel==4){
 			gameover.mouseReleased(me);
 		}
+		else if(tel==5){
+			login.mouseReleased(me);
+		}
 
 	}
 	
@@ -348,6 +364,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if(tel==4 && state.getStopGameOver()==false){
 			gameover.init(drawable);
+		}
+		else if(tel==5 && state.getStopLogin()==false){
+			login.init(drawable);
 		}
 	}
 	

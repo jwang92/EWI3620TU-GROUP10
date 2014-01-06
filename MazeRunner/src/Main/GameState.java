@@ -5,5 +5,6 @@ public enum GameState {
     MAINGAME_STATE,
     PAUSE_STATE,
     STOP_STATE,
-    GAMEOVER_STATE
+    GAMEOVER_STATE,
+    LOGIN_STATE
 }

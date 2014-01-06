@@ -316,7 +316,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	@Override
 	public void display(GLAutoDrawable arg0) {
 		// TODO Auto-generated method stub
-		render(arg0);
+//		render(arg0);
 	}
 
 	@Override

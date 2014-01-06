@@ -13,6 +13,7 @@ import GameObject.Player;
 import Main.GameState;
 import Main.MainClass;
 import Maze.LevelExit;
+import Utils.Inputbox;
 
 //import com.sun.media.sound.Toolkit;
 
@@ -223,6 +224,9 @@ public class UserInput extends Control
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
+		for(Inputbox input : MainClass.login.inputs)
+			if(input.getSelect())
+				input.enteredKey(event);
 				
 		pressed.remove(event.getKeyChar());
 		

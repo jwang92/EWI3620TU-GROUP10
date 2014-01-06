@@ -3,11 +3,12 @@ import UserInput.CursorHandler;
 
 public class GameStateManager {
 	
-	public int gamestate = 0;
+	public int gamestate = 5;
 	public boolean sTitle=false,
 					sMainGame=false,
 					sPause=false,
-					sGameOver=false;
+					sGameOver=false,
+					sLogin=false;
 	
 	public CursorHandler c = new CursorHandler(MainClass.canvas);
 	
@@ -41,6 +42,11 @@ public class GameStateManager {
 	    	   gamestate = 4;
 	    	   //MainMenu.setTeller(4);
 	    	   break;
+	       case LOGIN_STATE:
+	    	   //
+	    	   gamestate = 5;
+	    	   //MainMenu.setTeller(5);
+	    	   break;
 	    }
 	}
 	
@@ -65,6 +71,10 @@ public class GameStateManager {
 		return sGameOver;
 	}
 	
+	public boolean getStopLogin(){
+		return sGameOver;
+	}
+	
 	public void setStopTitle(boolean s){
 		sTitle=s;
 	}
@@ -79,6 +89,10 @@ public class GameStateManager {
 	
 	public void setStopGameOver(boolean s){
 		sGameOver=s;
+	}
+	
+	public void setStopLogin(boolean s){
+		sLogin=s;
 	}
 }
 
