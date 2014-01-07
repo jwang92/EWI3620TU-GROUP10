@@ -35,6 +35,20 @@ public class SQLHandler {
 		
 	}
 	
+	public boolean updatequery(String sql){
+		
+		try {
+			Statement s = c.createStatement();
+			s.executeUpdate(sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	public void close(){
 		try {
 			c.close();

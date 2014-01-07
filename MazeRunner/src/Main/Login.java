@@ -5,6 +5,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
@@ -12,8 +14,10 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
+import UserInput.CursorHandler;
 import Utils.Buttonbox;
 import Utils.Inputbox;
+import Utils.SQLHandler;
 import Utils.pwInputbox;
 
 import com.sun.opengl.util.j2d.TextRenderer;
@@ -41,6 +45,8 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 	private ArrayList<Buttonbox> buttons;
 	public ArrayList<Inputbox> inputs;
 	
+	private SQLHandler sql;
+	private CursorHandler c;
 	
 	public Login(int screenHeight, int screenWidth){
 		message = 0;
@@ -50,6 +56,9 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		setButtons();
 	
 		setInputboxes();
+		
+		sql = new SQLHandler();
+		c = new CursorHandler(MainClass.canvas);
 		
 		// Add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
@@ -69,8 +78,8 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		int buttonSizeX = (int) (ScreenWidth/7);
 		int buttonSizeY = (int) (ScreenHeight/13);
 
-		buttons.add( new Buttonbox((int)(ScreenWidth/6.0f), (int)(ScreenHeight*0.2f), buttonSizeX, buttonSizeY, "start") );
-		buttons.add( new Buttonbox((int)(ScreenWidth*4.0f/6.0f), (int)(ScreenHeight*0.2f), buttonSizeX, buttonSizeY, "start") );
+		buttons.add( new Buttonbox((int)(ScreenWidth/6.0f), (int)(ScreenHeight*0.2f), buttonSizeX, buttonSizeY, "go") );
+		buttons.add( new Buttonbox((int)(ScreenWidth*4.0f/6.0f), (int)(ScreenHeight*0.2f), buttonSizeX, buttonSizeY, "go") );
 		
 	}
 	
@@ -189,9 +198,34 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
 		
+		// Fonts
+		float fontSize = ScreenWidth / 25f;
+		
+		Font f2 = null;
+		try {
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
+		} catch (Exception e){
+			System.out.println("foutje");
+		}
+		Font f = f2.deriveFont(fontSize);
+		TextRenderer tr = new TextRenderer(f);
+
+		tr.setColor(0.0f, 0.0f, 0.0f, 1.0f);
+				
+		
+		
 		for(int i = 0; i < 2; i++){
 			float x = ScreenWidth/2.0f;
-			float y = ScreenHeight;
+			float y = ScreenHeight / 1.3f;
+			
+			String text = "Login";
+			if(i == 1)
+				text = "Register";
+			
+			tr.beginRendering(ScreenWidth, ScreenHeight);
+			tr.draw(text, (int) (i*x + (0.1f + margin)*x), (int) ((1-margin - 0.13f)*y));
+			tr.endRendering();
+			
 			gl.glBegin(GL.GL_QUADS);
 				gl.glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
 				gl.glVertex2f(i*x + margin*x, margin*y);
@@ -199,7 +233,11 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 				gl.glVertex2f(i*x + (1-margin)*x, (1-margin)*y);
 				gl.glVertex2f(i*x + margin*x, (1-margin)*y);
 			gl.glEnd();
+			
 		}
+		
+		
+		
 		gl.glDisable(GL.GL_BLEND);
 		
 		for( Inputbox input : inputs)
@@ -231,8 +269,15 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		}
 		
 		// Fonts
-		int fontsize = (int) Math.round(ScreenHeight*0.035);
-		Font f = new Font("Courier New", Font.PLAIN, fontsize);
+		float fontSize = ScreenWidth / 60f;
+		
+		Font f2 = null;
+		try {
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
+		} catch (Exception e){
+			System.out.println("foutje");
+		}
+		Font f = f2.deriveFont(fontSize);
 		TextRenderer tr = new TextRenderer(f);
 
 		tr.setColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -242,11 +287,14 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		String text = "";
 		switch(message){
 		case 1: 
-			tr.draw("Combination of username", (int) (ScreenWidth*0.25), (int) (ScreenHeight*0.7+fontsize));
+			tr.draw("Combination of username", (int) (ScreenWidth*0.25), (int) (ScreenHeight*0.71+fontSize));
 			text = "and password doesn't exist.";
 			break;
 		case 2:
 			text = "Username already exists.";
+		case 3:
+			tr.draw("The username can only contain letters.", (int) (ScreenWidth*0.25), (int) (ScreenHeight*0.71+fontSize));
+			text = "The password has to be at least 6 characters long.";
 		}
 		tr.draw(text, (int) (ScreenWidth*0.25), (int) (ScreenHeight*0.7));
 		
@@ -261,20 +309,59 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
  * **********************************************
  */
 	private boolean inDB(String username) {
-		// TODO bestaat de username in DB?
+		
+		
+		ResultSet s = sql.query("SELECT 1 FROM users WHERE username = '" + username + "'");
+		try {
+			
+			if(!s.next()){
+				return false;	
+			} else {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return false;
+		
 	}
 	
 	private boolean inDB(String username, String password) {
-		// TODO bestaan combinatie van username en password in DB?
-		inDB(username);
+
+		ResultSet s = sql.query("SELECT 1 FROM users WHERE username = '" + username + "' AND password = MD5('" + password + "')");
+		try {
+			
+			if(!s.next()){
+				return false;	
+			} else {
+				MainClass.username = username;
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		return false;
+		
 	}
 	
-	private void addToDB(String username, String password) {
-		// TODO voeg combinatie van username en password toe aan DB
+	private boolean addToDB(String username, String password) {
+		
+		if(username.matches("[a-zA-Z]+") && password.length() > 6){
+			
+			sql.updatequery("INSERT INTO users (username, password) VALUES ('" + username + "', MD5('" + password + "'))");
+			MainClass.username = username;
+			return true;
+			
+		} else {
+			return false;
+		}
+		
 	}
+	
 	
 	
 /*
@@ -390,6 +477,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 				MainClass.initObjects();
 				MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
 				MainClass.state.setStopTitle(false);
+				sql.close();
 			}
 			else{
 				message = 1;
@@ -397,11 +485,16 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		}
 		else if(buttons.get(1).OnBox(Xin, Yin) ){
 			if(!inDB(inputs.get(2).getText()) ){
-				addToDB(inputs.get(2).getText(), inputs.get(3).getText());
-				MainClass.canvas.removeGLEventListener(this);
-				MainClass.initObjects();
-				MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
-				MainClass.state.setStopTitle(false);
+				
+				if(!addToDB(inputs.get(2).getText(), inputs.get(3).getText())){
+					message = 3;
+				} else{
+					MainClass.canvas.removeGLEventListener(this);
+					MainClass.initObjects();
+					MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
+					MainClass.state.setStopTitle(false);
+					sql.close();
+				}
 			}
 			else{
 				message = 2;
@@ -420,9 +513,11 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 			int Xin = me.getX();
 			int Yin = me.getY();
 			
+			
 			for(Buttonbox button : buttons)
-				button.ChangeTexture( button.OnBox(Xin, Yin) );				
-		
+				button.ChangeTexture( button.OnBox(Xin, Yin) );	
+
+			
 //			System.out.println(mouseOnBox);
 		}
 

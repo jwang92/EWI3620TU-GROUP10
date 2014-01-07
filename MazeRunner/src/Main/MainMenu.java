@@ -18,6 +18,7 @@ import LevelEditor.LevelEditor;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
+import com.sun.opengl.util.j2d.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureCoords;
 import com.sun.opengl.util.texture.TextureData;
@@ -142,8 +143,44 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// Draw the buttons.
 		drawButtons(gl);
 		
+		// Draw username
+		drawUsername(gl);
+		
 		gl.glFlush();
 	
+	}
+	
+	public void drawUsername(GL gl){
+		
+		float fontSize = ScreenWidth / 60f;
+		
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glColor4f(0f, 0f, 0f, 0.5f);
+			gl.glVertex2f(0, 0);
+			gl.glVertex2f(0, ScreenHeight * 0.07f);
+			gl.glVertex2f(ScreenWidth, ScreenHeight * 0.07f);
+			gl.glVertex2f(ScreenWidth, 0);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_BLEND);
+		
+		Font f2 = null;
+		try {
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
+		} catch (Exception e){
+			//
+		}
+		
+		Font f = f2.deriveFont(fontSize);
+		TextRenderer t = new TextRenderer(f);
+
+		t.beginRendering(ScreenWidth, ScreenHeight);
+		t.draw("Ingelogd als " + MainClass.username, (int) (ScreenWidth * 0.02f), (int) (ScreenHeight * 0.02f));
+		t.endRendering();
+		
 
 	}
 	

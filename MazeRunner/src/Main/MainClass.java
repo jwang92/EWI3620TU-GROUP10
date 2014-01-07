@@ -57,6 +57,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static MazePheromones mazePheromones;
 	public static Player player;
 	
+	public static String username = "0";
+	
 	//Enemies
 	public static ArrayList<Model> enemieModels = new ArrayList<Model>();
 	public static ArrayList<String> enemieModelNames = new ArrayList<String>();
