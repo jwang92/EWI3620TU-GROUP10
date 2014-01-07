@@ -469,6 +469,17 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		int Xin = me.getX();
 		int Yin = me.getY();
 		
+		// Temporary cheat
+		if(Xin > 0 && Xin < 200 && Yin > 0 && Yin < 200){
+			MainClass.canvas.removeGLEventListener(this);
+			MainClass.initObjects();
+			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
+			MainClass.state.setStopTitle(false);
+			MainClass.username = "test";
+			sql.close();			
+		}
+		//
+		
 		for(Inputbox input : inputs)
 			input.clickedOn(me);
 		
