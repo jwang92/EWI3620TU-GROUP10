@@ -207,6 +207,8 @@ public void drawBackground(GL gl){
 			texture = "textures/upgrade_health.png";
 		else if(type == 4)
 			texture = "textures/upgrade_gun.png";
+		else if(type == 5)
+			texture = "textures/upgrade_2x.png";
 
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 		

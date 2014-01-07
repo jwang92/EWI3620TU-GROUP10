@@ -34,6 +34,7 @@ public class Player extends GameObject {
 	private double newX, newZ;
 	private int health;
 	public int score=0;
+	private float scoreMultiplier = 1;
 	private int sensitivity = 10;
 	
 	//Defense
@@ -368,6 +369,7 @@ public class Player extends GameObject {
 		}
 	}
 	
+	// To remove expiring upgrades
 	public void checkUpgrades(int dt){
 		
 		for(int i = 0; i < currentUpgrades.size(); i++){
@@ -392,8 +394,21 @@ public class Player extends GameObject {
 						
 					}
 					break;
-				case 2: // Swordupgrade?
-					// todo
+				case 5: // Score Multiplier
+					
+					int tempdt2 = currentUpgrades.get(i)[1] - dt;
+					if(tempdt2 <= 0){
+						tempdt2 = 0;
+					}
+
+					int[] temp2 = {1, tempdt2};
+					currentUpgrades.set(i, temp2);
+					if(currentUpgrades.get(i)[1] <= 0){
+						
+						this.speed = 0.01;
+						currentUpgrades.remove(i);
+						
+					}
 					break;
 				default:
 					// niets doen
@@ -443,13 +458,11 @@ public class Player extends GameObject {
 				break;
 			case 3: // Health
 				setDeltaHealth(30);
-				
-
 				break;
 			case 4: // Ranged weapong
 				
 				int[] temp3 = new int[3];	
-				temp3[0] = 4; // type 3
+				temp3[0] = 4; // type 4
 				temp3[2] = 1;
 				currentUpgrades.add(temp3);
 
@@ -459,6 +472,18 @@ public class Player extends GameObject {
 				MainClass.mazeRunner.setRW(true);
 				MainClass.input.rUpgrade = true;
 			
+				break;
+			case 5: // Score multiplier
+				int[] temp4 = new int[2];
+				this.scoreMultiplier = 2;
+				temp4[0] = 5; // type 5
+				temp4[1] = 5000; //tijd voor upgrade 5 seconden
+				for(int i = 0; i < currentUpgrades.size(); i++){
+					if(currentUpgrades.get(i)[0] == 1){
+						currentUpgrades.remove(i);
+					}
+				}
+				currentUpgrades.add(temp4);
 				break;
 			default:
 				// niets doen
@@ -501,7 +526,7 @@ public class Player extends GameObject {
 	}
 	
 	public void setScore(int s){
-		score += s;
+		score += (s * scoreMultiplier);
 	}
 	
 	public int getScore(){

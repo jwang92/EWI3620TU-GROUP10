@@ -308,6 +308,7 @@ public void draw2D(GL gl){
 	}
 
 public void drawHit(GL gl){
+
 	gl.glEnable(GL.GL_BLEND);
 	gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
 	
@@ -326,7 +327,7 @@ public void drawHit(GL gl){
 	gl.glEnd();
 	
 	gl.glDisable(GL.GL_BLEND);
-	
+	 
 	
 }
 
@@ -364,8 +365,31 @@ public void drawUpgrades(GL gl){
 			
 			gl.glDisable(GL.GL_TEXTURE_2D);
 			
+		} else if(ups.get(i)[0] == 5){
+			
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			int textureID = MainClass.textureNames.lastIndexOf("textures/icon_2x.png");
+			MainClass.textures.get(textureID).bind();
+			
+			double alpha = ups.get(i)[1] / 5000.0;
+						
+			int startX = screenWidth - 200;
+			int startY = 55;
+			
+			int drawDis = numDrawn * 42;
+						
+			gl.glColor4f(1, 1, 1, (float) alpha);
+			gl.glBegin(GL.GL_QUADS);
+				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
+			gl.glEnd();
+			
+			gl.glDisable(GL.GL_TEXTURE_2D);
+			
 		}
-
+		
 	}
 	
 	gl.glDisable(GL.GL_BLEND);
