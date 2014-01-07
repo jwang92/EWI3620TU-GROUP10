@@ -8,7 +8,8 @@ public class GameStateManager {
 					sMainGame=false,
 					sPause=false,
 					sGameOver=false,
-					sLogin=false;
+					sLogin=false,
+					sHighscores=false;
 	
 	public CursorHandler c = new CursorHandler(MainClass.canvas);
 	
@@ -47,6 +48,11 @@ public class GameStateManager {
 	    	   gamestate = 5;
 	    	   //MainMenu.setTeller(5);
 	    	   break;
+	       case HIGHSCORES_STATE:
+	    	   //
+	    	   gamestate = 6;
+	    	   //MainMenu.setTeller(6);
+	    	   break;
 	    }
 	}
 	
@@ -75,6 +81,10 @@ public class GameStateManager {
 		return sGameOver;
 	}
 	
+	public boolean getStopHighscores(){
+		return sHighscores;
+	}
+	
 	public void setStopTitle(boolean s){
 		sTitle=s;
 	}
@@ -93,6 +103,10 @@ public class GameStateManager {
 	
 	public void setStopLogin(boolean s){
 		sLogin=s;
+	}
+	
+	public void setStopHighscores(boolean s){
+		sHighscores=s;
 	}
 }
 

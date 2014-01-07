@@ -52,11 +52,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static MazeRunner mazeRunner;
 	public static GameStateManager state;
 	public static Login login;
+	public static Highscores highscores;
 	public static MainMenu mainMenu;
 	public static Maze maze;
 	public static MazePheromones mazePheromones;
 	public static Player player;
-	
 	public static String username = "0";
 	
 	//Enemies
@@ -125,6 +125,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		canvas.addMouseListener(this);
 		
 		login = new Login(screenHeight, screenWidth);
+		highscores = new Highscores(screenHeight, screenWidth);
 		mainMenu = new MainMenu(screenHeight, screenWidth);
 		state = new GameStateManager();
 		cursor = new CursorHandler(MainClass.canvas);
@@ -157,6 +158,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		case 5:
 			login.reshape(drawable, 0, 0, screenWidth, screenHeight);
 			break;
+		case 6:
+			highscores.reshape(drawable, 0, 0, screenWidth, screenHeight);
+			break;
 		}
 	}
 	
@@ -184,6 +188,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			case 5:
 				setScreenSize(login.ScreenHeight, login.ScreenWidth);
 				break;
+			case 6:
+				setScreenSize(highscores.ScreenHeight, highscores.ScreenWidth);
+				break;
 			}
 			rendersize(drawable, state.getState());
 		}
@@ -209,6 +216,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 		else if (tel==5){
 			login.render(drawable);
+		}
+		else if (tel==6){
+			highscores.render(drawable);
 		}
 		
 		initUpdater(drawable,0,0, screenWidth, screenHeight);
@@ -302,6 +312,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel == 5){
 			login.reshape(arg0, arg1, arg2, arg3, arg4);
 		}
+		else if(tel == 6){
+			highscores.reshape(arg0, arg1, arg2, arg3, arg4);
+		}
 		
 	}
 
@@ -350,6 +363,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel==5){
 			login.mouseReleased(me);
 		}
+		else if(tel==6){
+			highscores.mouseReleased(me);
+		}
 
 	}
 	
@@ -370,6 +386,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		else if(tel==5 && state.getStopLogin()==false){
 			login.init(drawable);
 		}
+		else if(tel==6 && state.getStopHighscores()==false){
+			highscores.init(drawable);
+		}
 	}
 	
 	public void loadTextures(){
@@ -388,8 +407,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 	
 	public static void initObjects(){
-		mainMenu.setDrawButtons();
-		
+//		mainMenu.setDrawButtons();
+//		
 		maze = new Maze();
 		
 		mazePheromones = new MazePheromones();
@@ -429,8 +448,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 
 	public static void initObjects(String newloadfolder){
-		mainMenu.setDrawButtons();
-		
+//		mainMenu.setDrawButtons();
+//		
 		maze = new Maze(newloadfolder);
 		
 		mazePheromones = new MazePheromones();

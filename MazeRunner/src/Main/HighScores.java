@@ -37,7 +37,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class MainMenu implements GLEventListener, MouseListener , MouseMotionListener {
+public class Highscores implements GLEventListener, MouseListener , MouseMotionListener {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
@@ -66,7 +66,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private ArrayList<String[]> scores;
 	
 	
-	public MainMenu(int screenHeight, int screenWidth){
+	public Highscores(int screenHeight, int screenWidth){
 		initWindowSize(screenHeight, screenWidth);
 		textures = new ArrayList<Texture>();
 		textureNames = new ArrayList<String>();
@@ -84,7 +84,6 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
 		MainClass.canvas.addMouseMotionListener(this);
-		MainClass.canvas.addGLEventListener(this);
 		
 		SQLHandler sql = new SQLHandler();
 		ResultSet s = sql.query("SELECT u.username, s.score, l.lvlname FROM users u, highscores s, levels l WHERE s.user_id = u.id AND l.id = s.level_id ORDER BY s.score DESC");
@@ -405,7 +404,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	@Override
 	public void display(GLAutoDrawable arg0) {
 		// TODO Auto-generated method stub
-		render(arg0);
+//		render(arg0);
 	}
 
 	@Override
@@ -504,17 +503,9 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		
 		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
 			MainClass.canvas.removeGLEventListener(this);
-			
-			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-			MainClass.input.setDefMouse(me);
-			MainClass.state.setStopTitle(true);
-			MainClass.state.setStopMainGame(false);
-		}
-		else if (ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)) {
-			new LevelEditor();
-		}
-		else if (ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin)) {
-			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
+			MainClass.initObjects();
+			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
+			MainClass.state.setStopTitle(false);
 		}
 	}
 

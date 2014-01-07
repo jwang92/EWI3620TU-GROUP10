@@ -1,4 +1,5 @@
 package Main;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -46,7 +47,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 	public ArrayList<Inputbox> inputs;
 	
 	private SQLHandler sql;
-	private CursorHandler c;
+//	private CursorHandler c;
 	
 	public Login(int screenHeight, int screenWidth){
 		message = 0;
@@ -58,7 +59,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		setInputboxes();
 		
 		sql = new SQLHandler();
-		c = new CursorHandler(MainClass.canvas);
+//		c = new CursorHandler(MainClass.canvas);
 		
 		// Add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
@@ -513,12 +514,24 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 			int Xin = me.getX();
 			int Yin = me.getY();
 			
+			boolean onBox = false;
 			
-			for(Buttonbox button : buttons)
-				button.ChangeTexture( button.OnBox(Xin, Yin) );	
-
-			
-//			System.out.println(mouseOnBox);
+			for(Buttonbox button : buttons){
+				if(button.OnBox(Xin, Yin)){
+					button.ChangeTexture( true );
+					onBox = true;
+				}
+				else{
+					button.ChangeTexture( false );
+				}
+			}
+		
+			if(onBox){
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			else{
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
 		}
 
 		@Override

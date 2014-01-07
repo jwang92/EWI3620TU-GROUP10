@@ -15,6 +15,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
 import LevelEditor.LevelEditor;
+import Utils.Buttonbox;
 
 import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.GLUT;
@@ -42,33 +43,19 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private static final long serialVersionUID = 1L;
 	
 	//frame setup
-	public int ScreenWidth, ScreenHeight, drawScreenWidth, drawScreenHeight;
-//	public int screenX, screenY;
-	//buttons setup
-	private int buttonSizeX, buttonSizeY, drawbuttonSizeX, drawbuttonSizeY;
-	private int bPosX, drawPosX;
-	private int b1PosY, b2PosY, b3PosY, draw1PosY, draw2PosY, draw3PosY;
-	private int mouseOnBox = 0;
+	public int ScreenWidth, ScreenHeight;
 	private boolean startup = true;
 	
-	private ArrayList<Texture> textures;
-	private ArrayList<String> textureNames;
-
-	private Texture tempTexture;
-	private String textureFileName = "";
-	private String textureFileType = "png";
-
+	private Texture BGTexture;
 	
+	private ArrayList<Buttonbox> buttons;
+
 	
 	public MainMenu(int screenHeight, int screenWidth){
 		initWindowSize(screenHeight, screenWidth);
-		textures = new ArrayList<Texture>();
-		textureNames = new ArrayList<String>();
 		
-		setButtonSize();
+		setButtons();
 				
-		setDrawButtons();
-		
 		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
 		 * The Animator class handles that for JOGL.
 		 */
@@ -78,74 +65,48 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
 		MainClass.canvas.addMouseMotionListener(this);
-		MainClass.canvas.addGLEventListener(this);
+//		MainClass.canvas.addGLEventListener(this);
 
 	}
 
 	public void initWindowSize(int screenHeight, int screenWidth){
 		ScreenWidth = screenWidth;
 		ScreenHeight = screenHeight;
-		buttonSizeX = (int) (ScreenWidth/7);
-		buttonSizeY = (int) (ScreenHeight/13);
-//		System.out.println("Screen: " + ScreenWidth + " " + ScreenHeight + " " + buttonSizeX + " " + buttonSizeY);
 	}
 	
-	public void setButtonSize(){
-		bPosX = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
-		b1PosY = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
-		b2PosY = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
-		b3PosY = (int) (ScreenHeight/1.2f - 2.7f*buttonSizeY);
+	public void setButtons(){
+		buttons = new ArrayList<Buttonbox>();
+
+		int buttonSizeX = (int) (ScreenWidth/7);
+		int buttonSizeY = (int) (ScreenHeight/13);
+
+		int x = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
+		int y1 = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
+		int y2 = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
+		int y3 = (int) (ScreenHeight/1.2f - 2.7f*buttonSizeY);
+		int y4 = (int) (ScreenHeight/1.2f - 3.8f*buttonSizeY);
 		
-//		System.out.println("BottomLeft buttons (x,y1,y2,y3): " + bPosX + " , " + b1PosY + " , " + b2PosY + " , " + b3PosY);
+		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "start") );
+		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "editor") );
+		buttons.add( new Buttonbox(x, y3, buttonSizeX, buttonSizeY, "resume") );
+		buttons.add( new Buttonbox(x, y4, buttonSizeX, buttonSizeY, "exit") );
 	}
-	
-	public void setDrawButtons(){
-		drawScreenHeight = ScreenHeight;
-		drawScreenWidth = ScreenWidth;
 		
-		drawPosX = bPosX;
-		draw1PosY = b1PosY;
-		draw2PosY = b2PosY;
-		draw3PosY = b3PosY;
-		drawbuttonSizeX = buttonSizeX;
-		drawbuttonSizeY = buttonSizeY;
-	}
-	
-//	public void adjustToScreen( int screenHeight, int screenWidth ){
-//		ScreenWidth = screenWidth;
-//		ScreenHeight = screenHeight;
-//		int buttonSizeX = (int) (ScreenWidth/7);
-//		int buttonSizeY = (int) (ScreenHeight/13);
-//		int bPosX = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
-//		int b1PosY = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
-//		int b2PosY = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
-//		int b3PosY = (int) (ScreenHeight/1.2f - 2.7f*buttonSizeY);
-//		
-//		drawScreenHeight = ScreenHeight;
-//		drawScreenWidth = ScreenWidth;
-//		
-//		drawPosX = bPosX;
-//		draw1PosY = b1PosY;
-//		draw2PosY = b2PosY;
-//		draw3PosY = b3PosY;
-//		drawbuttonSizeX = buttonSizeX;
-//		drawbuttonSizeY = buttonSizeY;
-//		
-//	}
-	
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
+		// Draw background
 		drawBackground(gl);
+		
 		// Draw the buttons.
 		drawButtons(gl);
-		
+
 		// Draw username
 		drawUsername(gl);
-		
+
 		gl.glFlush();
 	
 	}
@@ -181,49 +142,32 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		t.draw("Ingelogd als " + MainClass.username, (int) (ScreenWidth * 0.02f), (int) (ScreenHeight * 0.02f));
 		t.endRendering();
 		
-
 	}
 	
-	public void loadTextures(GL gl){
+	public void loadBackground(GL gl, String textureName, String textureFileType){
 		try {
 		    File folder = new File("menu_files/");
 		    File[] tList = folder.listFiles();
-		    int numberOfTextures = tList.length;
-			for(int j = 0; j<tList.length;j++){
-			    if(tList[j].getName().equals("Thumbs.db")){
-			    	numberOfTextures -= 1;
-			    }  
-			    
-			}
-			textureNames = new ArrayList<String>(numberOfTextures);
 		    
-		    int i = 0;
 		    for (File file : tList)
 		    {
-		    	
-	            if(!file.getName().equals("Thumbs.db"))
+	            if( file.getName().equals(textureName+"."+textureFileType) )
 	            {
 	            	//Get the name of the texture
-	            	textureFileName = "menu_files/" + file.getName();
+	            	String textureFileName = "menu_files/" + file.getName();
 	            	
 	            	//Load the texture
 	            	File filetexture = new File(textureFileName);
 	    			TextureData data;
 	    			data = TextureIO.newTextureData(filetexture, false, textureFileType);
-	    			tempTexture = TextureIO.newTexture(data);
+	    			BGTexture = TextureIO.newTexture(data);
 	    			
 	    			//Set the the texture parameters
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-	    			tempTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+	    			BGTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
+	    			BGTexture.setTexParameteri(GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+	    			BGTexture.setTexParameteri(GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+	    			BGTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 	    			
-	    			//Add the texture to the arraylist
-	    			textures.add(tempTexture);
-	            	textureNames.add(textureFileName);
-	            	
-	            	i++;
-	            	textureFileName = textureNames.get(0);
 	            }	
 	        }
 			
@@ -250,8 +194,10 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private void drawBackground(GL gl) {
 		
 		if(startup){
+			loadBackground(gl, "background_ufos", "png");
 			
-			loadTextures(gl);
+			for( Buttonbox button : buttons)
+				button.loadTextures(gl);
 			
 			startup = false;
 			
@@ -259,90 +205,28 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
-
-		int textureID = textureNames.lastIndexOf("menu_files/background_ufos.png");
 		
-		textures.get(textureID).getTarget();
-		textures.get(textureID).bind();
+		BGTexture.getTarget();
+		BGTexture.bind();
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, drawScreenHeight);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(drawScreenWidth, drawScreenHeight);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(drawScreenWidth, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, ScreenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(ScreenWidth, ScreenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(ScreenWidth, 0);
 		gl.glEnd();
 		
-		textures.get(textureID).disable();
-		
+		BGTexture.disable();
 		
 	}
 	
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
-		
-		boxOnScreen(gl, drawPosX, draw1PosY, 1);
-		
-		boxOnScreen(gl, drawPosX, draw2PosY, 2);
-		
-		boxOnScreen(gl, drawPosX, draw3PosY,  3);
+		for( Buttonbox button : buttons)
+			button.drawButtonbox(gl, ScreenHeight, ScreenWidth);
 		
 	}
-	
-	private void boxOnScreen(GL gl, float x, float y, int boxnum) {
 		
-		String texNaam = null;
-		switch(boxnum){
-		case 1:
-			texNaam = "start";
-			break;
-		case 2:
-			texNaam = "editor";
-			break;
-		case 3:
-			texNaam = "exit";
-			break;
-			
-		
-		}
-
-		int textureID;
-		if(mouseOnBox == boxnum){
-			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+"_over.png");
-		}
-		else{
-			textureID = textureNames.lastIndexOf("menu_files/"+texNaam+".png");
-		}
-
-		gl.glEnable(GL.GL_BLEND);
-		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		
-		gl.glEnable(GL.GL_TEXTURE_2D);
-		gl.glColor3f(1.0f, 1.0f, 1.0f);
-		
-		textures.get(textureID).getTarget();
-		textures.get(textureID).bind();
-		
-		gl.glBegin(GL.GL_POLYGON);
-			gl.glTexCoord2f(0, 1); gl.glVertex2f(x, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(x + drawbuttonSizeX, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(x + drawbuttonSizeX,  y + drawbuttonSizeY);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(x,  y + drawbuttonSizeY);
-		gl.glEnd();
-		
-		textures.get(textureID).disable();
-		gl.glDisable(GL.GL_BLEND);
-
-	}
-	
-	public boolean ButtonPressed(int buttonX, int buttonY, int xin, int yin){
-		yin = ScreenHeight - yin;
-
-		boolean withinX = buttonX < xin && xin < buttonX+buttonSizeX;
-		boolean withinY = buttonY < yin && yin < buttonY+buttonSizeY;
-		
-		return withinX && withinY;
-	}
-	
 	
 /*
  * **********************************************
@@ -405,10 +289,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 
 		// Set the new screen size and adjusting the sizes
 		initWindowSize(height, width);
-		setButtonSize();
-		
-//		System.out.println(x + " " + y);
-		
+				
 		gl.glViewport(0, 0, ScreenWidth, ScreenHeight);
 		
 	}
@@ -450,7 +331,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		
 //		System.out.println("HIER");
 		
-		if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin)) {
+		if (buttons.get(0).OnBox(Xin, Yin) ){
 			MainClass.canvas.removeGLEventListener(this);
 			
 			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
@@ -458,10 +339,15 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			MainClass.state.setStopTitle(true);
 			MainClass.state.setStopMainGame(false);
 		}
-		else if (ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin)) {
+		if (buttons.get(1).OnBox(Xin, Yin) ){
 			new LevelEditor();
 		}
-		else if (ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin)) {
+		if (buttons.get(2).OnBox(Xin, Yin) ){
+			MainClass.canvas.removeGLEventListener(this);
+			MainClass.state.GameStateUpdate(GameState.HIGHSCORES_STATE);
+			MainClass.state.setStopHighscores(false);
+		}
+		if (buttons.get(3).OnBox(Xin, Yin) ){
 			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
 		}
 	}
@@ -477,23 +363,25 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			int Xin = me.getX();
 			int Yin = me.getY();
 			
-			if (ButtonPressed( (int) bPosX, (int) b1PosY, Xin, Yin))
-				mouseOnBox = 1;
-			else if(ButtonPressed( (int) bPosX, (int) b2PosY, Xin, Yin))
-				mouseOnBox = 2;
-			else if(ButtonPressed( (int) bPosX, (int) b3PosY, Xin, Yin))
-				mouseOnBox = 3;
-			else
-				mouseOnBox = 0;
-		
-			if(mouseOnBox == 0){
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			}
-			else{
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			boolean onBox = false;
+			
+			for(Buttonbox button : buttons){
+				if(button.OnBox(Xin, Yin)){
+					button.ChangeTexture( true );
+					onBox = true;
+				}
+				else{
+					button.ChangeTexture( false );
+				}
 			}
 			
-//			System.out.println(mouseOnBox);
+			if(onBox){
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			else{
+				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			
 		}
 
 		@Override
