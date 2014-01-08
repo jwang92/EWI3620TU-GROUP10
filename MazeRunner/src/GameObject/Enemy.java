@@ -19,6 +19,10 @@ import com.sun.opengl.util.texture.Texture;
 
 public class Enemy extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
+	public LeftArm leftArm;
+	public RightArm rightArm;
+	public RightLeg rightLeg;
+	public LeftLeg leftLeg;
 	private double newX, newZ;
 	private double speed = 0.0025;
 	protected double enemysize = 1.0;
@@ -34,7 +38,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private int attackTimeout = 0;
-	private double angle, healthAngle;
+	public double angle, healthAngle;
 	
 	private Pheromone highestPher;
 	//Shaders
@@ -73,12 +77,23 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/Predator_Youngblood/Predator_Youngblood.obj")));
+				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood/Body.obj")));
 			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+			leftArm= new LeftArm(x,y,z,tex,"LeftArm");
+			leftArm.setEnemy(this);
+			rightArm= new RightArm(x,y,z,tex, "RightArm");
+			rightArm.setEnemy(this);
+			rightLeg = new RightLeg(x,y,z,tex,"RightLeg");
+			rightLeg.setEnemy(this);
+			leftLeg = new LeftLeg(x,y,z,tex,"RightLeg");
+			leftLeg.setEnemy(this);
 		}
 	}
 	
@@ -186,7 +201,6 @@ public class Enemy extends GameObject implements VisibleObject {
 			if(alert){
 				highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
-//				System.out.println("enemy: " + highestPher.x + " , " + highestPher.z);
 				
 				double dX = highestPher.x - locationX;				
 				double dZ = highestPher.z - locationZ;				
@@ -431,18 +445,12 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean damage(double x, double y, double z, double h, double d){
 		double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
 		double yDet;
-		if(type.equals("3d_object/Predator_Youngblood/Predator_Youngblood.obj")){
+		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
 			yDet = 4.5;
 		}
 		else{
 			yDet=2.5;
 		}
-		System.out.println(x);
-		System.out.println(y);
-		System.out.println(z);
-		System.out.println(locationX);
-		System.out.println(locationY);
-		System.out.println(locationZ);
 		if(locationX+5>x && x>locationX-5 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
 			health -=d;
 			if(health<=0){

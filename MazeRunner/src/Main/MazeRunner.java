@@ -144,6 +144,10 @@ public class MazeRunner implements GLEventListener{
 		
 		for(Enemy e: MainClass.enemies){
 			e.getMaze(MainClass.maze);
+			e.leftArm.getMaze(MainClass.maze);
+			e.rightArm.getMaze(MainClass.maze);
+			e.rightLeg.getMaze(MainClass.maze);
+			e.leftLeg.getMaze(MainClass.maze);
 		}
 		if(!rw){
 			MainClass.sword.setMaze(MainClass.maze);
@@ -222,6 +226,10 @@ public class MazeRunner implements GLEventListener{
         for(Enemy e: MainClass.enemies){
         	if(!loadedModels.contains(e.getType())){
             	e.genVBO(gl);
+            	e.leftArm.genVBO(gl);
+            	e.rightArm.genVBO(gl);
+            	e.rightLeg.genVBO(gl);
+            	e.leftLeg.genVBO(gl);
             	loadedModels.add(e.getType());
             	tempEnemies.add(e);
         	}
@@ -308,7 +316,6 @@ public void draw2D(GL gl){
 	}
 
 public void drawHit(GL gl){
-
 	gl.glEnable(GL.GL_BLEND);
 	gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
 	
@@ -327,7 +334,7 @@ public void drawHit(GL gl){
 	gl.glEnd();
 	
 	gl.glDisable(GL.GL_BLEND);
-	 
+	
 	
 }
 
@@ -389,7 +396,7 @@ public void drawUpgrades(GL gl){
 			gl.glDisable(GL.GL_TEXTURE_2D);
 			
 		}
-		
+
 	}
 	
 	gl.glDisable(GL.GL_BLEND);
@@ -646,6 +653,10 @@ public void drawHealthbar(GL gl, TextRenderer t){
         		}
         		else{
         			e.display(gl);
+        			e.leftArm.display(gl);
+        			e.rightArm.display(gl);
+        			e.rightLeg.display(gl);
+        			e.leftLeg.display(gl);
         		}
         	}
         	if(!rw){
@@ -725,6 +736,10 @@ public void drawHealthbar(GL gl, TextRenderer t){
 		MainClass.player.update(deltaTime);
 		for(Enemy e: MainClass.enemies){
 			e.update(deltaTime, MainClass.player);
+			e.leftArm.update(deltaTime, MainClass.player);
+			e.rightArm.update(deltaTime, MainClass.player);
+			e.rightLeg.update(deltaTime, MainClass.player);
+			e.leftLeg.update(deltaTime, MainClass.player);
 		}
 		if(!rw){
 			MainClass.sword.update(deltaTime, MainClass.player);
