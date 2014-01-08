@@ -58,7 +58,7 @@ public class Door extends GameObject implements VisibleObject {
 		gl.glRotated(angle,0,1,0);
 		drawDoor(gl);
 		gl.glPopMatrix();
-		System.out.println(angle + " " + totalAngle);
+
 	}
 	
 	public void drawDoor(GL gl){
@@ -67,44 +67,52 @@ public class Door extends GameObject implements VisibleObject {
 		double x = dx+0.2*Math.sin(initAngle*Math.PI/180);
 		double y = dy;
 		double z = dz+0.2*Math.cos(initAngle*Math.PI/180);
+		
+		int textureID = MainClass.textureNames.lastIndexOf("textures/door.png");
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		MainClass.textures.get(textureID).bind();
+		
 		gl.glBegin(GL.GL_QUADS);
 			//onderkant
-			gl.glVertex3d(0, 0, 0);
-			gl.glVertex3d(x, 0, 0);
-			gl.glVertex3d(x, 0, z);
-			gl.glVertex3d(0, 0, z);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(0, 0, 0); 
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, 0, 0); 
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, 0, z);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(0, 0, z);
 			
 			//bovenkant
-			gl.glVertex3d(0, y, 0);
-			gl.glVertex3d(x, y, 0);
-			gl.glVertex3d(x, y, z);
-			gl.glVertex3d(0, y, z);
-			
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(0, y, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, y, 0);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, y, z);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(0, y, z);
+							
 			//voorkant
-			gl.glVertex3d(0, 0, 0);
-			gl.glVertex3d(x, 0, 0);
-			gl.glVertex3d(x, y, 0);
-			gl.glVertex3d(0, y, 0);
-			
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(0, 0, 0); 
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, 0, 0);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, y, 0); 
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(0, y, 0);
+		
 			//achterkant
-			gl.glVertex3d(0, 0, z);
-			gl.glVertex3d(x, 0, z);
-			gl.glVertex3d(x, y, z);
-			gl.glVertex3d(0, y, z);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(0, 0, z);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, 0, z);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, y, z);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(0, y, z);
 			
-			gl.glColor3f(0.28f, 0.28f, 0.28f);
 			//zijkant 1
-			gl.glVertex3d(0, 0, 0);
-			gl.glVertex3d(0, 0, z);
-			gl.glVertex3d(0, y, z);
-			gl.glVertex3d(0, y, 0);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(0, 0, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(0, 0, z);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(0, y, z);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(0, y, 0);
 			
 			//zijkant 2
-			gl.glVertex3d(x, 0, 0);
-			gl.glVertex3d(x, 0, z);
-			gl.glVertex3d(x, y, z);
-			gl.glVertex3d(x, y, 0);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, 0, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, 0, z);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, y, z);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, y, 0);
 		gl.glEnd();
+		
+		MainClass.textures.get(textureID).disable();
+		gl.glDisable(GL.GL_TEXTURE_2D);
 		
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
 	}
