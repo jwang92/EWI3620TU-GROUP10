@@ -37,10 +37,10 @@ public class Shield extends GameObject implements VisibleObject {
 		try {
 			if(!upgrade){
 				if(texture){
-					m = OBJLoader.loadTexturedModel((new File("3d_object/Shield/Shield.obj")));
+					m = OBJLoader.loadTexturedModel((new File("3d_object/shield and arm/shield_and_arm.obj")));
 				}
 				else{
-					m = OBJLoader.loadModel((new File("3d_object/sShield/Shield.obj.obj")));
+					m = OBJLoader.loadModel((new File("3d_object/shield and arm/shield_and_arm.obj")));
 				}
 			}
 			else{
