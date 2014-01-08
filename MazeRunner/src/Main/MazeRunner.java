@@ -359,6 +359,7 @@ public void drawUpgrades(GL gl){
 			int startY = 55;
 			
 			int drawDis = numDrawn * 42;
+			numDrawn++;
 						
 			gl.glColor4f(1, 1, 1, (float) alpha);
 			gl.glBegin(GL.GL_QUADS);
@@ -382,6 +383,7 @@ public void drawUpgrades(GL gl){
 			int startY = 55;
 			
 			int drawDis = numDrawn * 42;
+			numDrawn++;
 						
 			gl.glColor4f(1, 1, 1, (float) alpha);
 			gl.glBegin(GL.GL_QUADS);

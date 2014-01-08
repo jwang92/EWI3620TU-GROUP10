@@ -7,7 +7,7 @@ import java.net.URL;
 
 public class Sounds {
 	
-	private AudioClip walkClip, swingClip, dropSwordClip, photonClip, doorClip;
+	private AudioClip walkClip, swingClip, dropSwordClip, photonClip, doorClip, pickupClip;
 	protected boolean walking = false;
 	
 	public Sounds(){
@@ -17,12 +17,14 @@ public class Sounds {
 		URL dropURL = null;
 		URL photonURL = null;
 		URL doorURL = null;
+		URL pickupURL = null;
 		try {
 			walkURL = new URL("file:sounds/walk3.wav");
 			swingURL = new URL("file:sounds/sword_swing.wav");
 			dropURL = new URL("file:sounds/drop_sword.wav");
 			photonURL = new URL("file:sounds/photon.wav");
 			doorURL = new URL("file:sounds/creaking_door.wav");
+			pickupURL = new URL("file:sounds/pickup.wav");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -32,6 +34,7 @@ public class Sounds {
 		dropSwordClip = Applet.newAudioClip(dropURL);
 		photonClip = Applet.newAudioClip(photonURL);
 		doorClip = Applet.newAudioClip(doorURL);
+		pickupClip = Applet.newAudioClip(pickupURL);
 	}
 	
 	public void walk(){
@@ -67,4 +70,9 @@ public class Sounds {
 	public void creakingDoor(){
 		doorClip.play();
 	}
+	
+	public void pickup(){
+		pickupClip.play();
+	}
+	
 }

@@ -401,11 +401,11 @@ public class Player extends GameObject {
 						tempdt2 = 0;
 					}
 
-					int[] temp2 = {1, tempdt2};
+					int[] temp2 = {5, tempdt2};
 					currentUpgrades.set(i, temp2);
 					if(currentUpgrades.get(i)[1] <= 0){
 						
-						this.speed = 0.01;
+						this.scoreMultiplier = 1;
 						currentUpgrades.remove(i);
 						
 					}
@@ -423,11 +423,11 @@ public class Player extends GameObject {
 	public void checkPickup(double x, double y, double z){
 		
 		int check = maze.isPickup(x, z, y);
-		
+	
 		switch(check){
 		
 			case 1: // Speedupgrade
-							
+				sound.pickup();
 				int[] temp = new int[2];
 				this.speed = 0.03;
 				temp[0] = 1; // type 1
@@ -457,6 +457,7 @@ public class Player extends GameObject {
 				
 				break;
 			case 3: // Health
+				sound.pickup();
 				setDeltaHealth(30);
 				break;
 			case 4: // Ranged weapong
@@ -474,12 +475,13 @@ public class Player extends GameObject {
 			
 				break;
 			case 5: // Score multiplier
+				sound.pickup();
 				int[] temp4 = new int[2];
 				this.scoreMultiplier = 2;
 				temp4[0] = 5; // type 5
 				temp4[1] = 5000; //tijd voor upgrade 5 seconden
 				for(int i = 0; i < currentUpgrades.size(); i++){
-					if(currentUpgrades.get(i)[0] == 1){
+					if(currentUpgrades.get(i)[0] == 5){
 						currentUpgrades.remove(i);
 					}
 				}
