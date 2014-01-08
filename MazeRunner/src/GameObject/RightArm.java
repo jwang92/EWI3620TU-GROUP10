@@ -17,8 +17,7 @@ import Model.OBJLoader;
 import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
-public class RightArm extends GameObject implements VisibleObject {
-	private Maze maze; 										// The maze.
+public class RightArm extends GameObject implements VisibleObject {										
 	private Enemy enemy;
 	private double speed = 0.0025;
 	protected double enemysize = 1.0;
@@ -214,10 +213,6 @@ public class RightArm extends GameObject implements VisibleObject {
 		//Disable shaderprograms
 		gl.glUseProgram(0);
 		gl.glPopMatrix();
-	}
-	
-	public void getMaze(Maze maze){
-		this.maze = maze;
 	}
 	
 	public void setEnemy(Enemy enemy){

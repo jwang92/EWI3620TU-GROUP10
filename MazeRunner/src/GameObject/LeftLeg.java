@@ -17,8 +17,7 @@ import Model.OBJLoader;
 import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
-public class LeftLeg extends GameObject implements VisibleObject {
-	private Maze maze; 										// The maze.
+public class LeftLeg extends GameObject implements VisibleObject {										
 	private Enemy enemy;
 	private double speed = 0.0025;
 	protected double enemysize = 1.0;
@@ -216,9 +215,6 @@ public class LeftLeg extends GameObject implements VisibleObject {
 		gl.glPopMatrix();
 	}
 	
-	public void getMaze(Maze maze){
-		this.maze = maze;
-	}
 	
 	public void setEnemy(Enemy enemy){
 		this.enemy = enemy;
