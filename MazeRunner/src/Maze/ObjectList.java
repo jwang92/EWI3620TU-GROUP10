@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * A list of Objects (= Enemies, Ramps)
+ */
 public class ObjectList {
 
 	private ArrayList<Object> objects;

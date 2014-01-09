@@ -306,26 +306,22 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		// Not relevant
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		// Not relevant
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		// Not relevant
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		// Not relevant
 	}
 
 	@Override
@@ -371,7 +367,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadTextures(){
+		@SuppressWarnings("rawtypes")
 		ArrayList<HashMap> tempTextureHashMapArray = TextureLoader.loadTextureArray("textures/");
 		numberOfTextures = tempTextureHashMapArray.size();
 		textureNames = new ArrayList<String>(numberOfTextures);

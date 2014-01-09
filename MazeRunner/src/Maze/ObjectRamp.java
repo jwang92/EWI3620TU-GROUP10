@@ -3,8 +3,9 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-
+/**
+ * Represents a Ramp in a level
+ */
 public class ObjectRamp {
 
 	private ArrayList<Point2D.Float> points;
