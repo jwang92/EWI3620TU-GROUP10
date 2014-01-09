@@ -48,7 +48,6 @@ public class Model {
 	private final List<ModelPart> parts = new ArrayList<ModelPart>();
 	private int[] verticesOffsetArray;
 	private int[] normalOffsetArray;
-	private int[] numberOfFaces;
 
     private final List<Point3D> vertices = new ArrayList<Point3D>();
     private final List<Point2D.Float> textureCoordinates = new ArrayList<Point2D.Float>();
@@ -98,15 +97,11 @@ public class Model {
     public void setNormalOffsetArrayForPart(int offset,int part){
     	normalOffsetArray[part] = offset;
     }
-    
-    public void setNumberOfFaces(int[] numberOfF){
-    	numberOfFaces = numberOfF;
-    }
+
     
     public void initiliazeArrays(){
     	verticesOffsetArray = new int[parts.size()];
     	normalOffsetArray = new int[parts.size()];
-    	numberOfFaces = new int[parts.size()];
     }
 
     public boolean hasTextureCoordinates() {

@@ -30,7 +30,6 @@ package Model;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.IntBuffer;
@@ -51,8 +50,6 @@ public class ShaderLoader {
     	int shaderProgram = gl.glCreateProgram();
         int vertexShader = gl.glCreateShader(GL.GL_VERTEX_SHADER);
         int fragmentShader = gl.glCreateShader(GL.GL_FRAGMENT_SHADER);
-        StringBuilder vertexShaderSource = new StringBuilder();
-        StringBuilder fragmentShaderSource = new StringBuilder();
         
         //Vertex shader file
         int countVertex = 0;
@@ -75,7 +72,6 @@ public class ShaderLoader {
             String line;
             while ((line = vertexShaderFileReader.readLine()) != null) {
             	countVertex ++;
-                //vertexShaderSource.append(line).append('\n');
             }
             
             vertexShaderSource1 = new String[countVertex];
@@ -87,7 +83,6 @@ public class ShaderLoader {
             	vertexShaderSource1[count1] = line + "\n";
             	vertexShaderSourceLengths.put(line.length());
             	count1++;
-                //vertexShaderSource.append(line).append('\n');
             }
             fIn.close();
         } catch (IOException e) {
@@ -112,7 +107,6 @@ public class ShaderLoader {
             String line;
             while ((line = fragmentShaderFileReader.readLine()) != null) {
             	countFragment++;
-                //fragmentShaderSource.append(line).append('\n');
             }
             
             fragmentShaderSource1 = new String[countFragment];
@@ -124,7 +118,6 @@ public class ShaderLoader {
             	fragmentShaderSource1[count1] = line + "\n";
             	fragmentShaderSourceLengths.put(line.length());
             	count1++;
-                //vertexShaderSource.append(line).append('\n');
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -145,7 +138,6 @@ public class ShaderLoader {
         gl.glGetShaderiv(vertexShader, GL.GL_COMPILE_STATUS,vertexShaderStatus);
         if (vertexShaderStatus.get(0) == GL.GL_FALSE) {
             System.err.println("Vertex shader wasn't able to be compiled correctly. Error log:");
-            //System.err.println(gl.glGetShaderInfoLog(vertexShader, 1024));
             return -1;
         }
         gl.glShaderSource(fragmentShader, countFragment,fragmentShaderSource1,null);
@@ -154,7 +146,6 @@ public class ShaderLoader {
         gl.glGetShaderiv(fragmentShader, GL.GL_COMPILE_STATUS,fragmentShaderStatus);
         if (fragmentShaderStatus.get(0) == GL.GL_FALSE) {
             System.err.println("Fragment shader wasn't able to be compiled correctly. Error log:");
-            //System.err.println(gl.glGetShaderInfoLog(fragmentShader, 1024));
             return -1;
         }
         gl.glAttachShader(shaderProgram, vertexShader);
@@ -164,7 +155,6 @@ public class ShaderLoader {
         gl.glGetProgramiv(shaderProgram, GL.GL_LINK_STATUS,shaderProgramStatus);
         if (shaderProgramStatus.get(0) == GL.GL_FALSE) {
             System.err.println("Shader program wasn't linked correctly.");
-            //System.err.println(gl.glGetProgramInfoLog(shaderProgram, 1024));
             return -1;
         }
         gl.glDeleteShader(vertexShader);

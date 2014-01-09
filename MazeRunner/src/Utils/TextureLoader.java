@@ -68,6 +68,7 @@ public class TextureLoader {
 		return tempTexture;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static ArrayList<HashMap> loadTextureArray(String stringFolder){
 		ArrayList<HashMap> res = new ArrayList<HashMap>();
 		HashMap<String, Texture> tempTextureHashMap = new HashMap<String, Texture>();

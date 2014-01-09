@@ -35,12 +35,9 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
-import Model.Model.Material;
-import Model.ModelPart.Face;
 import Utils.BufferTools;
 import Utils.Point3D;
 
-import com.sun.opengl.util.GLUT;
 
 /**
  * @author Oskar
@@ -202,6 +199,7 @@ public class OBJLoader {
             } else if (prefix.equals("l")) {
             	continue;
             } else {
+                reader.close();
                 throw new RuntimeException("OBJ file contains line which cannot be parsed correctly: " + line);
             }
         }
@@ -324,9 +322,6 @@ public class OBJLoader {
                     	parseMaterial.texturePath = f.getParentFile().getAbsolutePath() + "/" + materialLine.split(" ")[1];
                     } 
                     
-                    else {
-                        //System.err.println("[MTL] Unknown Line: " + materialLine);
-                    }
                 }
                 m.getMaterials().put(parseMaterialName, parseMaterial);
                 materialFileReader.close();
@@ -379,10 +374,6 @@ public class OBJLoader {
                     normalIndicesArray[1] = Integer.parseInt(faceIndices[2].split("/")[2]);
                     normalIndicesArray[2] = Integer.parseInt(faceIndices[3].split("/")[2]);
                 }
-                Point3D vertexIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[0]),
-                		Float.valueOf(faceIndices[2].split("/")[0]),Float.valueOf(faceIndices[3].split("/")[0]));
-                Point3D normalIndices = new Point3D(Float.valueOf(faceIndices[1].split("/")[2]),
-                		Float.valueOf(faceIndices[2].split("/")[2]),Float.valueOf(faceIndices[3].split("/")[2]));
                 part.getFaces().add(new ModelPart.Face(vertexIndicesArray, normalIndicesArray, 
                 		textureCoordinateIndicesArray, currentMaterial));
                 m.getFaces().add(new Model.Face(vertexIndicesArray, normalIndicesArray, 
@@ -391,8 +382,6 @@ public class OBJLoader {
             } else if (line.startsWith("s ")) {
                 boolean enableSmoothShading = !line.contains("off");
                 m.setSmoothShadingEnabled(enableSmoothShading);
-            } else {
-                //System.err.println("[OBJ] Unknown Line: " + line);
             }
         }
         reader.close();
