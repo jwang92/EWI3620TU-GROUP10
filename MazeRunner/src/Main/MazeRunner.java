@@ -205,6 +205,10 @@ public class MazeRunner implements GLEventListener{
 		        	e.rightLeg.genVBO(gl);
 		        	e.leftLeg.genVBO(gl);
             	}
+            	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
+            		e.leftWing.genVBO(gl);
+            		e.rightWing.genVBO(gl);
+            	}
             	loadedModels.add(e.getType());
             	tempEnemies.add(e);
         	}
@@ -670,6 +674,10 @@ public class MazeRunner implements GLEventListener{
 	        			e.rightLeg.display(gl);
 	        			e.leftLeg.display(gl);
         			}
+                	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
+                		e.leftWing.display(gl);
+                		e.rightWing.display(gl);
+                	}
         		}
         	}
         	if(!rw){
@@ -755,6 +763,10 @@ public class MazeRunner implements GLEventListener{
 				e.rightLeg.update(deltaTime, MainClass.player);
 				e.leftLeg.update(deltaTime, MainClass.player);
 			}
+        	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
+        		e.leftWing.update(deltaTime, MainClass.player);
+        		e.rightWing.update(deltaTime, MainClass.player);
+        	}
 		}
 		if(!rw){
 			MainClass.sword.update(deltaTime, MainClass.player);

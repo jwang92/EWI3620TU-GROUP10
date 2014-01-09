@@ -23,6 +23,8 @@ public class Enemy extends GameObject implements VisibleObject {
 	public RightArm rightArm;
 	public RightLeg rightLeg;
 	public LeftLeg leftLeg;
+	public RightWing rightWing;
+	public LeftWing leftWing;
 	private double newX, newZ;
 	private double speed = 0.0025;
 	protected double enemysize = 1.0;
@@ -92,8 +94,14 @@ public class Enemy extends GameObject implements VisibleObject {
 			rightArm.setEnemy(this);
 			rightLeg = new RightLeg(x,y,z,tex,"RightLeg");
 			rightLeg.setEnemy(this);
-			leftLeg = new LeftLeg(x,y,z,tex,"RightLeg");
+			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg");
 			leftLeg.setEnemy(this);
+		}
+		else if(type.equals("3d_object/Bathos/bathos.obj")){
+			leftWing = new LeftWing(x,y,z,tex,"LeftWing");
+			leftWing.setEnemy(this);
+			rightWing = new RightWing(x,y,z,tex,"RighttWing");
+			rightWing.setEnemy(this);
 		}
 	}
 	
@@ -290,7 +298,7 @@ public class Enemy extends GameObject implements VisibleObject {
 					MainClass.player.setScore(100);
 				}
 			}
-			
+			gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
 			gl.glRotated(angle,0, 1, 0);
 			gl.glRotated(deathAngle, 1, 0, 0);
 			//Reset the color to white
