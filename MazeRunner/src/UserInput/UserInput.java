@@ -1,8 +1,6 @@
 package UserInput;
 import java.awt.AWTException;
-import java.awt.Dimension;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +34,7 @@ import Utils.Inputbox;
 public class UserInput extends Control 
 		implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener
 {
-	// TODO: Add fields to help calculate mouse movement
+
 	int x=0;
 	int y= 0;
 	int dx=0;
@@ -81,7 +79,6 @@ public class UserInput extends Control
 	@Override
 	public void update()
 	{
-		// TODO: Set dX and dY to values corresponding to mouse movement
 		dX= -dx;
 		dY=-dy;
 		dx=0;
@@ -110,41 +107,7 @@ public class UserInput extends Control
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent event)
-	{		
-//		if(MainClass.state.getState() == 1){
-//			
-//			c.setCursor(2);
-//			
-//			int midX = Math.round(MainClass.screenWidth / 2);
-//			int midY = Math.round(MainClass.screenHeight / 2);
-//					
-//			dx = event.getX() - midX;
-//			dy = event.getY() - midY +22;
-//			
-//			System.out.println("x: "+dx+", y: "+dy);
-//			
-//			x = midX;
-//			y = midY;
-//			
-//			Robot r = null;
-//			try {
-//				r = new Robot();
-//			} catch (AWTException e) {
-//				e.printStackTrace();
-//			}
-//			r.mouseMove(midX, midY);
-//		
-//		}else{
-//			
-//				
-//			dx=event.getX() -x;
-//			dy=event.getY() -y;
-//			x=event.getX();
-//			y=event.getY();
-//			
-//		}
-//		
+	public void mouseDragged(MouseEvent event){		
 		this.mouseMoved(event);
 	}
 
@@ -162,41 +125,19 @@ public class UserInput extends Control
         	
         	for (Character keyCode : pressed) {
         		
-        		if(keyCode== 'w')
-        		{
+        		if(keyCode== 'w'){
         			forward = true;
-        		//	back = false;
-        		//	left = false;
-        		//	right = false;
-        		}
-        		else if(keyCode=='s')
-        		{
-        		//	forward = false;
+        		} else if(keyCode=='s'){
         			back = true;
-        		//	left = false;
-        		//	right = false;
-        		}
-        		else if(keyCode=='d')
-        		{
-        			//forward = false;
-        		//	back = false;
-        			//left = false;
+        		} else if(keyCode=='d'){
         			right = true;
-        		}
-        		else if(keyCode=='a')
-        		{
-        			//forward = false;
-        			//back= false;
+        		} else if(keyCode=='a'){
         			left = true;
-        			//right = false;
-        		}
-        		else if(keyCode == KeyEvent.VK_SPACE){
+        		} else if(keyCode == KeyEvent.VK_SPACE){
         			jump = true;
-        		}
-        		else if(keyCode =='q'){
+        		} else if(keyCode =='q'){
         			MainClass.mazeRunner.setRW(false);
-        		}
-        		else if(keyCode =='r'){
+        		} else if(keyCode =='r'){
         			if(rUpgrade){
         				MainClass.mazeRunner.setRW(true);
         			}
@@ -207,49 +148,40 @@ public class UserInput extends Control
         			MainClass.state.setStopMainGame(true);
         			MainClass.state.setStopPause(false);
         		}
+        		
         		if(keyCode=='e' && MainClass.state.getState() == 1){
         			lookback = true;
         		}
         		
-        		
         	}
  
-        	
         }
-		
-		
 		
 	}
 	
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
-		for(Inputbox input : MainClass.login.inputs)
-			if(input.getSelect())
+		for(Inputbox input : MainClass.login.inputs){
+			if(input.getSelect()){
 				input.enteredKey(event);
-				
+			}
+		}
+		
 		pressed.remove(event.getKeyChar());
 		
-		
-		if(event.getKeyCode()==KeyEvent.VK_W)
-		{
+		if(event.getKeyCode()==KeyEvent.VK_W){
 			forward= false;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_S)
-		{
+		} else if(event.getKeyCode()==KeyEvent.VK_S){
 			back=false;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_D)
-		{
+		} else if(event.getKeyCode()==KeyEvent.VK_D){
 			right =false;
-		}
-		else if(event.getKeyCode()==KeyEvent.VK_A)
-		{
+		} else if(event.getKeyCode()==KeyEvent.VK_A){
 			left=false;
-		}
-		if(event.getKeyCode()==KeyEvent.VK_E){
+		} if(event.getKeyCode()==KeyEvent.VK_E){
 			lookback = false;
 		}
+		
 		if(event.getKeyCode()==KeyEvent.VK_SPACE){
 			jump=false;
 		}
@@ -274,23 +206,12 @@ public class UserInput extends Control
 	{
 
 		if(MainClass.state.getState() == 1){
-						
-//			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//			double width = screenSize.getWidth();
-//			double height = screenSize.getHeight();
-			
-//			System.out.println(width + ", " + height);
+
 			int screenx = event.getXOnScreen();
 			int screeny = event.getYOnScreen();
-			
-//			int midX = Math.round( Math.round(MainClass.screenWidth / 4) + Math.round(width / 4) );
-//			int midY = Math.round( Math.round(MainClass.screenHeight / 4) + Math.round(height / 4) );
-					
+				
 			dx = screenx - defX;
 			dy = screeny - defY;
-			
-//			x = midX;
-//			y = midY;
 			
 			x = defX;
 			y = defY;
@@ -304,8 +225,7 @@ public class UserInput extends Control
 			r.mouseMove(defX, defY);
 		
 		}else{
-			
-				
+						
 			dx=event.getX() -x;
 			dy=event.getY() -y;
 			x=event.getX();
@@ -356,6 +276,5 @@ public class UserInput extends Control
 		}
 		
 	}
-
-
+	
 }

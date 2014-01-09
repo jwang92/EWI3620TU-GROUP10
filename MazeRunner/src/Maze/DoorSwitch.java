@@ -1,16 +1,10 @@
 package Maze;
-import java.io.File;
-import java.io.IOException;
-import java.nio.IntBuffer;
-
 import javax.media.opengl.GL;
 
 import GameObject.GameObject;
 import GameObject.Player;
 import GameObject.VisibleObject;
 
-import com.sun.opengl.util.GLUT;
-import com.sun.opengl.util.texture.Texture;
 
 public class DoorSwitch extends GameObject implements VisibleObject {
 	

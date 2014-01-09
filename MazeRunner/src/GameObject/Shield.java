@@ -10,24 +10,18 @@ import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
 
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
-
 
 public class Shield extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
-	private double newX, newZ;
 	private double speed = 0.0015;
 	private Model m ;
-	private int displayList;
 	private Player player;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	
-	//public static boolean upgrade;
-	
-	private int defenseCounter=0;
 	private double defenseAngle = 0;
+	
 	//Shaders
 	private int shaderProgram = 0;
 	
@@ -46,7 +40,6 @@ public class Shield extends GameObject implements VisibleObject {
 			else{
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -73,10 +66,6 @@ public class Shield extends GameObject implements VisibleObject {
 		
 		return res;
 	}
-	
-//	public void genDisplayList(GL gl){
-//        displayList = OBJLoader.createDisplayList(m, gl);
-//	}
 	
 	public void genVBO(GL gl){
 		vboHandle = OBJLoader.createVBO(m, gl);
@@ -116,23 +105,20 @@ public class Shield extends GameObject implements VisibleObject {
 			gl.glRotated(player.getHorAngle(), 0, 1, 0);
 			gl.glRotated(player.getVerAngle(), 1,0 ,0);	
 			
-			if(player.control.getDefense() && defenseAngle >-90)
-			{
+			if(player.control.getDefense() && defenseAngle >-90){
 				defenseAngle -= 5;
 			}
-			if(player.control.getDefense() && defenseAngle <=-90)
-			{
+			
+			if(player.control.getDefense() && defenseAngle <=-90){
 				player.setDefensePower(5);
-			}
-			else if(!player.control.getDefense() && defenseAngle < 0)
-			{
+			} else if(!player.control.getDefense() && defenseAngle < 0) {
 					defenseAngle += 5;
-			}
-			else if(!player.control.getDefense() && defenseAngle >= 0)
-			{
-				defenseAngle = 0;
+			} else if(!player.control.getDefense() && defenseAngle >= 0) {
+					defenseAngle = 0;
 			}		
+			
 			gl.glRotated(defenseAngle,0,1,0);
+			
 			//Reset the color to white
 			gl.glColor4f(1.0f,1.0f,1.0f,1.0f);
 			

@@ -1,14 +1,7 @@
 package GameObject;
-import java.io.File;
-import java.io.IOException;
-import java.nio.IntBuffer;
-
 import javax.media.opengl.GL;
-
 import Main.MainClass;
-
 import com.sun.opengl.util.GLUT;
-import com.sun.opengl.util.texture.Texture;
 
 public class Bullet extends GameObject implements VisibleObject {
 	
@@ -35,8 +28,6 @@ public class Bullet extends GameObject implements VisibleObject {
 		locationZ += speed*tz;
 		for(Enemy e: MainClass.enemies){
 			if(e.damage(locationX, locationY,locationZ,player.getHorAngle(),50)){
-				
-				//MainClass.bullets.remove(this);
 				removal =true;
 			}
 		}

@@ -1,27 +1,22 @@
 package Maze;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GLException;
 
 import GameObject.Enemy;
 import GameObject.VisibleObject;
 import Main.MainClass;
 import Utils.Point3D;
 
-import com.sun.opengl.util.GLUT;
-
-
-
+/**
+ * Draws everything in the maze
+ */
 public class Maze  implements VisibleObject {
 	
 	public final double SQUARE_SIZE = 5;
-	private int height = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
 	private String loadfolder = "savefiles/kasteel";
@@ -35,11 +30,18 @@ public class Maze  implements VisibleObject {
 		createMaze();
 	}
 	
+	/**
+	 * Loads Maze from folder
+	 * @param loadfolder Folder to load from
+	 */
 	public Maze(String loadfolder){
 		this.loadfolder = loadfolder;
 		createMaze();
 	}
 	
+	/**
+	 * Creates the maze from loadfolder, defines everything to be drawn
+	 */
 	public void createMaze(){
 		storeys = new ArrayList<Storey>();
 		try {
@@ -71,7 +73,11 @@ public class Maze  implements VisibleObject {
 		return lvlinfo;
 	}
 	
-public void drawBackground(GL gl){
+	/**
+	 * Draws the skybox on the background of everything
+	 * @param gl OpenGL
+	 */
+	public void drawBackground(GL gl){
 		
 		gl.glDisable(GL.GL_LIGHTING);
 		gl.glDisable(GL.GL_LIGHT0);
@@ -162,41 +168,21 @@ public void drawBackground(GL gl){
 
 		for(int i = 0; i<numberOfStoreys;i++){
 			storey = storeys.get(i);
-//			ArrayList<Wall> w1 = storey.getWallList().getWalls();
-//			ArrayList<Floor> f1 = storey.getFloorList().getFloors();
-//			ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
-//			ArrayList<Object> o1 = storey.getObjectList().getObjects();
 			ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
-//			for(int j = 0; j < w1.size(); j++){
-//				drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
-//			}
-//			for(int j = 0; j< f1.size(); j++){
-//				drawFloor(gl,f1.get(j).getPoints(),f1.get(j).getTexture(), storey.getFloorHeight());
-//			}
-//			for(int j = 0; j <r1.size(); j++){
-//				drawRoof(gl,r1.get(j).getPoints(),r1.get(j).getTexture(), storey.getRoofHeight());
-//			}
-//			for(int j = 0; j < o1.size(); j++){
-//					
-//				if(o1.get(j) instanceof ObjectRamp){
-//						
-//					ObjectRamp t = (ObjectRamp) o1.get(j);
-//									 
-//					drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
-//						
-//				}
-//				if(o1.get(j) instanceof LevelExit){
-//					LevelExit exit = (LevelExit) o1.get(j);
-//					drawLevelExit(gl, exit, storey.getRoofHeight());
-//				}
-//				
-//			}
+
 			for(int j = 0; j < p1.size(); j++){
 				drawPickup(gl, p1.get(j).getPoint(), storey.getRoofHeight(), p1.get(j).getType());				
 			}
 		}
 	}
 	
+	/**
+	 * Draws all the pickups in the level
+	 * @param gl OpenGL
+	 * @param p Point where the pickup has to be drawn
+	 * @param z2 Where the pickup has to be drawn in the y-axis
+	 * @param type The type of pickup
+	 */
 	public void drawPickup(GL gl, Point2D.Float p, int z2, int type){
 		String texture = "";
 		if(type == 1)
@@ -233,7 +219,9 @@ public void drawBackground(GL gl){
 				pickupColor -= 0.005;				
 				}
 			}
-				
+		
+		// Draw the different sides of the pickup
+		
 		gl.glEnable(GL.GL_COLOR_MATERIAL);
 		gl.glColor3d(1, pickupColor, pickupColor);
 
@@ -241,45 +229,45 @@ public void drawBackground(GL gl){
 		MainClass.textures.get(textureID).bind();
 		
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y + s);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y +s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y +s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
 					
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y);
-		gl.glEnd();
-				
-		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y + s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y);
-		gl.glEnd();
-		
-		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z + s, y);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z + s, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z + s, y + s);
-		gl.glEnd();
-		
-		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y + s);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z , y + s);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x , z + s, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y);
 		gl.glEnd();
 				
 		gl.glBegin(GL.GL_QUADS);
-			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z, y);
-			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z, y + s);
-			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z + s, y);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z + s, y);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z + s, y + s);
+		gl.glEnd();
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y + s);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x + s, z , y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x + s, z + s, y + s);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x , z + s, y + s);
+		gl.glEnd();
+				
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, z, y);
+			gl.glTexCoord2f(0, 1); gl.glVertex3d(x + s, z, y);
+			gl.glTexCoord2f(0, 0); gl.glVertex3d(x + s, z, y + s);
+			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z, y + s);
 		gl.glEnd();
 		
 		MainClass.textures.get(textureID).disable();
@@ -289,12 +277,18 @@ public void drawBackground(GL gl){
 
 	}
 
-	public void drawLevelExit(GL gl, LevelExit exit, int z2){
+	/**
+	 * Draws the 
+	 * @param gl OpenGL
+	 * @param exit The LevelExit object
+	 * @param y2 The height of the LevelExit
+	 */
+	public void drawLevelExit(GL gl, LevelExit exit, int y2){
 		Point2D.Float p = exit.getPoint();
 		double s = exit.exitsize;
 		double x = p.x * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
 		double z = p.y * SQUARE_SIZE + 0.5*(SQUARE_SIZE-s);
-		double y = z2 - 3.5;
+		double y = y2 - 3.5;
 
 		gl.glPushMatrix();
 		gl.glTranslated(x, y, z);
@@ -382,7 +376,13 @@ public void drawBackground(GL gl){
 		}
 	}
 
-	
+	/**
+	 * Draws a floor
+	 * @param gl OpenGL
+	 * @param p2D The ArrayList with the points to draw the floor on 
+	 * @param texture Texture of the floor
+	 * @param z Height of the floor
+	 */
 	public void drawFloor(GL gl, ArrayList<Point2D.Float> p2D, String texture, int z){
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
 		for(int i =0; i<p2D.size();i++){
@@ -396,6 +396,13 @@ public void drawBackground(GL gl){
 		polygonOnScreen(gl,p3D,textureID);		
 	}
 	
+	/**
+	 * Draws a roof
+	 * @param gl OpenGL
+	 * @param p2D The ArrayList with the points to draw the roof on 
+	 * @param texture Texture of the roof
+	 * @param z Height of the roof
+	 */
 	public void drawRoof(GL gl, ArrayList<Point2D.Float> p2D, String texture, int z){
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
 		for(int i =0; i<p2D.size();i++){
@@ -410,7 +417,12 @@ public void drawBackground(GL gl){
 	}
 	
 	
-	
+	/**
+	 * A function to draw a polygon by giving an arraylist of points
+	 * @param gl OpenGL
+	 * @param p The arraylist of (3D)points
+	 * @param textureID The ID of the Texture to draw on the polygon
+	 */
 	private void polygonOnScreen(GL gl, ArrayList<Point3D> p, int textureID){
 		//Set the color
 		float wallColour[] = { 1.0f, 1.0f, 1.0f};				
@@ -427,7 +439,6 @@ public void drawBackground(GL gl){
 		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 2);
 		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 2);
 
-		
 		MainClass.textures.get(textureID).bind();		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, numTex1);
@@ -444,7 +455,13 @@ public void drawBackground(GL gl){
 		MainClass.textures.get(textureID).disable();
 	}
 	
-	
+	/**
+	 * Check if the coordinate corresponds with a wall
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return Return true if wall
+	 */
 	public boolean isWall(double x, double y, double z)
 	{
 		
@@ -474,6 +491,13 @@ public void drawBackground(GL gl){
 		
 	}
 	
+	/**
+	 * Check if the coordinate corresponds with a door
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return Return true if door
+	 */
 	public boolean isDoor(double x, double y, double z)
 	{
 		Door w = MainClass.door;
@@ -492,7 +516,13 @@ public void drawBackground(GL gl){
 		
 	}
 	
-	
+	/**
+	 * Check if the coordinate corresponds with a pickup
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return Return the type of pickup (0 if the coordinate doesn't correspond with a pickup)
+	 */
 	public int isPickup(double x, double y, double z){
 		
 		for(int i = 0; i < storeys.size(); i++){
@@ -517,6 +547,13 @@ public void drawBackground(GL gl){
 		
 	}
 
+	/**
+	 * Check if the coordinate corresponds with a LevelExit
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return The LevelExit if it corresponds with a LevelExit (null if not)
+	 */
 	public LevelExit isExit(double x, double y, double z){
 		
 		for(int i = 0; i < storeys.size(); i++){
@@ -544,59 +581,102 @@ public void drawBackground(GL gl){
 		return null;
 	}
 
+	/**
+	 * Check if the coordinate corresponds with a floor
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return Return true if floor
+	 */
 	public boolean isFloor(double x, double y, double z){
+		
 		ArrayList<Floor> f = new ArrayList<Floor>();
 		float floory = Float.MIN_VALUE;
+		
 		for(int i=0;i<storeys.size();i++){
+			
 			storey = storeys.get(i);
 			if(y>storey.getFloorHeight()&&y<storey.getRoofHeight()){
 				f = storey.getFloorList().getFloors();
 				floory = storey.getFloorHeight();
 			}
+			
 		}
+		
 		for(int i = 0; i < f.size(); i++){
 			
 			ArrayList<Point2D.Float> points = f.get(i).getPoints();
 			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
+			
 			for(int k = 0; k < points.size(); k++){
 				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), floory,(float)(points.get(k).y*SQUARE_SIZE)));
 			}
+			
 			double distance = distToSurfaceSegment(p3d,x,y-2.5,z);
+			
 			if(distance < 0.5 && distance > -0.0001){
 				return true;	
 			}
+			
 		}
+		
 		return false;
 	}
 	
+	/**
+	 * Determines if the player fell through the floor
+	 * @param x The x-coordinate of the player
+	 * @param yNew The y-coordinate the player has to be put on
+	 * @param yOld The y-coordinate the player is now on
+	 * @param z The z-coordinate of the player
+	 * @return Returns true if player is moved to better y-coordinate
+	 */
 	public boolean throughFloor(double x, double yNew, double yOld,double z){
 		ArrayList<Floor> f = new ArrayList<Floor>();
 		float floory = Float.MIN_VALUE;
+		
 		for(int i=0;i<storeys.size();i++){
+			
 			storey = storeys.get(i);
 			if(yOld>storey.getFloorHeight()&&yOld<storey.getRoofHeight()){
 				f = storey.getFloorList().getFloors();
 				floory = storey.getFloorHeight();
 			}
+			
 		}
+		
 		for(int i = 0; i < f.size(); i++){
 			
 			ArrayList<Point2D.Float> points = f.get(i).getPoints();
 			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
+			
 			for(int k = 0; k < points.size(); k++){
 				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), floory,(float)(points.get(k).y*SQUARE_SIZE)));
 			}
+			
 			double distance = distToSurfaceSegment(p3d,x,yNew-2.5,z);
 			if(distance > 0 && distance < Double.MAX_VALUE -1){
 				return true;
 			}
+			
 		}
+		
 		return false;
+		
 	}
 	
+	/**
+	 * Determines if the player jumped through the roof
+	 * @param x The x-coordinate of the player
+	 * @param yNew The y-coordinate the player has to be put on
+	 * @param yOld The y-coordinate the player is now on
+	 * @param z The z-coordinate of the player
+	 * @return Returns true if player is moved to better y-coordinate
+	 */
 	public boolean throughRoof(double x, double yNew, double yOld,double z){
 		ArrayList<Roof> r = new ArrayList<Roof>();
 		float roofy = Float.MIN_VALUE;
+		
 		for(int i=0;i<storeys.size();i++){
 			storey = storeys.get(i);
 			if(yOld>storey.getFloorHeight()&&yOld<storey.getRoofHeight()){
@@ -604,20 +684,31 @@ public void drawBackground(GL gl){
 				roofy = storey.getRoofHeight();
 			}
 		}
+		
 		for(int i = 0; i < r.size(); i++){
+			
 			ArrayList<Point2D.Float> points = r.get(i).getPoints();
 			ArrayList<Point3D> p3d = new ArrayList<Point3D>();
 			for(int k = 0; k < points.size(); k++){
 				p3d.add(new Point3D((float)(points.get(k).x * SQUARE_SIZE), roofy,(float)(points.get(k).y*SQUARE_SIZE)));
 			}
+			
 			double distance = distToSurfaceSegment(p3d,x,yNew+0.1,z);
 			if(distance < 0 && distance < Double.MAX_VALUE-1){
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
+	/**
+	 * Check if the coordinate corresponds with a Ramp
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 * @return The y-coordinate the player has to be on (MIN if beneath the ramp and MAX if there is no ramp on the coordinate)
+	 */
 	public double isRamp(double x, double y, double z){
 		
 		ArrayList<ObjectRamp> o = new ArrayList<ObjectRamp>();
@@ -674,7 +765,15 @@ public void drawBackground(GL gl){
 		
 	}
 
-	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight,int roofHeight){
+	/**
+	 * Draws a Ramp
+	 * @param gl OpenGL
+	 * @param points ArrayList with points to draw the ramp on
+	 * @param floorHeight Height of the floor
+	 * @param roofHeight Height of the roof
+	 * @param texture Texture of the ramp
+	 */
+	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight, int roofHeight, String texture){
 		
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
 		
@@ -690,10 +789,11 @@ public void drawBackground(GL gl){
 			p3D.add(point);
 			
 		}
-		//int textureID = MainClass.textureNames.lastIndexOf(texture);
-		polygonOnScreen(gl,p3D, 1);	
+		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		polygonOnScreen(gl,p3D, textureID);	
 		
 	}
+	
 	/**
 	 * Check if the walls of this maze blocks the vision between point 1 and 2
 	 * @param x1 x coordinate of point 1 (in case of pheromone: enemyX)
@@ -774,7 +874,16 @@ public void drawBackground(GL gl){
 		return surface;
 	}
 	
-	
+	/**
+	 * Checks the distance from point to line
+	 * @param px x-coordinate of point
+	 * @param py y-coordinate of point
+	 * @param vx Start x-coordinate of line
+	 * @param vy Start y-coordinate of line
+	 * @param wx End x-coordinate of line
+	 * @param wy End y-coordinate of line
+	 * @return The distance from point to line (shortest distance)
+	 */
 	public double distToSegment(double px, double py, double vx, double vy, double wx, double wy) 
 	{ 
 		return Math.sqrt(distToSegmentSquared(px, py, vx, vy, wx, wy)); 
@@ -817,24 +926,6 @@ public void drawBackground(GL gl){
 			return distToSurface(surface[0],surface[1],surface[2],surface[3],qx,qy,qz);
 		}
 
-//		double xmax = Double.MIN_VALUE;
-//		double xmin = Double.MAX_VALUE;
-//		double ymax = Double.MIN_VALUE;
-//		double ymin = Double.MAX_VALUE;
-//		double zmax = Double.MIN_VALUE;
-//		double zmin = Double.MAX_VALUE;
-//		for(int i=0;i<p.size();i++){
-//			xmax = Math.max(xmax, p.get(i).x);
-//			xmin = Math.min(xmin, p.get(i).x);
-//			ymax = Math.max(xmax, p.get(i).y);
-//			ymin = Math.min(ymin, p.get(i).y);
-//			zmax = Math.max(zmax, p.get(i).z);
-//			zmin = Math.min(zmin, p.get(i).z);
-//		}
-//		if(qx <= xmax+0.1 && qx >=xmin-0.1 && qy <= ymax+0.1 && qy >=ymin-0.1 && qz <= zmax+0.1 && qz >=zmin-0.1){
-//
-//			return distToSurface(surface[0],surface[1],surface[2],surface[3],qx,qy,qz);
-//		}
 		return Double.MAX_VALUE;
 	}
 	
@@ -882,6 +973,12 @@ public void drawBackground(GL gl){
 		return Float.MIN_VALUE;
 	}
 	
+	/**
+	 * Distance between two points
+	 * @param p1 Point 1
+	 * @param p2 Point 2
+	 * @return The distance
+	 */
 	private double disPoints(Point3D p1, Point3D p2){
 			
 		double r = Math.sqrt(Math.pow((p2.y - p1.y), 2) + Math.pow((p2.x - p1.x), 2) + Math.pow((p2.z - p1.z), 2));	
@@ -889,6 +986,10 @@ public void drawBackground(GL gl){
 		return r;		
 	}
 	
+	/**
+	 * Loads all the enemies from file into the maze
+	 * @return The ArrayList with all the enemies in it
+	 */
 	public ArrayList<Enemy> loadEnemies(){
 		ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		for(int i = 0; i<numberOfStoreys;i++){
@@ -906,11 +1007,16 @@ public void drawBackground(GL gl){
 			}
 		}
 		
-		
 		return enemies;
+		
 	}
 	
+	/**
+	 * Generates a list of objects to be drawn in the level
+	 * @param gl OpenGL
+	 */
 	public void genDisplayList(GL gl){
+		
 		int tempDisplayList = gl.glGenLists(1);
 	    gl.glNewList(tempDisplayList, GL.GL_COMPILE_AND_EXECUTE);
 	    {			
@@ -920,7 +1026,7 @@ public void drawBackground(GL gl){
 				ArrayList<Floor> f1 = storey.getFloorList().getFloors();
 				ArrayList<Roof> r1 = storey.getRoofList().getRoofs();
 				ArrayList<Object> o1 = storey.getObjectList().getObjects();
-				ArrayList<Pickup> p1 = storey.getPickupList().getPickups();
+
 				for(int j = 0; j < w1.size(); j++){
 					drawWall(gl, w1.get(j).getStartx(), w1.get(j).getStarty(), w1.get(j).getEndx(), w1.get(j).getEndy(),w1.get(j).getTexture(), storey.getFloorHeight(),storey.getRoofHeight());
 				}
@@ -936,7 +1042,7 @@ public void drawBackground(GL gl){
 							
 						ObjectRamp t = (ObjectRamp) o1.get(j);
 										 
-						drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight());
+						drawRamp(gl, t.getPoints(), storey.getFloorHeight(),storey.getRoofHeight(), t.getTexture());
 							
 					}
 					if(o1.get(j) instanceof LevelExit){

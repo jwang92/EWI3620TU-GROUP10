@@ -1,17 +1,10 @@
 package Maze;
-import java.io.File;
-import java.io.IOException;
-import java.nio.IntBuffer;
-
 import javax.media.opengl.GL;
 
 import GameObject.GameObject;
 import GameObject.Player;
 import GameObject.VisibleObject;
 import Main.MainClass;
-
-import com.sun.opengl.util.GLUT;
-import com.sun.opengl.util.texture.Texture;
 
 public class Door extends GameObject implements VisibleObject {
 	
@@ -62,8 +55,9 @@ public class Door extends GameObject implements VisibleObject {
 	}
 	
 	public void drawDoor(GL gl){
+		
 		gl.glEnable(GL.GL_COLOR_MATERIAL);
-		gl.glColor3f(0.3f, 0.3f, 0.3f);
+
 		double x = dx+0.2*Math.sin(initAngle*Math.PI/180);
 		double y = dy;
 		double z = dz+0.2*Math.cos(initAngle*Math.PI/180);

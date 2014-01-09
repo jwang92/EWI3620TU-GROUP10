@@ -12,15 +12,12 @@ import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
 
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
 
 public class Sword extends GameObject implements VisibleObject {
 	private Maze maze; 										// The maze.
-	private double newX, newZ;
 	private double speed = 0.0015;
-	private int displayList;
 	private Player player;
 	public int attackCounter=0;
 	private boolean texture;
@@ -28,15 +25,12 @@ public class Sword extends GameObject implements VisibleObject {
 	private ArrayList<Model> models;
 	private ArrayList<IntBuffer> handles;
 	private int currentSword = 0;
-	
-	private int type;
-	
+		
 	//Shaders
 	private int shaderProgram = 0;
 	
 	public Sword(double x, double y, double z, boolean tex, int type){
 		super(x, y, z);
-		//currentSword = type;
 		handles = new ArrayList<IntBuffer>();
 		models = new ArrayList<Model>();
 	
@@ -59,6 +53,7 @@ public class Sword extends GameObject implements VisibleObject {
 			}
 			else{
 				Model m = OBJLoader.loadModel((new File("3d_object/sword.obj")));
+				models.add(m);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -89,10 +84,6 @@ public class Sword extends GameObject implements VisibleObject {
 		
 		return res;
 	}
-	
-//	public void genDisplayList(GL gl){
-//        displayList = OBJLoader.createDisplayList(m, gl);
-//	}
 	
 	public void genVBO(GL gl){
 		

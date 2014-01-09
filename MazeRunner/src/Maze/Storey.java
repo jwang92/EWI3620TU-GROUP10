@@ -1,5 +1,4 @@
 package Maze;
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
