@@ -52,8 +52,10 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 	public Login(int screenHeight, int screenWidth){
 		message = 0;
 		
+		System.out.println(screenHeight+" , "+ screenWidth);
+		
 		initWindowSize(screenHeight, screenWidth);
-				
+		
 		setButtons();
 	
 		setInputboxes();
@@ -112,7 +114,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		
 		// Draw the textmessages
 		drawText(gl);
-				
+		
 		gl.glFlush();
 
 	}

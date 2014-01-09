@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -72,13 +73,25 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static ArrayList<String> textureNames;
 	private int numberOfTextures;
 	
-	public MainClass(){
+	public MainClass(int Width, int Height, boolean fullscreen){
 		super("Medieval Invasion");
 		
 		// Let's change the window to our liking.
-		setSize( screenWidth, screenHeight);
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		setSize( this.screenWidth, this.screenHeight);
 		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
+		setResizable(false);
+		if(fullscreen){
+			setExtendedState(JFrame.MAXIMIZED_BOTH);
+			screenHeight = getHeight();
+			screenWidth = getWidth();
+			setUndecorated(true);
+		}
+		else{
+			screenHeight = Height;
+			screenWidth = Width;
+			setSize( screenWidth, screenHeight);
+			setLocationRelativeTo(null); 
+		}
 		
 		//Textures
 		textures = new ArrayList<Texture>();

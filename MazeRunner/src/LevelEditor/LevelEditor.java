@@ -129,7 +129,8 @@ public class LevelEditor implements ActionListener{
 	    	        JOptionPane.YES_NO_OPTION);
 
 	    	    if (confirmed == JOptionPane.YES_OPTION) {
-	    	    	System.exit(0);
+//	    	    	System.exit(0);
+	    	    	f.dispose();
 	    	    }
 	    	  }
 	    	});
