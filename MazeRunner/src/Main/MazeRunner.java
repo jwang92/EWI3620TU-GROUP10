@@ -50,6 +50,7 @@ public class MazeRunner implements GLEventListener{
 	// Fonts
 	private TextRenderer tr;
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
+	private Font fGeo = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
 	private boolean rw = false;
 	
@@ -230,6 +231,8 @@ public class MazeRunner implements GLEventListener{
         try {
 			Font f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
 			f = f2.deriveFont(14f);
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
+			fGeo = f2.deriveFont(30f);
 		} catch (FontFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -280,7 +283,8 @@ public class MazeRunner implements GLEventListener{
 		drawUpgrades(gl);
 		drawWeapons(gl);
 		drawScore(gl, tr);
-		drawLevelExit(gl, tr);
+		drawText(gl);
+		drawLevelExit(gl);
 	
 		// Reset to 3D
 		gl.glEnable( GL.GL_DEPTH_TEST );
@@ -319,6 +323,40 @@ public class MazeRunner implements GLEventListener{
 		
 		gl.glDisable(GL.GL_BLEND);
 		
+		
+	}
+	
+	/**
+	 * Draws text on screen
+	 * @param gl OpenGL
+	 */
+	public void drawText(GL gl){
+			
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glBegin(GL.GL_QUADS);
+			gl.glColor4f(0, 0, 0f, 0.7f);
+			gl.glVertex2f(screenWidth/6, (screenHeight / 12));
+			gl.glVertex2f(screenWidth - (screenWidth /6), (screenHeight / 12));
+			gl.glVertex2f(screenWidth - (screenWidth /6), (screenHeight / 6) - 5);
+			gl.glVertex2f(screenWidth/6, (screenHeight / 6) - 5);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_BLEND);
+		
+		float fontsize = (float) Math.round(screenHeight / 33);
+		
+		Font fGeo2 = fGeo.deriveFont(fontsize);
+		
+		TextRenderer t = new TextRenderer(fGeo2);
+		t.beginRendering(screenWidth, screenHeight);
+		
+		// Maximum of 90 chars
+		t.draw("Tekst regel 1", screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) fontsize);
+		t.draw("Tekst regel 2", screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) (fontsize * 2) - 5);
+		t.endRendering();
+
 		
 	}
 
@@ -411,13 +449,12 @@ public class MazeRunner implements GLEventListener{
 	/**
 	 * Draws the text for entering the level exit
 	 * @param gl OpenGL
-	 * @param t Textrenderer
 	 */
-	public void drawLevelExit(GL gl, TextRenderer t){
+	public void drawLevelExit(GL gl){
 		if(MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ) != null){
 			f = f.deriveFont(36f);
 			
-			t = new TextRenderer(f);
+			TextRenderer t = new TextRenderer(f);
 	
 			t.beginRendering(screenWidth, screenHeight);
 			t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
