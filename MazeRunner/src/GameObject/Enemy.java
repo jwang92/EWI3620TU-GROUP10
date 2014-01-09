@@ -12,8 +12,6 @@ import Maze.Pheromone;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
-
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
 
@@ -33,9 +31,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private String type;
 	private Model m ;
 	
-	//
-	private int displayList;
-	private double sx, sy,sz, px, py,pz;
+	private double sx,sz, px,pz;
 	protected boolean alert;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
@@ -60,7 +56,6 @@ public class Enemy extends GameObject implements VisibleObject {
 	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName){
 		super(x, y, z);
 		sx=x;
-		sy=y;
 		sz=z;
 		this.angle = angle;
 		alert = false;
@@ -83,7 +78,6 @@ public class Enemy extends GameObject implements VisibleObject {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -199,7 +193,6 @@ public class Enemy extends GameObject implements VisibleObject {
 		
 	public void update(int deltaTime, Player player){
 		px = player.locationX;
-		py = player.locationY;
 		pz = player.locationZ;
 
 		if(!dood){
@@ -421,7 +414,7 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 	}
 	
-	public void getMaze(Maze maze){
+	public void setMaze(Maze maze){
 		this.maze = maze;
 	}
 

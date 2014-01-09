@@ -2,36 +2,25 @@ package GameObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-
 import javax.media.opengl.GL;
-
-import Main.GameState;
 import Main.MainClass;
-import Maze.Maze;
-import Maze.Pheromone;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
-
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
 public class RightWing extends GameObject implements VisibleObject { 										
 	private Enemy enemy;
-	private double speed = 0.0025;
-	protected double enemysize = 1.0;
 	
 	//Model
 	private Model m ;
 	
-	private boolean texture, forward =true;
+	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
 	private double angle, rotateAngle=0;
 	
 	//Shaders
 	private int shaderProgram = 0;
-	
 	
 	//Death
 	private int deathAngle = 0;
@@ -50,24 +39,14 @@ public class RightWing extends GameObject implements VisibleObject {
 				m = OBJLoader.loadModel((new File("3d_object/Bathos/RightWing.obj")));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public double getSpeed() {
-		return speed;
-	}
-	
-	public void setSpeed(double speed) {
-		this.speed = speed;
 	}
 	
 	public void setShaderProgram(int program){
 		shaderProgram = program;
 	}
 
-	
 	public void genVBO(GL gl){
 		vboHandle = OBJLoader.createVBO(m, gl);
 	}
