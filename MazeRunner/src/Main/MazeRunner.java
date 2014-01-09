@@ -1,6 +1,5 @@
 package Main;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
@@ -11,7 +10,6 @@ import javax.media.opengl.glu.*;
 import GameObject.Bullet;
 import GameObject.Enemy;
 import GameObject.VisibleObject;
-import Model.ShaderLoader;
 
 import com.sun.opengl.util.*;
 import com.sun.opengl.util.j2d.TextRenderer;
@@ -41,26 +39,18 @@ public class MazeRunner implements GLEventListener{
  * *			Local variables					*
  * **********************************************
  */
-	//private GLCanvas canvas;
 
 	public int screenWidth, screenHeight;					// Screen size.
 	boolean stop =false;
 	
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
-//	private Player player;									// The player object.
-//	private Camera camera;									// The camera object.
-//	private UserInput input;								// The user input object that controls the player.
-//	private Maze maze; 										// The maze.
 	private long previousTime = Calendar.getInstance().getTimeInMillis(); // Used to calculate elapsed time.
 
-	//Shaders
-	private int shaderProgram;
-	
+
 	// Fonts
 	private TextRenderer tr;
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
-	private boolean swordLoaded = true;
 	private boolean rw = false;
 	
 /*
@@ -121,23 +111,13 @@ public class MazeRunner implements GLEventListener{
 	 * automagically. 
 	 */
 	private void initObjects()	{
+		
 		// We define an ArrayList of VisibleObjects to store all the objects that need to be
 		// displayed by MazeRunner.
 		visibleObjects = new ArrayList<VisibleObject>();
-		// Add the maze that we will be using.
-		//maze2 = new Maze();
+		
 		visibleObjects.add(MainClass.maze);
 
-		// Initialize the player.
-//		//player = new Player( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
-//							 maze.SQUARE_SIZE / 2,							// y-position
-//							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
-//							 90, 0 );										// horizontal and vertical angle
-//
-//		//camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
-//				             player.getHorAngle(), player.getVerAngle() );
-//		
-//		//input = new UserInput(canvas);
 		MainClass.player.setControl(MainClass.input);
 		MainClass.player.getMaze(MainClass.maze);
 		
@@ -177,9 +157,6 @@ public class MazeRunner implements GLEventListener{
 		drawable.setGL( new DebugGL(drawable.getGL() )); // We set the OpenGL pipeline to Debugging mode.
         GL gl = drawable.getGL();
         GLU glu = new GLU();
-        
-        //Load the shaders
-        setUpShaders("shaders/phong_lighting.vs","shaders/phong_lighting.fs",gl);
         
         gl.glClearColor(0, 0, 0, 0);								// Set the background color.
         
@@ -244,11 +221,8 @@ public class MazeRunner implements GLEventListener{
         
         //Load the maze
         MainClass.maze.genDisplayList(gl);
-        
-        //MainClass.enemy.setShaderProgram(shaderProgram);
-        
+                
         // Fonts setten
-        
         try {
 			Font f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
 			f = f2.deriveFont(14f);
@@ -264,7 +238,6 @@ public class MazeRunner implements GLEventListener{
 	
 	/**
 	 * display(GLAutoDrawable) is called upon whenever OpenGL is ready to draw a new frame and handles all of the drawing.
-	 * <p>
 	 * Implemented through GLEventListener. 
 	 * In order to draw everything needed, it iterates through MazeRunners' list of visibleObjects. 
 	 * For each visibleObject, this method calls the object's display(GL) function, which specifies 
@@ -275,8 +248,14 @@ public class MazeRunner implements GLEventListener{
 		render(drawable);
 	}
 	
-public void draw2D(GL gl){
+	/**
+	 * Draws al the information that the players see's when playing
+	 * @param gl OpenGL
+	 */
+	public void draw2D(GL gl){
 		
+		
+		// First set everything to 2D
 		gl.glMatrixMode( GL.GL_PROJECTION );
 		gl.glPushMatrix();
 		gl.glLoadIdentity();
@@ -290,21 +269,20 @@ public void draw2D(GL gl){
 		gl.glDisable(GL.GL_LIGHT1);
 		gl.glDisable( GL.GL_DEPTH_TEST );
 		
+		// Draw everything
 		tr = new TextRenderer(f);
 		drawHit(gl);
-		drawHealthbar(gl, tr);
+		drawHealthbar(gl);
 		drawUpgrades(gl);
 		drawWeapons(gl);
 		drawScore(gl, tr);
 		drawLevelExit(gl, tr);
 	
-		
+		// Reset to 3D
 		gl.glEnable( GL.GL_DEPTH_TEST );
 		gl.glEnable(GL.GL_LIGHTING);
 		gl.glEnable(GL.GL_LIGHT0);
 		gl.glEnable(GL.GL_LIGHT1);	
-		
-	
 		
 		gl.glMatrixMode( GL.GL_PROJECTION );
 		gl.glPopMatrix();
@@ -313,308 +291,341 @@ public void draw2D(GL gl){
 		
 	}
 
-public void drawHit(GL gl){
-	gl.glEnable(GL.GL_BLEND);
-	gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
+	/**
+	 * Draws an transparent red square
+	 * @param gl OpenGL
+	 */
+	public void drawHit(GL gl){
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
+		
+		gl.glBegin(GL.GL_QUADS);
+		
+		if(previousHealth > MainClass.player.getHealth()){
+			gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
+		}else{
+			gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
+		}
 	
-	gl.glBegin(GL.GL_QUADS);
-	
-	if(previousHealth > MainClass.player.getHealth()){
-		gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
-	}else{
-		gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
+			gl.glVertex2f(0f, 0f);
+			gl.glVertex2f(0f, screenHeight);
+			gl.glVertex2f(screenWidth, screenHeight);
+			gl.glVertex2f(screenWidth, 0);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_BLEND);
+		
+		
 	}
 
-		gl.glVertex2f(0f, 0f);
-		gl.glVertex2f(0f, screenHeight);
-		gl.glVertex2f(screenWidth, screenHeight);
-		gl.glVertex2f(screenWidth, 0);
-	gl.glEnd();
-	
-	gl.glDisable(GL.GL_BLEND);
-	
-	
-}
-
-public void drawUpgrades(GL gl){
-	
-	gl.glEnable(GL.GL_BLEND);
-	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-	
-	ArrayList<int[]> ups = MainClass.player.getUpgrades();
-
-	int numDrawn = 0;
-	
-	for(int i = 0; i < ups.size(); i++){
+	/**
+	 * Show which upgrades the user has
+	 * @param gl OpenGL
+	 */
+	public void drawUpgrades(GL gl){
 		
-		if(ups.get(i)[0] == 1){
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		ArrayList<int[]> ups = MainClass.player.getUpgrades();
+	
+		int numDrawn = 0;
+		
+		for(int i = 0; i < ups.size(); i++){
 			
-			gl.glEnable(GL.GL_TEXTURE_2D);
-			int textureID = MainClass.textureNames.lastIndexOf("textures/icon_speed.png");
-			MainClass.textures.get(textureID).bind();
+			// Draw speed upgrade
+			if(ups.get(i)[0] == 1){
+				
+				gl.glEnable(GL.GL_TEXTURE_2D);
+				int textureID = MainClass.textureNames.lastIndexOf("textures/icon_speed.png");
+				MainClass.textures.get(textureID).bind();
+				
+				double alpha = ups.get(i)[1] / 5000.0;
+							
+				int startX = screenWidth - 200;
+				int startY = 55;
+				
+				int drawDis = numDrawn * 42;
+				numDrawn++;
+							
+				gl.glColor4f(1, 1, 1, (float) alpha);
+				gl.glBegin(GL.GL_QUADS);
+					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
+				gl.glEnd();
+				
+				gl.glDisable(GL.GL_TEXTURE_2D);
+				
+			// Draw score multiplier upgrade
+			} else if(ups.get(i)[0] == 5){
+				
+				gl.glEnable(GL.GL_TEXTURE_2D);
+				int textureID = MainClass.textureNames.lastIndexOf("textures/icon_2x.png");
+				MainClass.textures.get(textureID).bind();
+				
+				double alpha = ups.get(i)[1] / 5000.0;
+							
+				int startX = screenWidth - 200;
+				int startY = 55;
+				
+				int drawDis = numDrawn * 42;
+				numDrawn++;
+							
+				gl.glColor4f(1, 1, 1, (float) alpha);
+				gl.glBegin(GL.GL_QUADS);
+					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
+				gl.glEnd();
+				
+				gl.glDisable(GL.GL_TEXTURE_2D);
+				
+			}
+	
+		}
+		
+		gl.glDisable(GL.GL_BLEND);
+		
+		
+	}
+	
+	/**
+	 * Draws the achieved score in 2D
+	 * @param gl OpenGL
+	 * @param t TextRenderer with which the score is drawn
+	 */
+	public void drawScore(GL gl, TextRenderer t){
+		int score = MainClass.player.getScore();
+		t.beginRendering(screenWidth, screenHeight);
+		t.draw(Integer.toString(score), screenWidth - 100, 10);
+		t.endRendering();
+	}
+	
+	/**
+	 * Draws the text for entering the level exit
+	 * @param gl OpenGL
+	 * @param t Textrenderer
+	 */
+	public void drawLevelExit(GL gl, TextRenderer t){
+		if(MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ) != null){
+			f = f.deriveFont(36f);
 			
-			double alpha = ups.get(i)[1] / 5000.0;
-						
-			int startX = screenWidth - 200;
-			int startY = 55;
+			t = new TextRenderer(f);
+	
+			t.beginRendering(screenWidth, screenHeight);
+			t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
+			t.endRendering();
 			
-			int drawDis = numDrawn * 42;
-			numDrawn++;
-						
-			gl.glColor4f(1, 1, 1, (float) alpha);
-			gl.glBegin(GL.GL_QUADS);
-				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
-				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
-				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
-				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
-			gl.glEnd();
-			
-			gl.glDisable(GL.GL_TEXTURE_2D);
-			
-		} else if(ups.get(i)[0] == 5){
-			
-			gl.glEnable(GL.GL_TEXTURE_2D);
-			int textureID = MainClass.textureNames.lastIndexOf("textures/icon_2x.png");
-			MainClass.textures.get(textureID).bind();
-			
-			double alpha = ups.get(i)[1] / 5000.0;
-						
-			int startX = screenWidth - 200;
-			int startY = 55;
-			
-			int drawDis = numDrawn * 42;
-			numDrawn++;
-						
-			gl.glColor4f(1, 1, 1, (float) alpha);
-			gl.glBegin(GL.GL_QUADS);
-				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
-				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
-				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
-				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
-			gl.glEnd();
-			
-			gl.glDisable(GL.GL_TEXTURE_2D);
+			f = f.deriveFont(14f);
 			
 		}
-
 	}
 	
-	gl.glDisable(GL.GL_BLEND);
-	
-	
-}
-
-public void drawScore(GL gl, TextRenderer t){
-	int score = MainClass.player.getScore();
-	t.beginRendering(screenWidth, screenHeight);
-	t.draw(Integer.toString(score), screenWidth - 100, 10);
-	t.endRendering();
-}
-
-public void drawLevelExit(GL gl, TextRenderer t){
-	if(MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ) != null){
-		f = f.deriveFont(36f);
+	/**
+	 * Draws which weapons the players has (in 2D icons)
+	 * @param gl OpenGL
+	 */
+	public void drawWeapons(GL gl){
 		
-		t = new TextRenderer(f);
-
-		t.beginRendering(screenWidth, screenHeight);
-		t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
-		t.endRendering();
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		
-		f = f.deriveFont(14f);
+		int textureID;
+		textureID = MainClass.textureNames.lastIndexOf("textures/icon_sword.png");
+		MainClass.textures.get(textureID).bind();
 		
-	}
-}
-
-public void drawWeapons(GL gl){
+		int startX = screenWidth - 200;
+		int startY = 20;
 	
-	gl.glEnable(GL.GL_TEXTURE_2D);
-	gl.glEnable(GL.GL_BLEND);
-	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-	
-	int textureID;
-	textureID = MainClass.textureNames.lastIndexOf("textures/icon_sword.png");
-	MainClass.textures.get(textureID).bind();
-	
-	int startX = screenWidth - 200;
-	int startY = 20;
-
-	float alpha = 0.3f;
-	if(!rw){
-		alpha = 1;
-	}
+		// Determine if transparent
+		float alpha = 0.3f;
+		if(!rw){
+			alpha = 1;
+		}
 		
-	gl.glColor4f(1, 1, 1, alpha);
-	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0); gl.glVertex2f(startX, startY);
-		gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42, startY);
-		gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42, startY + 32);
-		gl.glTexCoord2f(0, 1); gl.glVertex2f(startX, startY + 32);
-	gl.glEnd();
-	
-	gl.glDisable(GL.GL_TEXTURE_2D);
-	
-	
-	ArrayList<int[]> ups = MainClass.player.getUpgrades();
-	
-	int numDrawn = 1;
-	
-	for(int i = 0; i < ups.size(); i++){
+		// Sword icon
+		gl.glColor4f(1, 1, 1, alpha);
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(startX, startY);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42, startY);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42, startY + 32);
+			gl.glTexCoord2f(0, 1); gl.glVertex2f(startX, startY + 32);
+		gl.glEnd();
 		
-		int drawDis = numDrawn * 42;
+		gl.glDisable(GL.GL_TEXTURE_2D);
 		
-		if(ups.get(i)[0] == 2){
 		
-			int numStars = ups.get(i)[2] - 1;
+		ArrayList<int[]> ups = MainClass.player.getUpgrades();
+		
+		int numDrawn = 1;
+		
+		// Check all upgrades
+		for(int i = 0; i < ups.size(); i++){
 			
-			gl.glEnable(GL.GL_TEXTURE_2D);
-			textureID = MainClass.textureNames.lastIndexOf("textures/weapon_star.png");
-			MainClass.textures.get(textureID).bind();
-
-			alpha = 0.3f;
-			if(!rw){
-				alpha = 1;
-			}
+			int drawDis = numDrawn * 42;
 			
-			// Een ster
-			if(numStars >= 1){
+			if(ups.get(i)[0] == 2){ // Check the "level" of the sword
+			
+				int numStars = ups.get(i)[2] - 1;
+				
+				gl.glEnable(GL.GL_TEXTURE_2D);
+				textureID = MainClass.textureNames.lastIndexOf("textures/weapon_star.png");
+				MainClass.textures.get(textureID).bind();
+	
+				alpha = 0.3f;
+				if(!rw){
+					alpha = 1;
+				}
+				
+				// 1 stars
+				if(numStars >= 1){
+					gl.glColor4f(1, 1, 1, alpha);
+					gl.glBegin(GL.GL_QUADS);
+						gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 7, startY + 3);
+						gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 14, startY + 3);
+						gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 14, startY + 10);
+						gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 7, startY + 10);
+					gl.glEnd();
+				}
+				
+				// 2 stars
+				if(numStars >= 2){
+					gl.glBegin(GL.GL_QUADS);
+						gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 16, startY + 3);
+						gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 23, startY + 3);
+						gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 23, startY + 10);
+						gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 16, startY + 10);
+					gl.glEnd();
+				}
+					
+				gl.glDisable(GL.GL_TEXTURE_2D);
+				
+							
+			}		
+			else if(ups.get(i)[0] == 4){ // Draw the gun icon
+				
+				gl.glEnable(GL.GL_TEXTURE_2D);
+				textureID = MainClass.textureNames.lastIndexOf("textures/icon_gun.png");
+				MainClass.textures.get(textureID).bind();
+				
+				alpha = 0.3f;
+				if(rw){
+					alpha = 1;
+				}
+				
+				
 				gl.glColor4f(1, 1, 1, alpha);
 				gl.glBegin(GL.GL_QUADS);
-					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 7, startY + 3);
-					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 14, startY + 3);
-					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 14, startY + 10);
-					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 7, startY + 10);
+					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
+					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
+					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
+					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
 				gl.glEnd();
-			}
-			
-			// Twee sterren
-			if(numStars >= 2){
-				gl.glBegin(GL.GL_QUADS);
-					gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + 16, startY + 3);
-					gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 23, startY + 3);
-					gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 23, startY + 10);
-					gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + 16, startY + 10);
-				gl.glEnd();
-			}
 				
-			gl.glDisable(GL.GL_TEXTURE_2D);
-			
-						
-		}		
-		else if(ups.get(i)[0] == 4){ // Teken dat je een gun hebt
-			
-			gl.glEnable(GL.GL_TEXTURE_2D);
-			textureID = MainClass.textureNames.lastIndexOf("textures/icon_gun.png");
-			MainClass.textures.get(textureID).bind();
-			
-			alpha = 0.3f;
-			if(rw){
-				alpha = 1;
+				gl.glDisable(GL.GL_TEXTURE_2D);
+				
+				numDrawn++;
+				
 			}
-			
-			
-			gl.glColor4f(1, 1, 1, alpha);
-			gl.glBegin(GL.GL_QUADS);
-				gl.glTexCoord2f(0, 0); gl.glVertex2f(startX + drawDis, startY);
-				gl.glTexCoord2f(1, 0); gl.glVertex2f(startX + 42 + drawDis, startY);
-				gl.glTexCoord2f(1, 1); gl.glVertex2f(startX + 42 + drawDis, startY + 32);
-				gl.glTexCoord2f(0, 1); gl.glVertex2f(startX + drawDis, startY + 32);
-			gl.glEnd();
-			
-			gl.glDisable(GL.GL_TEXTURE_2D);
-			
-			numDrawn++;
 			
 		}
-		
-	}
-		
-	gl.glDisable(GL.GL_BLEND);
-
-}
-
-public void drawHealthbar(GL gl, TextRenderer t){
+			
+		gl.glDisable(GL.GL_BLEND);
 	
-	gl.glEnable(GL.GL_TEXTURE_2D);
-	gl.glEnable(GL.GL_BLEND);
-	gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-	
-	int textureID;
-	textureID = MainClass.textureNames.lastIndexOf("textures/health_bg.png");
-	MainClass.textures.get(textureID).bind();
-	
-	// Box met bar tekenen
-	gl.glColor3f(1, 1, 1);
-	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0);gl.glVertex2f(20.0f, 20.0f);
-		gl.glTexCoord2f(1, 0);gl.glVertex2f(341.0f, 20.0f);
-		gl.glTexCoord2f(1, 1);gl.glVertex2f(341.0f, 57.0f);
-		gl.glTexCoord2f(0, 1);gl.glVertex2f(20.0f, 57.0f);
-	gl.glEnd();
-	
-	gl.glDisable(GL.GL_TEXTURE_2D);
-	gl.glEnable(GL.GL_TEXTURE_2D);
-
-	textureID = MainClass.textureNames.lastIndexOf("textures/health_left.png");
-	MainClass.textures.get(textureID).bind();
-	
-	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0);gl.glVertex2f(29.0f, 26.0f);
-		gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f, 26.0f);
-		gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f, 51.0f);
-		gl.glTexCoord2f(0, 1);gl.glVertex2f(29.0f, 51.0f);
-	gl.glEnd();
-	
-	
-	gl.glDisable(GL.GL_TEXTURE_2D);
-	gl.glEnable(GL.GL_TEXTURE_2D);
-	
-	textureID = MainClass.textureNames.lastIndexOf("textures/health_center.png");
-	MainClass.textures.get(textureID).bind();
-	
-	
-	int offset = (int) Math.floor(MainClass.player.getHealth() * 2.9);
-
-	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0);gl.glVertex2f(35.0f, 26.0f);
-		gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f + offset, 26.0f);
-		gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f + offset, 51.0f);
-		gl.glTexCoord2f(0, 1);gl.glVertex2f(35.0f, 51.0f);
-	gl.glEnd();
-		
-	gl.glDisable(GL.GL_TEXTURE_2D);
-	gl.glEnable(GL.GL_TEXTURE_2D);
-
-	textureID = MainClass.textureNames.lastIndexOf("textures/health_right.png");
-	MainClass.textures.get(textureID).bind();
-	
-	gl.glBegin(GL.GL_QUADS);
-		gl.glTexCoord2f(0, 0);gl.glVertex2f(324.0f - (290 - offset), 26.0f);
-		gl.glTexCoord2f(1, 0);gl.glVertex2f(331.0f - (290 - offset), 26.0f);
-		gl.glTexCoord2f(1, 1);gl.glVertex2f(331.0f - (290 - offset), 51.0f);
-		gl.glTexCoord2f(0, 1);gl.glVertex2f(324.0f - (290 - offset), 51.0f);
-	gl.glEnd();
-
-	gl.glDisable(GL.GL_BLEND);
-	
-	/*	
-	t.beginRendering(screenWidth, screenHeight);
-	t.draw(MainClass.player.getHealth()+"%", 200, screenHeight - 55);
-	t.endRendering();
-	*/
-	previousHealth = MainClass.player.getHealth();
-
-	
-}
-
-	public void setSwordloader(boolean tf){
-		swordLoaded = tf;
 	}
 	
+	/**
+	 * Draws the health bar in 2D
+	 * @param gl OpenGL
+	 */
+	public void drawHealthbar(GL gl){
+		
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		
+		int textureID;
+		textureID = MainClass.textureNames.lastIndexOf("textures/health_bg.png");
+		MainClass.textures.get(textureID).bind();
+		
+		// Background box
+		gl.glColor3f(1, 1, 1);
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0);gl.glVertex2f(20.0f, 20.0f);
+			gl.glTexCoord2f(1, 0);gl.glVertex2f(341.0f, 20.0f);
+			gl.glTexCoord2f(1, 1);gl.glVertex2f(341.0f, 57.0f);
+			gl.glTexCoord2f(0, 1);gl.glVertex2f(20.0f, 57.0f);
+		gl.glEnd();
+		
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+	
+		textureID = MainClass.textureNames.lastIndexOf("textures/health_left.png");
+		MainClass.textures.get(textureID).bind();
+		
+		// Healthbar left
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0);gl.glVertex2f(29.0f, 26.0f);
+			gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f, 26.0f);
+			gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f, 51.0f);
+			gl.glTexCoord2f(0, 1);gl.glVertex2f(29.0f, 51.0f);
+		gl.glEnd();
+		
+		
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+		
+		textureID = MainClass.textureNames.lastIndexOf("textures/health_center.png");
+		MainClass.textures.get(textureID).bind();
+		
+		
+		int offset = (int) Math.floor(MainClass.player.getHealth() * 2.9);
+	
+		// Healthbar center
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0);gl.glVertex2f(35.0f, 26.0f);
+			gl.glTexCoord2f(1, 0);gl.glVertex2f(35.0f + offset, 26.0f);
+			gl.glTexCoord2f(1, 1);gl.glVertex2f(35.0f + offset, 51.0f);
+			gl.glTexCoord2f(0, 1);gl.glVertex2f(35.0f, 51.0f);
+		gl.glEnd();
+			
+		gl.glDisable(GL.GL_TEXTURE_2D);
+		gl.glEnable(GL.GL_TEXTURE_2D);
+	
+		textureID = MainClass.textureNames.lastIndexOf("textures/health_right.png");
+		MainClass.textures.get(textureID).bind();
+		
+		// Healthbar right
+		gl.glBegin(GL.GL_QUADS);
+			gl.glTexCoord2f(0, 0);gl.glVertex2f(324.0f - (290 - offset), 26.0f);
+			gl.glTexCoord2f(1, 0);gl.glVertex2f(331.0f - (290 - offset), 26.0f);
+			gl.glTexCoord2f(1, 1);gl.glVertex2f(331.0f - (290 - offset), 51.0f);
+			gl.glTexCoord2f(0, 1);gl.glVertex2f(324.0f - (290 - offset), 51.0f);
+		gl.glEnd();
+	
+		gl.glDisable(GL.GL_BLEND);
+
+		previousHealth = MainClass.player.getHealth();
+	
+		
+	}
+	
+	/**
+	 * Sets the rangedweapon var
+	 * @param rw True or False
+	 */
 	public void setRW(boolean rw){
 		this.rw=rw;
 	}
 	
+	/**
+	 * Gets the ranged weapon var
+	 * @return True or false
+	 */
 	public boolean getRW(){
 		return rw;
 	}
@@ -723,12 +734,12 @@ public void drawHealthbar(GL gl, TextRenderer t){
 		gl.glMatrixMode( GL.GL_MODELVIEW );
 	}
 
-/*
- * **********************************************
- * *				Methods						*
- * **********************************************
- */
-
+	/*
+	 * **********************************************
+	 * *				Methods						*
+	 * **********************************************
+	 */
+	
 	/**
 	 * updateMovement(int) updates the position of all objects that need moving.
 	 * This includes rudimentary collision checking and collision reaction.
@@ -760,7 +771,6 @@ public void drawHealthbar(GL gl, TextRenderer t){
 
 	/**
 	 * updateCamera() updates the camera position and orientation.
-	 * <p>
 	 * This is done by copying the locations from the Player, since MazeRunner runs on a first person view.
 	 */
 	private void updateCamera() {
@@ -782,19 +792,5 @@ public void drawHealthbar(GL gl, TextRenderer t){
     	MainClass.state.setStopMainGame(true);
         
 	}
-	
-    private void setUpShaders(String vertexShaderLocation, String fragmentShaderLocation,GL gl) {
-        shaderProgram = ShaderLoader.loadShaderPair(vertexShaderLocation, fragmentShaderLocation, gl);
-    }
-	
-/*
- * **********************************************
- * *				  Main						*
- * **********************************************
- */
-	/**
-	 * Program entry point
-	 * 
-	 * @param args
-	 */
+		
 }

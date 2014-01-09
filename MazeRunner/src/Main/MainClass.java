@@ -5,8 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +13,6 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLException;
 import javax.swing.JFrame;
 
 import GameObject.Bullet;
@@ -34,19 +31,13 @@ import UserInput.UserInput;
 import Utils.TextureLoader;
 
 import com.sun.opengl.util.Animator;
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
-import com.sun.opengl.util.texture.TextureCoords;
-import com.sun.opengl.util.texture.TextureData;
-import com.sun.opengl.util.texture.TextureIO;
-
 
 public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	private static final long serialVersionUID = 1L;
 	public static GLCanvas canvas;
 	public static int screenWidth = 600, screenHeight = 600;		// Screen size.
-//	public static int screenX = 0, screenY = 0;
 	public int tel;
 	
 	public static MazeRunner mazeRunner;
@@ -80,10 +71,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public static ArrayList<Texture> textures;
 	public static ArrayList<String> textureNames;
 	private int numberOfTextures;
-	private Texture tempTexture;
-	private String textureFileName = "";
-	private String textureFileType = "png";
-	private float textureTop, textureBottom, textureLeft, textureRight;
 	
 	public MainClass(){
 		super("Medieval Invasion");
@@ -231,12 +218,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
  * **********************************************
  */
 
-	//@Override
-	//public void display(GLAutoDrawable arg0) {
-	//	// TODO Auto-generated method stub
-	//	
-	//}
-
 	@Override
 	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
 		// TODO Auto-generated method stub
@@ -298,7 +279,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		int tel = state.getState();
 		if(tel == 0){
 			mainMenu.reshape(arg0, arg1, arg2, arg3, arg4);
-//			setScreenSize(mainMenu.ScreenHeight, mainMenu.ScreenWidth);
 		}
 		else if(tel == 1){
 			mazeRunner.reshape(arg0, arg1, arg2, arg3, arg4);
@@ -403,12 +383,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			textureNames.add(tempTextureName);
 			textures.add(tempTexture);		
 		}
-		textureFileName = textureNames.get(0);			
+
 	}
 	
 	public static void initObjects(){
-//		mainMenu.setDrawButtons();
-//		
+
 		maze = new Maze();
 		
 		mazePheromones = new MazePheromones();
@@ -448,8 +427,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 
 	public static void initObjects(String newloadfolder){
-//		mainMenu.setDrawButtons();
-//		
+
 		maze = new Maze(newloadfolder);
 		
 		mazePheromones = new MazePheromones();
@@ -478,7 +456,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
 				             player.getHorAngle(), player.getVerAngle() );
 		
-//		input = new UserInput(canvas);
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
 		pause = new Pause(screenHeight, screenWidth);
@@ -487,11 +464,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 
-	public void setScreenSize(int ScreenHeight, int ScreenWidth){//, int y, int x){
+	public void setScreenSize(int ScreenHeight, int ScreenWidth){
 		screenHeight = ScreenHeight;
 		screenWidth = ScreenWidth;
-//		screenY = y;
-//		screenX = x;
+
 	}
 
 }
