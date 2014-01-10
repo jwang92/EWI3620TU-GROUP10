@@ -130,7 +130,7 @@ public class MazeRunner implements GLEventListener{
 		
 		
 		for(Enemy e: MainClass.enemies){
-			e.getMaze(MainClass.maze);
+			e.setMaze(MainClass.maze);
 		}
 		if(!rw){
 			MainClass.sword.setMaze(MainClass.maze);
