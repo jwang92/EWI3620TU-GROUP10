@@ -21,7 +21,7 @@ public class LevelEditor implements ActionListener{
 	private LevelEditorFrame le;
 	
 	//Savefolders
-	private String savefolder = "savefiles/kasteel";
+	private String savefolder = "savefiles/testlevel22";
 	private String defaultLoadFolder = "savefiles";
 	private String nextLevel = "";
 	
@@ -38,6 +38,9 @@ public class LevelEditor implements ActionListener{
 	private JPanel opties6a;
 	private JPanel opties6b;
 	private JPanel opties6c;
+	private JPanel opties7;
+	
+	
 	private JPanel empty;
 	private JPanel controlArea;
 	private JComboBox cOptie4;
@@ -75,6 +78,7 @@ public class LevelEditor implements ActionListener{
 	    createComponentOpties6a();
 	    createComponentOpties6b();
 	    createComponentOpties6c();
+	    createComponentOpties7();
 	    createComponentEmpty();
         
         
@@ -129,7 +133,7 @@ public class LevelEditor implements ActionListener{
 	    	        JOptionPane.YES_NO_OPTION);
 
 	    	    if (confirmed == JOptionPane.YES_OPTION) {
-//	    	    	System.exit(0);
+	    	    	//System.exit(0);
 	    	    	f.dispose();
 	    	    }
 	    	  }
@@ -140,6 +144,7 @@ public class LevelEditor implements ActionListener{
 	public void actionPerformed(ActionEvent evt) {
 
 		String cmd = evt.getActionCommand();
+		le.setNavMeshDrawMode(false);
 		
 		if(cmd.equals("Muur")){
 			le.setDrawMode(1);
@@ -209,6 +214,10 @@ public class LevelEditor implements ActionListener{
 		else if(cmd.equals("nextLevel"))
 		{
 			nextLevel();
+		}
+		else if(cmd.equals("navMesh"))
+		{
+			le.generateNavMesh();
 		}
 	}
 	
@@ -730,11 +739,27 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties6c);
 	}
 	
+	private void createComponentOpties7(){
+		opties7 = new JPanel(new GridLayout(1, 1));
+	    opties7.setBorder(BorderFactory.createTitledBorder("NavMesh:"));
+	    
+	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Exit"};
+	    
+	    JButton b = new JButton("Genereer NavMesh");
+	    b.setActionCommand("navMesh");
+	    b.addActionListener(this);
+	    opties7.add(b);
+		
+		setConstraints(opties7,0,0,0.1,1,7);
+        
+		controlArea.add(opties7);
+	}
+	
 	private void createComponentEmpty(){
 		empty = new JPanel(new GridLayout(1, 1));
         empty.setBorder(BorderFactory.createTitledBorder(""));
         
-        setConstraints(empty,0,0,6,1,7);
+        setConstraints(empty,0,0,6,1,8);
         
         controlArea.add(empty);
 	}

@@ -21,8 +21,7 @@ public class Point3D {
 		this.x = (float) x;
 		this.y = (float) y;
 		this.z = (float) z;
-	}
-	
+	}	
 	
 	public float getX(){
 		return x;
@@ -34,6 +33,10 @@ public class Point3D {
 	
 	public float getZ(){
 		return z;
+	}
+	
+	public String toString(){
+		return x + " " + y + " "+ z;
 	}
 
 }

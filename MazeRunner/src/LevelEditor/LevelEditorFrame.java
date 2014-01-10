@@ -117,6 +117,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private int storeyNumber = 1;
 	private LevelInfo lvlinfo;
 	
+	//NavMesh
+	private NavMesh navMesh;
+	private boolean drawNavMesh = false;
+	
 	//LevelExit
 	private String levelExitLoadFolder = "";
 	
@@ -124,14 +128,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	//Texture
 	private ArrayList<Texture> textures;
 	private ArrayList<String> textureNames;
-
-	private Texture tempTexture;
-	
 	private String textureFileName = "";
-	private String textureFileType = "png";
-	private float textureTop, textureBottom, textureLeft, textureRight;
-	//private int textureID;
 
+	//Integers defining the selected options
 	private int objectToDraw = 1;
 	private int lvlinfoToDraw;
 	private int pickupToDraw;
@@ -336,6 +335,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		drawObjects(gl);
 		
+		if(drawNavMesh){
+			drawNavMesh(gl);
+		}
+		
 		//Draw the grid
 		drawGrid(gl);
 		
@@ -506,6 +509,15 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	public void setTexture(String textureName){
 		textureFileName = "textures/" + textureName;
 	}
+	
+	public void generateNavMesh(){
+		navMesh = new NavMesh(storeys);
+		setNavMeshDrawMode(true);
+	}
+	
+	public void setNavMeshDrawMode(boolean b){
+		drawNavMesh = b;
+	}
 
 	/**
 	 * A method that draws a figure, when the user has inputted enough points
@@ -652,7 +664,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			}
 		}
 	}
-	
+		
 	public void drawPickups(GL gl){
 		
 		if(storeys.size()>0){
@@ -846,6 +858,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	public void drawNavMesh(GL gl){
+		navMesh.drawNavMeshEditor(gl,gridOffsetX,gridOffsetX,gridDistance,screenHeight);
+	}
+	
 	
 	
 	
@@ -952,17 +968,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 //		gl.glEnd();
 //		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 //	}
-		
-	/**
-	 * Help method that uses Gl calls to draw a triangle
-	 */
-	private void triangleOnScreen(GL gl, float x1, float y1, float x2, float y2, float x3, float y3) {
-		gl.glBegin(GL.GL_LINE_LOOP);
-		gl.glVertex2f(x1, y1);
-		gl.glVertex2f(x2, y2);
-		gl.glVertex2f(x3, y3);
-		gl.glEnd();
-	}
 		
 	/**
 	 * Help method that uses GL calls to draw a square
