@@ -329,8 +329,6 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		int Xin = me.getX();
 		int Yin = me.getY();
 		
-//		System.out.println("HIER");
-		
 		if (buttons.get(0).OnBox(Xin, Yin) ){
 			MainClass.canvas.removeGLEventListener(this);
 			
@@ -339,15 +337,15 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			MainClass.state.setStopTitle(true);
 			MainClass.state.setStopMainGame(false);
 		}
-		if (buttons.get(1).OnBox(Xin, Yin) ){
-			new LevelEditor();
+		else if (buttons.get(1).OnBox(Xin, Yin) ){
+			new LevelEditor(true);
 		}
-		if (buttons.get(2).OnBox(Xin, Yin) ){
+		else if (buttons.get(2).OnBox(Xin, Yin) ){
 			MainClass.canvas.removeGLEventListener(this);
 			MainClass.state.GameStateUpdate(GameState.HIGHSCORES_STATE);
 			MainClass.state.setStopHighscores(false);
 		}
-		if (buttons.get(3).OnBox(Xin, Yin) ){
+		else if (buttons.get(3).OnBox(Xin, Yin) ){
 			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
 		}
 	}
@@ -358,37 +356,36 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	 * **********************************************
 	 */
 		
-		@Override
-		public void mouseMoved(MouseEvent me){
-			int Xin = me.getX();
-			int Yin = me.getY();
-			
-			boolean onBox = false;
-			
-			for(Buttonbox button : buttons){
-				if(button.OnBox(Xin, Yin)){
-					button.ChangeTexture( true );
-					onBox = true;
-				}
-				else{
-					button.ChangeTexture( false );
-				}
-			}
-			
-			if(onBox){
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	@Override
+	public void mouseMoved(MouseEvent me){
+		int Xin = me.getX();
+		int Yin = me.getY();
+		
+		boolean onBox = false;
+		
+		for(Buttonbox button : buttons){
+			if(button.OnBox(Xin, Yin)){
+				button.ChangeTexture( true );
+				onBox = true;
 			}
 			else{
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				button.ChangeTexture( false );
 			}
-			
-		}
-
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
 		}
 		
-	
+		if(onBox){
+			MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		}
+		else{
+			MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		}
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

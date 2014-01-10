@@ -53,10 +53,10 @@ public class LevelEditor implements ActionListener{
 	GridBagConstraints cons = new GridBagConstraints();
 	
 	public static void main(String[] args) {
-		new LevelEditor();
+		new LevelEditor(false);
 	}
 	  
-	public LevelEditor(){
+	public LevelEditor(final boolean redirected){
 		
 		f = new JFrame("Testert");
 		f.setSize(800, 700);
@@ -133,8 +133,10 @@ public class LevelEditor implements ActionListener{
 	    	        JOptionPane.YES_NO_OPTION);
 
 	    	    if (confirmed == JOptionPane.YES_OPTION) {
-	    	    	//System.exit(0);
-	    	    	f.dispose();
+	    	    	if(redirected)
+	    	    		f.dispose();
+	    	    	else
+		    	    	System.exit(0);
 	    	    }
 	    	  }
 	    	});
