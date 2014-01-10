@@ -187,6 +187,11 @@ public class UserInput extends Control
 		}
 		
 		if(event.getKeyCode()==KeyEvent.VK_ENTER){
+			
+			if(MainClass.mazeRunner.isText()){
+				MainClass.mazeRunner.removeText();
+			}
+			
 			LevelExit exit = MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ);
 			if(exit != null){
 				MainClass.initObjects(exit.getNewLoadFolder());
