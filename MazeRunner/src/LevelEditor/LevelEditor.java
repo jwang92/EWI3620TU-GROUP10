@@ -21,7 +21,7 @@ public class LevelEditor implements ActionListener{
 	private LevelEditorFrame le;
 	
 	//Savefolders
-	private String savefolder = "savefiles/testlevel22";
+	private String savefolder = "savefiles/kasteel";
 	private String defaultLoadFolder = "savefiles";
 	private String nextLevel = "";
 	

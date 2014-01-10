@@ -53,7 +53,7 @@ public class NavMesh {
 		NavMeshGeneration navMeshGen = new NavMeshGeneration(storeys);
 		triangles = navMeshGen.getResult();
 		
-		DelaunayTriangle t = triangles.get(10);
+//		DelaunayTriangle t = triangles.get(10);
 //		for(int i =0; i<t.neighbors.length;i++){
 //			System.out.println(triangles.indexOf(t.neighbors[i]));
 //		}

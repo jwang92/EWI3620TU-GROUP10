@@ -15,6 +15,7 @@ import poly2tri.geometry.primitives.Point;
 import poly2tri.triangulation.TriangulationPoint;
 import poly2tri.triangulation.delaunay.DelaunayTriangle;
 import poly2tri.triangulation.delaunay.sweep.DTSweepConstraint;
+import poly2tri.triangulation.point.TPoint;
 import clipper.ClipType;
 import clipper.Clipper;
 import clipper.IntPoint;
@@ -85,13 +86,42 @@ public class NavMeshGeneration {
 		if(storeys.size()>0){
 			storey = storeys.get(0);
 			FloorList floors = storey.getFloorList();
+			int sizeX = storey.getSizeX() - 2;
+			int sizeY = storey.getSizeY() - 2;
 			for(int i =0;i<floors.getFloors().size(); i++){
 				Floor f = floors.getFloors().get(i);
 				PolygonClipper p = new PolygonClipper();
-				p.add(new IntPoint( (int) (f.getPoints().get(0).x-1)*gridSize, (int) (f.getPoints().get(0).y-1)*gridSize));
-				p.add(new IntPoint( (int) (f.getPoints().get(1).x-1)*gridSize, (int) (f.getPoints().get(1).y-1)*gridSize +1));
-				p.add(new IntPoint( (int) (f.getPoints().get(2).x-1)*gridSize +1, (int) (f.getPoints().get(2).y-1)*gridSize +1));
-				p.add(new IntPoint( (int) (f.getPoints().get(3).x-1)*gridSize +1, (int) (f.getPoints().get(3).y-1)*gridSize));
+				for(int j = 0; j < 4;j++){
+					int tempX = (int) (f.getPoints().get(j).x-1)*gridSize;
+					int tempY = (int) (f.getPoints().get(j).y-1)*gridSize;
+					if(tempX == 0){
+						tempX += 150;
+					}
+					else if(tempX == sizeX * gridSize){
+						tempX -= 150;
+					}
+					
+					if(tempY == 0){
+						tempY += 150;
+					}
+					else if(tempY == sizeY * gridSize){
+						tempY -= 150;
+					}
+					
+					
+					if(j == 1 || j == 2){
+						tempY += 1;
+					}
+					if(j == 2 || j == 3){
+						tempX += 1;
+					}
+					p.add(new IntPoint(tempX,tempY));
+				}
+
+//				p.add(new IntPoint( (int) (f.getPoints().get(0).x-1)*gridSize, (int) (f.getPoints().get(0).y-1)*gridSize));
+//				p.add(new IntPoint( (int) (f.getPoints().get(1).x-1)*gridSize, (int) (f.getPoints().get(1).y-1)*gridSize +1));
+//				p.add(new IntPoint( (int) (f.getPoints().get(2).x-1)*gridSize +1, (int) (f.getPoints().get(2).y-1)*gridSize +1));
+//				p.add(new IntPoint( (int) (f.getPoints().get(3).x-1)*gridSize +1, (int) (f.getPoints().get(3).y-1)*gridSize));
 				walkablePolygonsClipper.add(p);			
 			}
 		}
@@ -108,8 +138,10 @@ public class NavMeshGeneration {
 			WallList walls = storey.getWallList();
 			for(int i=0;i<walls.getWalls().size();i++){
 				Wall w = walls.getWalls().get(i);
-				PolygonClipper p = getWallTop(w.getStartx()-1,w.getStarty()-1,w.getEndx()-1,w.getEndy()-1);
-				blockedPolygonsClipper.add(p);
+				if((w.getStartx()-1 != 0) && w.getEndx()-1 != 0){
+					PolygonClipper p = getWallTop(w.getStartx()-1,w.getStarty()-1,w.getEndx()-1,w.getEndy()-1);
+					blockedPolygonsClipper.add(p);
+				}
 			}
 		}
 	}
@@ -132,7 +164,7 @@ public class NavMeshGeneration {
 	public void Triangulate(){
 		walkablePolygonsPoly2Tri = new ArrayList<PolygonPoly2Tri>();
 		blockedPolygonsPoly2Tri = new ArrayList<PolygonPoly2Tri>();
-		triangleListPoly2Tri = new ArrayList<DelaunayTriangle>(1000);
+		triangleListPoly2Tri = new ArrayList<DelaunayTriangle>();
 		
 		for(int i = 0; i<resultClipper.size(); i++){
 			PolygonClipper pClipper = resultClipper.get(i);
@@ -164,7 +196,7 @@ public class NavMeshGeneration {
 					if(PolyInPoly(walkable,blocked)){
 						w.addHole(blockedPolygonsPoly2Tri.get(j));
 					}
-					
+										
 				}
 			Poly2Tri.triangulate(w);
 			triangleListPoly2Tri.addAll(w.getTriangles());
@@ -237,6 +269,22 @@ public class NavMeshGeneration {
 			}
 		}
 	}
+	
+//	private ArrayList<TriangulationPoint> generateSteinerPoints(){
+//		ArrayList<TriangulationPoint> SteinerPoints = new ArrayList <TriangulationPoint>();
+//		int sizeX = storey.getSizeX() - 2;
+//		int sizeY = storey.getSizeY() - 2;
+//		double SteinerDistance = 0.5;
+//		for(double i = 0.25; i<sizeX; i += SteinerDistance){
+//			for(double j = 0.25; j<sizeY; j += SteinerDistance){
+//				System.out.println("test");
+//				TriangulationPoint temp = new TPoint(i*gridSize,j*gridSize); 
+//				SteinerPoints.add(temp);
+//			}
+//		}
+//		
+//		return SteinerPoints;
+//	}
 	
 	private ArrayList<DTSweepConstraint> getTriangleEdges(DelaunayTriangle t){
 		ArrayList<DTSweepConstraint> res = new ArrayList<DTSweepConstraint>();
