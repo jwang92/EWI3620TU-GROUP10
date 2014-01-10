@@ -369,7 +369,10 @@ public class Player extends GameObject {
 		}
 	}
 	
-	// To remove expiring upgrades
+	/**
+	 * Removes expiring pickups
+	 * @param dt Deltatime
+	 */
 	public void checkUpgrades(int dt){
 		
 		for(int i = 0; i < currentUpgrades.size(); i++){
@@ -379,7 +382,7 @@ public class Player extends GameObject {
 			switch(check){
 			
 				case 1: // Speedupgrade
-					
+							
 					int tempdt = currentUpgrades.get(i)[1] - dt;
 					if(tempdt <= 0){
 						tempdt = 0;
@@ -420,6 +423,12 @@ public class Player extends GameObject {
 		
 	}
 	
+	/**
+	 * Checks if the players walks over a pickup
+	 * @param x x-coordinate 
+	 * @param y y-coordinate
+	 * @param z z-coordinate
+	 */
 	public void checkPickup(double x, double y, double z){
 		
 		int check = maze.isPickup(x, z, y);
@@ -427,6 +436,10 @@ public class Player extends GameObject {
 		switch(check){
 		
 			case 1: // Speedupgrade
+				
+				String[] t = {"Speed upgrade", ""};	
+				MainClass.mazeRunner.setText(t, 5000);
+				
 				sound.pickup();
 				int[] temp = new int[2];
 				this.speed = 0.03;

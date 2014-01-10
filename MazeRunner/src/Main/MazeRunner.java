@@ -46,13 +46,19 @@ public class MazeRunner implements GLEventListener{
 	private ArrayList<VisibleObject> visibleObjects;		// A list of objects that will be displayed on screen.
 	private long previousTime = Calendar.getInstance().getTimeInMillis(); // Used to calculate elapsed time.
 
-
+	private int deltaTime = 0;
+		
 	// Fonts
 	private TextRenderer tr;
 	private Font f = new Font("SansSerif", Font.PLAIN, 20);
 	private Font fGeo = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
 	private boolean rw = false;
+	
+	
+	// Text on screen
+	private ArrayList<String[]> textOnScreen = new ArrayList<String[]>(); 
+	private ArrayList<Integer> textTimer = new ArrayList<Integer>();
 	
 /*
  * **********************************************
@@ -124,7 +130,7 @@ public class MazeRunner implements GLEventListener{
 		
 		
 		for(Enemy e: MainClass.enemies){
-			e.setMaze(MainClass.maze);
+			e.getMaze(MainClass.maze);
 		}
 		if(!rw){
 			MainClass.sword.setMaze(MainClass.maze);
@@ -158,7 +164,7 @@ public class MazeRunner implements GLEventListener{
 		drawable.setGL( new DebugGL(drawable.getGL() )); // We set the OpenGL pipeline to Debugging mode.
         GL gl = drawable.getGL();
         GLU glu = new GLU();
-        
+                
         gl.glClearColor(0, 0, 0, 0);								// Set the background color.
         
         // Now we set up our viewpoint.
@@ -283,7 +289,10 @@ public class MazeRunner implements GLEventListener{
 		drawUpgrades(gl);
 		drawWeapons(gl);
 		drawScore(gl, tr);
-		drawText(gl);
+
+		if(textOnScreen.size() > 0)
+			drawText(gl);
+		
 		drawLevelExit(gl);
 	
 		// Reset to 3D
@@ -331,7 +340,19 @@ public class MazeRunner implements GLEventListener{
 	 * @param gl OpenGL
 	 */
 	public void drawText(GL gl){
+
+		if(textTimer.get(0) > 0){ // There is a timer on the current text
+			if(textTimer.get(0) - deltaTime <= 0){
+				removeText();
+				return;
+			} else {
+				textTimer.set(0, textTimer.get(0) - deltaTime);
+			}
 			
+		} else if(textTimer.get(0) == -1){ // Only remove with enter
+			// ?
+		}
+		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -352,14 +373,42 @@ public class MazeRunner implements GLEventListener{
 		TextRenderer t = new TextRenderer(fGeo2);
 		t.beginRendering(screenWidth, screenHeight);
 		
+		
 		// Maximum of 90 chars
-		t.draw("Tekst regel 1", screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) fontsize);
-		t.draw("Tekst regel 2", screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) (fontsize * 2) - 5);
+		t.draw(textOnScreen.get(0)[0], screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) fontsize);
+		
+		if(textOnScreen.get(0)[1].length() > 0)
+			t.draw(textOnScreen.get(0)[1], screenWidth/6 + 5, screenHeight - (screenHeight / 12) - (int) (fontsize * 2) - 5);
+		
 		t.endRendering();
 
-		
 	}
 
+	/**
+	 * Adds text to arraylist which displays on the screen
+	 * @param text Text to add
+	 */
+	public void setText(String[] text, int timer){
+		textTimer.add(timer);
+		textOnScreen.add(text);
+	}
+	
+	/**
+	 * Removes the text that is now displaying on the screen
+	 */
+	public void removeText(){
+		if(textOnScreen.size() > 0){
+			textTimer.remove(0);
+			textOnScreen.remove(0);
+		}
+	}
+	
+	public boolean isText(){
+		
+		return (textOnScreen.size() > 0);
+		
+	}
+	
 	/**
 	 * Show which upgrades the user has
 	 * @param gl OpenGL
@@ -681,7 +730,7 @@ public class MazeRunner implements GLEventListener{
 		// Calculating time since last frame.
 		Calendar now = Calendar.getInstance();		
 		long currentTime = now.getTimeInMillis();
-		int deltaTime = (int)(currentTime - previousTime);
+		deltaTime = (int)(currentTime - previousTime);
 		previousTime = currentTime;
 		
 		// Update any movement since last frame.
