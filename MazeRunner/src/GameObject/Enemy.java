@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
+import javax.sound.midi.Soundbank;
 
 import Main.GameState;
 import Main.MainClass;
@@ -12,6 +13,8 @@ import Maze.Pheromone;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
+import Utils.Sounds;
+
 import com.sun.opengl.util.texture.Texture;
 
 
@@ -52,6 +55,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	private int deathAngle = 0;
 	public boolean dood = false;
 	private boolean remove = false;
+	
+	//Sounds
+	public Sounds sound = new Sounds();
 	
 	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName){
 		super(x, y, z);
@@ -454,6 +460,8 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 		if(locationX+5>x && x>locationX-5 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
 			health -=d;
+			sound.enemyhit();
+			
 			if(health<=0){
 				dood = true;
 			}

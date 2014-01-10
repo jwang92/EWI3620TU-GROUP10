@@ -355,7 +355,7 @@ public class Player extends GameObject {
 				sound.stopWalk();
 			}
 			if(control.getAttack() && MainClass.sword.attackCounter == 9){
-				sound.swing();
+				//sound.swing(); // Alleen hassan vond dat nog nodig
 			}
 			
 			// Pickupcheck
