@@ -547,4 +547,12 @@ public class Player extends GameObject {
 	public int getScore(){
 		return score;
 	}
+	
+	/**
+	 * Is the player standing still or moving around?
+	 * @return moving whether the player is walking of not
+	 */
+	public boolean getMoving(){
+		return (control.getForward() || control.getLeft() || control.getRight() || control.getBack() );
+	}
 }

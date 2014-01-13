@@ -6,6 +6,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
+import javax.swing.JFileChooser;
 
 import LevelEditor.LevelEditor;
 import Utils.Buttonbox;
@@ -36,9 +37,12 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	private Texture BGTexture;
 	
 	private ArrayList<Buttonbox> buttons;
+	
+	private String defaultLoadFolder;
 
 	
 	public MainMenu(){
+		defaultLoadFolder = "savefiles";
 		
 		setButtons();
 				
@@ -65,11 +69,13 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		int y2 = (int) (MainClass.screenHeight/1.2f - 1.6f*buttonSizeY);
 		int y3 = (int) (MainClass.screenHeight/1.2f - 2.7f*buttonSizeY);
 		int y4 = (int) (MainClass.screenHeight/1.2f - 3.8f*buttonSizeY);
+		int y5 = (int) (MainClass.screenHeight/1.2f - 4.9f*buttonSizeY);
 		
 		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "start") );
-		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "editor") );
-		buttons.add( new Buttonbox(x, y3, buttonSizeX, buttonSizeY, "scores") );
-		buttons.add( new Buttonbox(x, y4, buttonSizeX, buttonSizeY, "exit") );
+		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "resume") );
+		buttons.add( new Buttonbox(x, y3, buttonSizeX, buttonSizeY, "editor") );
+		buttons.add( new Buttonbox(x, y4, buttonSizeX, buttonSizeY, "scores") );
+		buttons.add( new Buttonbox(x, y5, buttonSizeX, buttonSizeY, "exit") );
 	}
 		
 	public void render (GLAutoDrawable drawable){
@@ -208,6 +214,22 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	}
 		
 	
+	private void ChooseLevel(){
+		JFileChooser fc = new JFileChooser(defaultLoadFolder);
+		fc.setDialogTitle("Nieuwe map");
+		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int retrival = fc.showOpenDialog(null);
+		
+		if (retrival == JFileChooser.APPROVE_OPTION) {
+			try {
+				String NewLevel = fc.getSelectedFile().getPath();
+				MainClass.initObjects(NewLevel);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+	    }
+	}
+	
 /*
  * **********************************************
  * *		OpenGL event handlers				*
@@ -313,14 +335,17 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 			MainClass.state.setStopMainGame(false);
 		}
 		else if (buttons.get(1).OnBox(Xin, Yin) ){
-			new LevelEditor(true);
+			ChooseLevel();
 		}
 		else if (buttons.get(2).OnBox(Xin, Yin) ){
+			new LevelEditor(true);
+		}
+		else if (buttons.get(3).OnBox(Xin, Yin) ){
 			MainClass.canvas.removeGLEventListener(this);
 			MainClass.state.GameStateUpdate(GameState.HIGHSCORES_STATE);
 			MainClass.state.setStopHighscores(false);
 		}
-		else if (buttons.get(3).OnBox(Xin, Yin) ){
+		else if (buttons.get(4).OnBox(Xin, Yin) ){
 			MainClass.state.GameStateUpdate(GameState.STOP_STATE);
 		}
 	}

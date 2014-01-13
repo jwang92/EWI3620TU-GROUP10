@@ -19,12 +19,14 @@ public class Camera extends GameObject {
 	private double horAngle, verAngle;
 	private double vrpX, vrpY, vrpZ;
 	private double vuvX, vuvY, vuvZ;
+	private double dYcam;
 	
 	public Camera( double x, double y, double z, double h, double v ) {
 		// Set the initial position and viewing direction of the player.
 		super( x, y, z );
 		horAngle = h;
 		verAngle = v;
+		dYcam = 0;
 		
 		// Calculate a likely view reference point.
 		calculateVRP();
@@ -174,5 +176,20 @@ public class Camera extends GameObject {
 	 */
 	public void setVuvZ(double vuvZ) {
 		this.vuvZ = vuvZ;
+	}
+	
+	public double CamWalk(boolean walking){
+		if(walking || dYcam > 0){
+			if(dYcam >= 180)
+				dYcam = 0;
+			else
+				dYcam += 10;
+		
+			double dy = 0.02f;
+			double res = Math.abs( Math.sin(dYcam/180.0f*Math.PI) ) * dy + dy/2.0f;
+			return res;
+		}
+		
+		return 0;
 	}
 }
