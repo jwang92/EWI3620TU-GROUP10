@@ -1,32 +1,20 @@
 package Main;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
-import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
 import Utils.Buttonbox;
 
-import com.sun.opengl.util.Animator;
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.j2d.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
-import javax.swing.*;
-
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -39,44 +27,33 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	 * **********************************************
 	 */
 	
-	//frame setup
-	public int ScreenWidth, ScreenHeight /*, drawScreenWidth, drawScreenHeight*/;
-
 	boolean stop = false;
 	private boolean startup = true;
 	
 	private Texture BGTexture;
-	private int message;
-	
+
 	private ArrayList<Buttonbox> buttons;
 
 	
-	public Pause(int screenHeight, int screenWidth){
-		initWindowSize(screenHeight, screenWidth);
+	public Pause(){
 		
 		setButtons();
 				
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
 		MainClass.canvas.addMouseMotionListener(this);
-//		MainClass.canvas.addGLEventListener(this);
 
 	}
-	
-	public void initWindowSize(int screenHeight, int screenWidth){
-		ScreenWidth = screenWidth;
-		ScreenHeight = screenHeight;
-	}
-	
+		
 	public void setButtons(){
 		buttons = new ArrayList<Buttonbox>();
 
-		int buttonSizeX = (int) (ScreenWidth/7);
-		int buttonSizeY = (int) (ScreenHeight/13);
+		int buttonSizeX = (int) (MainClass.screenWidth/7);
+		int buttonSizeY = (int) (MainClass.screenHeight/13);
 
-		int x = (int) (ScreenWidth/6.0f - buttonSizeX/2.0f);
-		int y1 = (int) (ScreenHeight/1.2f - 0.5f*buttonSizeY);
-		int y2 = (int) (ScreenHeight/1.2f - 1.6f*buttonSizeY);
+		int x = (int) (MainClass.screenWidth/6.0f - buttonSizeX/2.0f);
+		int y1 = (int) (MainClass.screenHeight/1.2f - 0.5f*buttonSizeY);
+		int y2 = (int) (MainClass.screenHeight/1.2f - 1.6f*buttonSizeY);
 		
 		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "resume") );
 		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "exit") );
@@ -103,7 +80,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 
 	public void drawUsername(GL gl){
 		
-		float fontSize = ScreenWidth / 60f;
+		float fontSize = MainClass.screenWidth / 60f;
 		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
@@ -111,9 +88,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f(0f, 0f, 0f, 0.5f);
 			gl.glVertex2f(0, 0);
-			gl.glVertex2f(0, ScreenHeight * 0.07f);
-			gl.glVertex2f(ScreenWidth, ScreenHeight * 0.07f);
-			gl.glVertex2f(ScreenWidth, 0);
+			gl.glVertex2f(0, MainClass.screenHeight * 0.07f);
+			gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight * 0.07f);
+			gl.glVertex2f(MainClass.screenWidth, 0);
 		gl.glEnd();
 		
 		gl.glDisable(GL.GL_BLEND);
@@ -128,8 +105,8 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 
-		t.beginRendering(ScreenWidth, ScreenHeight);
-		t.draw("Ingelogd als " + MainClass.username, (int) (ScreenWidth * 0.02f), (int) (ScreenHeight * 0.02f));
+		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
+		t.draw("Ingelogd als " + MainClass.username, (int) (MainClass.screenWidth * 0.02f), (int) (MainClass.screenHeight * 0.02f));
 		t.endRendering();
 		
 	}
@@ -201,9 +178,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, ScreenHeight);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(ScreenWidth, ScreenHeight);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(ScreenWidth, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, MainClass.screenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(MainClass.screenWidth, 0);
 		gl.glEnd();
 		
 		BGTexture.disable();
@@ -213,7 +190,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		for( Buttonbox button : buttons)
-			button.drawButtonbox(gl, ScreenHeight, ScreenWidth);
+			button.drawButtonbox(gl, MainClass.screenHeight, MainClass.screenWidth);
 		
 	}
 		
@@ -254,7 +231,7 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		 * active matrix. In this case, a simple 2D projection is performed,
 		 * matching the viewing frustum to the screen size.
 		 */
-		gl.glOrtho(0, ScreenWidth, 0, ScreenHeight, -1, 1);
+		gl.glOrtho(0, MainClass.screenWidth, 0, MainClass.screenHeight, -1, 1);
 
 		// Set the matrix mode to GL_MODELVIEW, allowing us to manipulate the
 		// model-view matrix.
@@ -274,12 +251,9 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		GL gl = drawable.getGL();
-
-		// Set the new screen size and adjusting the sizes
-		initWindowSize(height, width);
-		
-		gl.glViewport(0, 0, ScreenWidth, ScreenHeight);
+//		GL gl = drawable.getGL();
+//
+//		gl.glViewport(0, 0, MainClass.screenWidth, MainClass.screenHeight);
 		
 	}
 
@@ -333,14 +307,15 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		}
 	}
 
-	/*
-	 * **********************************************
-	 * *		Mouse Motion event handlers			*
-	 * **********************************************
-	 */
-		
-		@Override
-		public void mouseMoved(MouseEvent me){
+/*
+ * **********************************************
+ * *		Mouse Motion event handlers			*
+ * **********************************************
+ */
+	
+	@Override
+	public void mouseMoved(MouseEvent me){
+		if(MainClass.state.getState()==2){
 			int Xin = me.getX();
 			int Yin = me.getY();
 			
@@ -357,19 +332,18 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 			}
 		
 			if(onBox){
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				MainClass.cursor.setCursor(-2);
 			}
 			else{
-				MainClass.canvas.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				MainClass.cursor.setCursor(-1);
 			}
-
 		}
+	}
 
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
+	}
 	
 }

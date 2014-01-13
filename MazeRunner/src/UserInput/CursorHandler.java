@@ -58,7 +58,7 @@ public class CursorHandler {
 		
 		image = toolkit.getImage("cursors/transparant.png");
 		hotSpot = new Point(0,0);
-		c =  toolkit.createCustomCursor(image, hotSpot, "Rotate");
+		c =  toolkit.createCustomCursor(image, hotSpot, "Transparant");
 		cursors.add(c);
 		
 	}

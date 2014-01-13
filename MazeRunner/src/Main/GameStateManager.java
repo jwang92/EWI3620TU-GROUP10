@@ -25,7 +25,6 @@ public class GameStateManager {
 	       case MAINGAME_STATE:
 	          //
 	    	   //MainMenu.setTeller(1);
-	    	   c.setCursor(2);
 	    	   gamestate = 1;
 	          break;
 	       case PAUSE_STATE:

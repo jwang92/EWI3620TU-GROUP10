@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -77,7 +76,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		super("Medieval Invasion");
 		
 		// Let's change the window to our liking.
-		setSize( this.screenWidth, this.screenHeight);
+		setSize( screenWidth, screenHeight);
 		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
 		setResizable(false);
 		if(fullscreen){
@@ -124,9 +123,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// to mouse events that happen inside the GLCanvas.
 		canvas.addMouseListener(this);
 		
-		login = new Login(screenHeight, screenWidth);
-		highscores = new Highscores(screenHeight, screenWidth);
-		mainMenu = new MainMenu(screenHeight, screenWidth);
+		login = new Login();
+		highscores = new Highscores();
+		mainMenu = new MainMenu();
 		state = new GameStateManager();
 		cursor = new CursorHandler(MainClass.canvas);
 		
@@ -140,30 +139,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public void display(GLAutoDrawable drawable) {
 		render(drawable);
 	}
-	
-	public void rendersize(GLAutoDrawable drawable, int tel){
-		switch(tel){
-		case 0: 
-			mainMenu.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		case 1: 
-			mazeRunner.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		case 2: 
-			pause.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		case 4:
-			gameover.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		case 5:
-			login.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		case 6:
-			highscores.reshape(drawable, 0, 0, screenWidth, screenHeight);
-			break;
-		}
-	}
-	
+		
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 
@@ -172,56 +148,41 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		
 		if(tel != state.getState()){
-			switch(tel){
-			case 0: 
-				setScreenSize(mainMenu.ScreenHeight, mainMenu.ScreenWidth);
-				break;
-			case 1: 
-				setScreenSize(mazeRunner.screenHeight, mazeRunner.screenWidth); 
-				break;
-			case 2: 
-				setScreenSize(pause.ScreenHeight, pause.ScreenWidth); 
-				break;
-			case 4:
-				setScreenSize(gameover.ScreenHeight, gameover.ScreenWidth);
-				break;
-			case 5:
-				setScreenSize(login.ScreenHeight, login.ScreenWidth);
-				break;
-			case 6:
-				setScreenSize(highscores.ScreenHeight, highscores.ScreenWidth);
-				break;
-			}
-			rendersize(drawable, state.getState());
+			if(state.getState() == 1)
+				MainClass.cursor.setCursor(2);
+			else
+				MainClass.cursor.setCursor(-1);
 		}
 		
 		tel = state.getState();
 		
-		if(tel==0){
+		switch(tel){
+		case 0:
 			mainMenu.render(drawable);
-		}
-		else if (tel==1){
+			break;
+		case 1:
 			mazeRunner.render(drawable);
-		}
-		else if (tel==2){
+			break;
+		case 2:
 			pause.render(drawable);
 			pause.init(drawable);
-		}
-		else if (tel==3){
+			break;
+		case 3:
 			System.exit(0);
-		}
-		else if (tel==4){
+			break;
+		case 4:
 			gameover.render(drawable);
 			gameover.init(drawable);
-		}
-		else if (tel==5){
+			break;
+		case 5:
 			login.render(drawable);
-		}
-		else if (tel==6){
+			break;
+		case 6:
 			highscores.render(drawable);
+			break;
 		}
 		
-		initUpdater(drawable,0,0, screenWidth, screenHeight);
+		initUpdater(drawable, 0, 0, screenWidth, screenHeight);
 
 	}
 	
@@ -289,26 +250,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	@Override
 	public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-		int tel = state.getState();
-		if(tel == 0){
-			mainMenu.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		else if(tel == 1){
-			mazeRunner.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		else if(tel == 2){
-			pause.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		else if(tel == 4){
-			gameover.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		else if(tel == 5){
-			login.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		else if(tel == 6){
-			highscores.reshape(arg0, arg1, arg2, arg3, arg4);
-		}
-		
+		screenWidth = arg3;
+		screenHeight = arg4;
 	}
 
 /*
@@ -339,7 +282,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
-		int tel = state.getState();
 		if(tel==0){
 			mainMenu.mouseReleased(me);
 		}
@@ -431,8 +373,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		input = new UserInput(canvas);
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
-		pause = new Pause(screenHeight, screenWidth);
-		gameover = new GameOver(screenHeight, screenWidth);
+		pause = new Pause();
+		gameover = new GameOver();
 
 
 	}
@@ -469,9 +411,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		
 		mazeRunner = new MazeRunner(screenHeight, screenWidth);
-		pause = new Pause(screenHeight, screenWidth);
-		gameover = new GameOver(screenHeight, screenWidth);
-
+		pause = new Pause();
+		gameover = new GameOver();
 
 	}
 

@@ -1,5 +1,6 @@
 package UserInput;
 import java.awt.AWTException;
+import java.awt.Cursor;
 import java.awt.Robot;
 import java.awt.event.*;
 import java.util.HashSet;
@@ -162,6 +163,7 @@ public class UserInput extends Control
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
+		
 		for(Inputbox input : MainClass.login.inputs){
 			if(input.getSelect()){
 				input.enteredKey(event);
