@@ -93,7 +93,11 @@ public class LeftWing extends GameObject implements VisibleObject {
 		else{
 			//Translate the model to the right location
 			gl.glTranslated(locationX, locationY, locationZ);
-			gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));				
+			
+			gl.glTranslated(0, 2.5, 0);
+			gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
+			gl.glTranslated(0, -2.5, 0);
+			
 			gl.glRotated(rotateAngle ,0, 1, 0);
 			gl.glTranslated(0.05*Math.sin(angle*Math.PI/180), 0, 0.05*Math.cos(angle*Math.PI/180));
 			
