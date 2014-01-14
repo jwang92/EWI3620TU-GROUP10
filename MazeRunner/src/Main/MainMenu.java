@@ -205,7 +205,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Selecteer level");
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int retrival = fc.showOpenDialog(null);
+		int retrival = fc.showOpenDialog(askResolution.mainclass);
 		
 		if (retrival == JFileChooser.APPROVE_OPTION) {
 			try {
