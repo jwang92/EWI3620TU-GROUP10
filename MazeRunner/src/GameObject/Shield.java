@@ -5,6 +5,7 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import Main.MainClass;
 import Maze.Maze;
 import Model.Model;
 import Model.ModelPart;
@@ -93,7 +94,7 @@ public class Shield extends GameObject implements VisibleObject {
 		else{
 			
 			//Translate the model
-			gl.glTranslated(locationX, locationY, locationZ);
+			gl.glTranslated(locationX, locationY - MainClass.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
 			double tx = -Math.cos(v)*Math.sin(h);

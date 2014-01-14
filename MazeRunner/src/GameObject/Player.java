@@ -36,6 +36,7 @@ public class Player extends GameObject {
 	public int score=0;
 	private float scoreMultiplier = 1;
 	private int sensitivity = 10;
+	private double walkingdY;
 	
 	//Defense
 	private int defensePower = 0;
@@ -71,6 +72,7 @@ public class Player extends GameObject {
 		speedadjust = 1;
 		health = 100;
 		currentUpgrades = new ArrayList<int[]>();
+		walkingdY = 0;
 	}
 	
 	/**
@@ -366,6 +368,9 @@ public class Player extends GameObject {
 			
 			//The player leaves a trail of pheromones which the enemies will follow
 			MainClass.mazePheromones.addPher(locationX, locationY, locationZ);
+			
+			//Adjust walking animation to the playermovement
+			Walk();
 		}
 	}
 	
@@ -555,4 +560,23 @@ public class Player extends GameObject {
 	public boolean getMoving(){
 		return (control.getForward() || control.getLeft() || control.getRight() || control.getBack() );
 	}
+	
+	public void Walk(){
+		if(getMoving() || walkingdY != 0){
+			if(walkingdY >= 180)
+				walkingdY = 0;
+			else if(walkingdY < 180)
+				walkingdY += 10;
+		}
+	}
+	
+	public double getdY_walk(){
+		if(getMoving() || walkingdY > 0){
+			double dy = 0.04f;
+			double res = Math.sin(walkingdY/180.0f*Math.PI) * dy;
+			return res;
+		}
+		return 0;
+	}
+
 }

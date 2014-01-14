@@ -92,7 +92,7 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 			vboHandle = handles.get(currentGun);
 			
 			//Translate the model
-			gl.glTranslated(locationX, locationY, locationZ);
+			gl.glTranslated(locationX, locationY - MainClass.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
 			double tx = -Math.cos(v)*Math.sin(h);
