@@ -34,7 +34,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private String type;
 	private Model m ;
 	
-	private double sx,sz, px,pz;
+	private double sx,sz, px,pz, ymax, ymin, dmgDet;
 	protected boolean alert;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
@@ -96,12 +96,20 @@ public class Enemy extends GameObject implements VisibleObject {
 			rightLeg.setEnemy(this);
 			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg");
 			leftLeg.setEnemy(this);
+			
+			ymin=0;
+			ymax = 4.5;
+			dmgDet=1.0;
 		}
 		else if(type.equals("3d_object/Bathos/bathos.obj")){
 			leftWing = new LeftWing(x,y,z,tex,"LeftWing");
 			leftWing.setEnemy(this);
 			rightWing = new RightWing(x,y,z,tex,"RighttWing");
 			rightWing.setEnemy(this);
+			
+			ymin=1.5;
+			ymax=4.0;
+			dmgDet=0.7;
 		}
 	}
 	
@@ -297,7 +305,13 @@ public class Enemy extends GameObject implements VisibleObject {
 					MainClass.player.setScore(100);
 				}
 			}
-			gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
+			
+			if(type.equals("3d_object/Bathos/bathos.obj")){
+				gl.glTranslated(0, 2.5, 0);
+				gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
+				gl.glTranslated(0, -2.5, 0);
+			}
+			
 			gl.glRotated(angle,0, 1, 0);
 			gl.glRotated(deathAngle, 1, 0, 0);
 			//Reset the color to white
@@ -450,18 +464,9 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public boolean damage(double x, double y, double z, double h, double d){
-		double r=Math.sqrt(Math.pow(3,2)-Math.pow(Math.abs(x-locationX),2));
-		double yDet;
-		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
-			yDet = 4.5;
-		}
-		else{
-			yDet=2.5;
-		}
-		if(locationX+5>x && x>locationX-5 && locationZ+r>z && z>locationZ-r && y>0 + locationY && y <yDet +locationY){
+		double c=Math.sqrt((locationX-x)*(locationX-x)+(locationZ-z)*(locationZ-z));
+		if(c<dmgDet && y>ymin + locationY && y <ymax +locationY){
 			health -=d;
-			sound.enemyhit();
-			
 			if(health<=0){
 				dood = true;
 			}
