@@ -6,7 +6,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -39,9 +38,7 @@ public class LevelEditor implements ActionListener{
 	private JPanel opties6b;
 	private JPanel opties6c;
 	private JPanel opties7;
-	
-	
-	private JPanel empty;
+
 	private JPanel controlArea;
 	private JComboBox cOptie4;
 	
@@ -58,7 +55,7 @@ public class LevelEditor implements ActionListener{
 	  
 	public LevelEditor(final boolean redirected){
 		
-		f = new JFrame("Testert");
+		f = new JFrame("Medieval Invasion leveleditor");
 		f.setSize(800, 700);
 		
 		Container content = f.getContentPane();
@@ -79,13 +76,12 @@ public class LevelEditor implements ActionListener{
 	    createComponentOpties6b();
 	    createComponentOpties6c();
 	    createComponentOpties7();
-	    createComponentEmpty();
+//	    createComponentEmpty();
         
         
         GridBagLayout gridBag2 = new GridBagLayout();
         cons = new GridBagConstraints();
         cons.fill = GridBagConstraints.BOTH;
-	    content.setLayout(gridBag2);
 	    cons.ipady = 0;
         cons.ipadx = 0;
         cons.weighty = 1.0;
@@ -103,6 +99,7 @@ public class LevelEditor implements ActionListener{
 
 		drawingArea.setPreferredSize(new Dimension(700, 700));
 	    drawingArea.setBorder(BorderFactory.createLineBorder (Color.white, 2));
+	    
 
 	    le = new LevelEditorFrame(drawingArea);
 	    le.setDrawMode(1);
@@ -247,6 +244,8 @@ public class LevelEditor implements ActionListener{
 			whatObject = 2;
 		else if(pu.equals("Lion"))
 			whatObject = 3;
+		else if(pu.equals("Flying Enemy"))
+			whatObject = 5;
 		else if(pu.equals("Exit"))
 			whatObject = 4;
 		
@@ -721,7 +720,7 @@ public class LevelEditor implements ActionListener{
 		opties6c = new JPanel(new GridLayout(2, 1));
 	    opties6c.setBorder(BorderFactory.createTitledBorder("Objects:"));
 	    
-	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Exit"};
+	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Flying Enemy", "Exit"};
 	    
 	    JComboBox c = new JComboBox(opties5cString);
 		c.addActionListener(this);
@@ -744,9 +743,7 @@ public class LevelEditor implements ActionListener{
 	private void createComponentOpties7(){
 		opties7 = new JPanel(new GridLayout(1, 1));
 	    opties7.setBorder(BorderFactory.createTitledBorder("NavMesh:"));
-	    
-	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Exit"};
-	    
+	    	    
 	    JButton b = new JButton("Genereer NavMesh");
 	    b.setActionCommand("navMesh");
 	    b.addActionListener(this);
@@ -757,14 +754,6 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties7);
 	}
 	
-	private void createComponentEmpty(){
-		empty = new JPanel(new GridLayout(1, 1));
-        empty.setBorder(BorderFactory.createTitledBorder(""));
-        
-        setConstraints(empty,0,0,6,1,8);
-        
-        controlArea.add(empty);
-	}
 	
 	private void setConstraints(JPanel optie, int ipadX,int ipadY,double weightY, int gridX, int gridY){
 	    cons.ipady = ipadX;
