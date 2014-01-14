@@ -39,6 +39,14 @@ public class Maze  implements VisibleObject {
 		createMaze();
 	}
 	
+	public String getLevel(){
+		
+		String[] r = loadfolder.split("\\\\|/");
+
+		return r[r.length - 1];
+	
+	}
+	
 	/**
 	 * Creates the maze from loadfolder, defines everything to be drawn
 	 */

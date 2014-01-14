@@ -30,8 +30,6 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	 * **********************************************
 	 */
 	
-	private static final long serialVersionUID = 1L;
-	
 	private boolean startup = true;
 	
 	private Texture BGTexture;
@@ -72,7 +70,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		int y5 = (int) (MainClass.screenHeight/1.2f - 4.9f*buttonSizeY);
 		
 		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "start") );
-		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "resume") );
+		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "level") );
 		buttons.add( new Buttonbox(x, y3, buttonSizeX, buttonSizeY, "editor") );
 		buttons.add( new Buttonbox(x, y4, buttonSizeX, buttonSizeY, "scores") );
 		buttons.add( new Buttonbox(x, y5, buttonSizeX, buttonSizeY, "exit") );
@@ -107,8 +105,8 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f(0f, 0f, 0f, 0.5f);
 			gl.glVertex2f(0, 0);
-			gl.glVertex2f(0, MainClass.screenHeight * 0.07f);
-			gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight * 0.07f);
+			gl.glVertex2f(0, fontSize * 2);
+			gl.glVertex2f(MainClass.screenWidth, fontSize * 2);
 			gl.glVertex2f(MainClass.screenWidth, 0);
 		gl.glEnd();
 		
@@ -116,16 +114,16 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		
 		Font f2 = null;
 		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
 		} catch (Exception e){
-			//
+			System.out.println("Fout: GeosansLight.ttf niet gevonden");
 		}
 		
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 
 		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
-		t.draw("Ingelogd als " + MainClass.username, (int) (MainClass.screenWidth * 0.02f), (int) (MainClass.screenHeight * 0.02f));
+		t.draw("Ingelogd als " + MainClass.username + " --- Level: " + MainClass.maze.getLevel(), (int) (fontSize * 0.65), (int) (fontSize * 0.65));
 		t.endRendering();
 		
 	}
@@ -156,18 +154,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	    			
 	            }	
 	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
+		
 		} catch (GLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -216,7 +203,7 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 	
 	private void ChooseLevel(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
-		fc.setDialogTitle("Nieuwe map");
+		fc.setDialogTitle("Selecteer level");
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int retrival = fc.showOpenDialog(null);
 		
