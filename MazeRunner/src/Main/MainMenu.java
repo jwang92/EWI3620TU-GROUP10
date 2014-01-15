@@ -43,12 +43,6 @@ public class MainMenu implements GLEventListener, MouseListener , MouseMotionLis
 		defaultLoadFolder = "savefiles";
 		
 		setButtons();
-				
-		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
-		 * The Animator class handles that for JOGL.
-		 */
-		Animator anim = new Animator( MainClass.canvas );
-		anim.start();
 		
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.

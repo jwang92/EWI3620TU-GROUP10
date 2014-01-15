@@ -71,18 +71,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "exit") );
 		
 	}
-	
-//	public void setDrawButtons(){
-//		drawMainClass.screenHeight = MainClass.screenHeight;
-//		drawMainClass.screenWidth = MainClass.screenWidth;
-//		
-//		drawPosX = bPosX;
-//		draw1PosY = b1PosY;
-//		draw2PosY = b2PosY;
-//		drawbuttonSizeX = buttonSizeX;
-//		drawbuttonSizeY = buttonSizeY;
-//	}
-	
+		
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 		// Set the clear color and clear the MainClass.screen.
@@ -267,7 +256,8 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
 		
-		MainClass.state.setStopMainGame(true);
+//		MainClass.state.setStopMainGame(true);
+		MainClass.state.setStopGameOver(true);
 	}
 
 	@Override

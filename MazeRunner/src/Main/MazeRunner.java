@@ -258,7 +258,7 @@ public class MazeRunner implements GLEventListener{
 	 * knows where to draw.
 	 */
 	public void display(GLAutoDrawable drawable) {
-		render(drawable);
+//		render(drawable);
 	}
 	
 	/**
@@ -839,7 +839,10 @@ public class MazeRunner implements GLEventListener{
 	 */
 	private void updateMovement(int deltaTime)
 	{
+		//player
 		MainClass.player.update(deltaTime);
+		
+		//enemy
 		for(Enemy e: MainClass.enemies){
 			e.update(deltaTime, MainClass.player);
 			if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
@@ -853,6 +856,8 @@ public class MazeRunner implements GLEventListener{
         		e.rightWing.update(deltaTime, MainClass.player);
         	}
 		}
+		
+		//weapons
 		if(!rw){
 			MainClass.sword.update(deltaTime, MainClass.player);
 			MainClass.shield.update(deltaTime, MainClass.player);
@@ -860,6 +865,8 @@ public class MazeRunner implements GLEventListener{
 		else{
 			MainClass.rWeapon.update(deltaTime, MainClass.player);
 		}
+		
+		//pheromones
 		MainClass.mazePheromones.evapPheromones();
 		for(Bullet b: MainClass.bullets){
 			b.update(deltaTime, MainClass.player);
@@ -872,10 +879,8 @@ public class MazeRunner implements GLEventListener{
 	 */
 	private void updateCamera() {
 		
-//		double walkanimation = MainClass.camera.CamWalk( MainClass.player.getMoving() );
-		
 		MainClass.camera.setLocationX( MainClass.player.getLocationX() );
-		MainClass.camera.setLocationY( MainClass.player.getLocationY() /*+ walkanimation*/);  
+		MainClass.camera.setLocationY( MainClass.player.getLocationY() );  
 		MainClass.camera.setLocationZ( MainClass.player.getLocationZ() );
 		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() + (MainClass.input.lookback? 180:0));
 		MainClass.camera.setVerAngle( MainClass.player.getVerAngle() );

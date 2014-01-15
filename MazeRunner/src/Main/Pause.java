@@ -246,7 +246,8 @@ public class Pause implements GLEventListener, MouseListener, MouseMotionListene
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
 		
-		MainClass.state.setStopMainGame(true);
+//		MainClass.state.setStopMainGame(true);
+		MainClass.state.setStopPause(true);
 	}
 
 	@Override

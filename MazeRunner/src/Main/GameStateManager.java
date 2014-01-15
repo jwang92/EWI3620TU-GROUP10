@@ -77,7 +77,7 @@ public class GameStateManager {
 	}
 	
 	public boolean getStopLogin(){
-		return sGameOver;
+		return sLogin;
 	}
 	
 	public boolean getStopHighscores(){

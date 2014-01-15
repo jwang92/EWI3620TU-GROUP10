@@ -146,6 +146,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+//	    gl.glFlush();
 		
 		if(tel != state.getState()){
 			if(state.getState() == 1)
@@ -165,14 +166,14 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			break;
 		case 2:
 			pause.render(drawable);
-			pause.init(drawable);
+//			pause.init(drawable);
 			break;
 		case 3:
 			System.exit(0);
 			break;
 		case 4:
 			gameover.render(drawable);
-			gameover.init(drawable);
+//			gameover.init(drawable);
 			break;
 		case 5:
 			login.render(drawable);
@@ -184,7 +185,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		initUpdater(drawable, 0, 0, screenWidth, screenHeight);
 
-	}
+}
 	
 /*
  * **********************************************
@@ -302,24 +303,32 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
 		int tel=state.getState();
+//		System.out.print(tel + ": "); 
 		if(tel==0 && state.getStopTitle()==false){
 			mainMenu.init(drawable);
+//			System.out.print("title");
 		}
 		if(tel==1 && state.getStopMainGame()==false ){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
+//			System.out.print("game");
 		}
 		else if(tel==2 && state.getStopPause()==false){
 			pause.init(drawable);
+//			System.out.print("pause");
 		}
 		else if(tel==4 && state.getStopGameOver()==false){
 			gameover.init(drawable);
+//			System.out.print("gameover");
 		}
 		else if(tel==5 && state.getStopLogin()==false){
 			login.init(drawable);
+//			System.out.print("login");
 		}
 		else if(tel==6 && state.getStopHighscores()==false){
 			highscores.init(drawable);
+//			System.out.print("highscores");
 		}
+//		System.out.println();
 	}
 	
 	@SuppressWarnings("unchecked")

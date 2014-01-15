@@ -188,7 +188,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
 		
 		// Font
-		float fontSize = MainClass.screenWidth / 25f;
+		float fontSize = MainClass.screenHeight *18.0f/600.0f;
 		
 		Font f2 = null;
 		try {
@@ -404,7 +404,7 @@ public class Login implements GLEventListener, MouseListener, MouseMotionListene
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
 		
-		MainClass.state.setStopMainGame(true);
+		MainClass.state.setStopLogin(true);
 	}
 
 	@Override
