@@ -8,12 +8,12 @@ import javax.media.opengl.GL;
 
 import GameObject.Enemy;
 import GameObject.VisibleObject;
-import LevelEditor.NavMesh;
 import Main.MainClass;
 import Utils.Point3D;
+import LevelEditor.NavMesh;
 
 /**
- * Draws everything in the maze
+ * Draws everything in the mazeF
  */
 public class Maze  implements VisibleObject {
 	
@@ -81,10 +81,7 @@ public class Maze  implements VisibleObject {
 		}
 		
 		generateNavMesh();
-	}
-	
-	public LevelInfo getLevelInfo(){
-		return lvlinfo;
+		
 	}
 	
 	public void generateNavMesh(){
@@ -93,6 +90,12 @@ public class Maze  implements VisibleObject {
 	
 	public NavMesh getNavMesh(){
 		return navMesh;
+	}
+
+	
+	
+	public LevelInfo getLevelInfo(){
+		return lvlinfo;
 	}
 	
 	/**
@@ -427,7 +430,49 @@ public class Maze  implements VisibleObject {
 			p3D.add(point);
 		}
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
-		polygonOnScreen(gl,p3D,textureID);		
+		polygonOnScreen(gl, p3D, textureID);		
+		
+		// Spouwmuur
+		ArrayList<Point3D> p3D2 = new ArrayList<Point3D>();
+		for(int i =0; i<p2D.size();i++){
+			Point3D point = new Point3D();
+			point.x = (float) (p2D.get(i).x * SQUARE_SIZE);
+			point.y = (float) z - 0.2f;
+			point.z = (float) (p2D.get(i).y * SQUARE_SIZE);
+			p3D2.add(point);
+		}
+		polygonOnScreen(gl, p3D2, textureID);
+		
+		ArrayList<Point3D> p3D3 = new ArrayList<Point3D>();
+		
+		p3D3.add(p3D.get(0));
+		p3D3.add(p3D.get(1));
+		p3D3.add(p3D2.get(1));
+		p3D3.add(p3D2.get(0));
+		
+		polygonOnScreen(gl,p3D3, textureID);	
+		
+		p3D3.set(0,p3D.get(1));
+		p3D3.set(1,p3D.get(2));
+		p3D3.set(2,p3D2.get(2));
+		p3D3.set(3,p3D2.get(1));
+		
+		polygonOnScreen(gl,p3D3, textureID);
+		
+		p3D3.set(0,p3D.get(2));
+		p3D3.set(1,p3D.get(3));
+		p3D3.set(2,p3D2.get(3));
+		p3D3.set(3,p3D2.get(2));
+		
+		polygonOnScreen(gl,p3D3, textureID);
+		
+		p3D3.set(0,p3D.get(3));
+		p3D3.set(1,p3D.get(0));
+		p3D3.set(2,p3D2.get(0));
+		p3D3.set(3,p3D2.get(3));
+		
+		polygonOnScreen(gl,p3D3, textureID);
+		
 	}
 	
 	/**
@@ -541,7 +586,7 @@ public class Maze  implements VisibleObject {
 			
 			distance = distToSegment(x / SQUARE_SIZE, z / SQUARE_SIZE, w.getStartX(), w.getStartZ(), w.getEndX(), w.getEndZ());
 		
-			if(distance < 0.1){
+			if(distance < 0.1 && y >= w.locationY + 2.5 && w.locationY + 2.5 + SQUARE_SIZE >= y){
 				return true;
 			}
 			
