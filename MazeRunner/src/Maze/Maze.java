@@ -318,7 +318,8 @@ public class Maze  implements VisibleObject {
 		
 	}
 
-	public void drawWall2(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
+	public void drawWall2(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof,
+			float sx2, float sy2, float ex2, float ey2){
 		ArrayList<Point3D> p = new ArrayList<Point3D>();
 		Point3D p1 = new Point3D(); Point3D p2 = new Point3D(); Point3D p3 = new Point3D(); Point3D p4 = new Point3D();
 			p1.x = (float) (sx * SQUARE_SIZE);
@@ -329,21 +330,33 @@ public class Maze  implements VisibleObject {
 			p2.y = (float) (zroof);
 			p2.z = (float) (ey * SQUARE_SIZE);
 			p.add(p2);
-			p3.x = (float) (ex * SQUARE_SIZE);
-			p3.y = (float) zfloor;
-			p3.z = (float) (ey * SQUARE_SIZE);
-			p.add(p3);
-			p4.x = (float) (sx * SQUARE_SIZE);
-			p4.y = (float) zfloor;
-			p4.z = (float) (sy * SQUARE_SIZE);
-			p.add(p4);
+			if(zfloor != zroof){
+				p3.x = (float) (ex * SQUARE_SIZE);
+				p3.y = (float) zfloor;
+				p3.z = (float) (ey * SQUARE_SIZE);
+				p.add(p3);
+				p4.x = (float) (sx * SQUARE_SIZE);
+				p4.y = (float) zfloor;
+				p4.z = (float) (sy * SQUARE_SIZE);
+				p.add(p4);
+			}
+			else{
+				p3.x = (float) (ex2 * SQUARE_SIZE);
+				p3.y = (float) zfloor;
+				p3.z = (float) (ey2 * SQUARE_SIZE);
+				p.add(p3);
+				p4.x = (float) (sx2 * SQUARE_SIZE);
+				p4.y = (float) zfloor;
+				p4.z = (float) (sy2 * SQUARE_SIZE);
+				p.add(p4);
+			}
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
 	
 		polygonOnScreen(gl,p,textureID);
 	}
 	
 	public void drawWall(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
-		if(Math.abs(ex-sx)==0){
+		if(Math.abs(ex-sx)==0 || Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
 			float c=1.0f;
 			if(sy>ey){
 				c=1.0f;
@@ -351,10 +364,16 @@ public class Maze  implements VisibleObject {
 			else{
 				c=-1.0f;
 			}
-			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof,0,0,0,0);
+			
+			//roof and floor
+			zfloor=zfloor+0.001f;
+			zroof=zroof-0.001f;
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zfloor,sx+0.02f, sy+0.019f*c,ex+0.02f,ey-0.019f*c);
+			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zroof, zroof,sx+0.02f, sy+0.019f*c,ex+0.02f,ey-0.019f*c);
 		}
 		else if(Math.abs(ey-sy)/Math.abs(ex-sx)<1){
 			float c = 1.0f;
@@ -364,23 +383,16 @@ public class Maze  implements VisibleObject {
 			else{
 				c=-1.0f;
 			}
-			drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
-			drawWall2(gl, sx+0.019f*c, sy+0.02f, ex-0.019f*c, ey+0.02f, texture, zfloor, zroof);
-			drawWall2(gl, sx+0.019f*c, sy+0.02f, sx+0.019f*c, sy-0.02f, texture, zfloor, zroof);
-			drawWall2(gl, ex-0.019f*c, ey+0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof);
-		}
-		else if(Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
-			float c=1.0f;
-			if(sy>ey){
-				c=1.0f;
-			}
-			else{
-				c=-1.0f;
-			}
-			drawWall2(gl, sx-0.02f, sy+0.019f*c, ex-0.02f, ey-0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, sx+0.02f, sy+0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, sx-0.02f, sy+0.019f*c, sx+0.02f, sy+0.019f*c, texture, zfloor, zroof);
-			drawWall2(gl, ex-0.02f, ey-0.019f*c, ex+0.02f, ey-0.019f*c, texture, zfloor, zroof);
+			drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, sx+0.019f*c, sy+0.02f, ex-0.019f*c, ey+0.02f, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, sx+0.019f*c, sy+0.02f, sx+0.019f*c, sy-0.02f, texture, zfloor, zroof,0,0,0,0);
+			drawWall2(gl, ex-0.019f*c, ey+0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zroof,0,0,0,0);
+			
+			//roof and floor
+			zfloor=zfloor+0.001f;
+			zroof=zroof-0.001f;
+			drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zfloor, zfloor,sx+0.019f*c, sy+0.02f,ex-0.019f*c,ey+0.02f);
+			drawWall2(gl, sx+0.019f*c, sy-0.02f, ex-0.019f*c, ey-0.02f, texture, zroof, zroof,sx+0.019f*c, sy+0.02f,ex-0.019f*c,ey+0.02f);
 		}
 	}
 
@@ -784,6 +796,9 @@ public class Maze  implements VisibleObject {
 	public void drawRamp(GL gl, ArrayList<Point2D.Float> points, int floorHeight, int roofHeight, String texture){
 		
 		ArrayList<Point3D> p3D = new ArrayList<Point3D>();
+		ArrayList<Point3D> p3D2 = new ArrayList<Point3D>();
+		ArrayList<Point3D> p3D3 = new ArrayList<Point3D>();
+		
 		
 		for(int i = 0; i < points.size(); i++){
 			
@@ -791,14 +806,54 @@ public class Maze  implements VisibleObject {
 			point.x = (float) (points.get(i).x * SQUARE_SIZE);
 			point.z = (float) (points.get(i).y * SQUARE_SIZE);
 			point.y = (float) floorHeight;
+			
 			if(i > 1)
 				point.y = (float) roofHeight;
-			
+
 			p3D.add(point);
-			
 		}
 		int textureID = MainClass.textureNames.lastIndexOf(texture);
-		polygonOnScreen(gl,p3D, textureID);	
+		polygonOnScreen(gl,p3D, textureID);
+		
+		float dx =0.04f*(p3D.get(3).x-p3D.get(0).x);
+		float dz =0.04f*(p3D.get(3).z-p3D.get(0).z);
+		for(int i =0; i<points.size(); i++){
+			Point3D point2 = new Point3D();
+			point2.x = p3D.get(i).x-dx;
+			point2.z = p3D.get(i).z-dz;
+			point2.y = p3D.get(i).y;
+			
+			p3D2.add(point2);
+		}
+		polygonOnScreen(gl,p3D2, textureID);
+		
+		p3D3.add(p3D.get(0));
+		p3D3.add(p3D.get(1));
+		p3D3.add(p3D2.get(1));
+		p3D3.add(p3D2.get(0));
+		
+		polygonOnScreen(gl,p3D3, textureID);	
+		
+		p3D3.set(0,p3D.get(1));
+		p3D3.set(1,p3D.get(2));
+		p3D3.set(2,p3D2.get(2));
+		p3D3.set(3,p3D2.get(1));
+		
+		polygonOnScreen(gl,p3D3, textureID);
+		
+		p3D3.set(0,p3D.get(2));
+		p3D3.set(1,p3D.get(3));
+		p3D3.set(2,p3D2.get(3));
+		p3D3.set(3,p3D2.get(2));
+		
+		polygonOnScreen(gl,p3D3, textureID);
+		
+		p3D3.set(0,p3D.get(3));
+		p3D3.set(1,p3D.get(0));
+		p3D3.set(2,p3D2.get(0));
+		p3D3.set(3,p3D2.get(3));
+		
+		polygonOnScreen(gl,p3D3, textureID);
 		
 	}
 	
