@@ -14,41 +14,7 @@ import poly2tri.triangulation.delaunay.DelaunayTriangle;
 
 public class NavMesh {
 	public ArrayList<DelaunayTriangle> triangles;
-	
-	public static void main(String[] args) {
-		Storey storey = new Storey();
-		ArrayList<Storey> storeys;
-		storeys = new ArrayList<Storey>();
-		try {
-		    File folder = new File("savefiles/testlevel22");
-		    File[] tList = folder.listFiles();
-		    int numberOfStoreys = tList.length - 1; // -1 for LevelInfo.txt
-		    for(int i = 0; i<tList.length;i++){
-			    if(tList[i].getName().equals("Thumbs.db")){
-			    	numberOfStoreys -= 1;
-			    }  
-		    }
-			for(int i =1;i<numberOfStoreys+1;i++){
-				File f = new File("savefiles/testlevel22" + "/Floor " + i);
-				if(f.exists()){
-					storey = Storey.Read("savefiles/testlevel22" + "/Floor " + i);
-					storeys.add(storey);
-				}
-				else{
-					storeys = new ArrayList<Storey>();
-					numberOfStoreys = 0;
-				}
-
-			}	
-			
-		} catch (FileNotFoundException e) {
-			storeys = new ArrayList<Storey>();
-		}
 		
-		NavMesh navMesh = new NavMesh(storeys); 
-		
-	}
-	
 	public NavMesh(ArrayList<Storey> storeys){
 		NavMeshGeneration navMeshGen = new NavMeshGeneration(storeys);
 		triangles = navMeshGen.getResult();
@@ -58,10 +24,10 @@ public class NavMesh {
 //			System.out.println(triangles.indexOf(t.neighbors[i]));
 //		}
 		
-		System.out.println(findRoute(1.5f,1.5f,0.5f,0.5f));
+		//System.out.println(findRoute(1.5f,1.5f,0.5f,0.5f));
 	}
 	
-	public ArrayList<Point3D> findRoute(float sx, float sy, float ex, float ey){
+	public synchronized ArrayList<Point3D> findRoute(float sx, float sy, float ex, float ey){
 		sx = sx*1000;
 		sy = sy*1000;
 		ex = ex*1000;
@@ -72,19 +38,23 @@ public class NavMesh {
 		//System.out.println(firstTriangleID +", " + endTriangleID);
 		
 		if(firstTriangleID < 0 || endTriangleID <0){
-			System.out.println("No path");
+			resetNavMesh();
 			return null;
 		}
 		
 		ArrayList<DelaunayTriangle> closed = findTriangleRoute(sx,sy,ex,ey,firstTriangleID,endTriangleID);
 		
 		if(closed == null){
+			resetNavMesh();
 			return null;
 		}
-		return findPointRoute(sx,sy,ex,ey,firstTriangleID,endTriangleID,closed);
+		ArrayList<Point3D> res = findPointRoute(sx,sy,ex,ey,firstTriangleID,endTriangleID,closed);
+		
+		resetNavMesh();
+		return res;
 	}
 	
-	public ArrayList<Point3D> findPointRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID, ArrayList<DelaunayTriangle> closed){
+	public synchronized ArrayList<Point3D> findPointRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID, ArrayList<DelaunayTriangle> closed){
 		ArrayList<Point3D> route = new ArrayList<Point3D>();
 		
 		Point3D end = new Point3D(ex/1000,0,ey/1000);
@@ -105,7 +75,6 @@ public class NavMesh {
 		
 		while(!currentTriangle.equals(firstTriangle)){
 			boolean updateCorner = false;
-			System.out.println(triangles.indexOf((currentTriangle)));
 			ArrayList<TriangulationPoint> sharingPoints = currentTriangle.getSharingPoints(previousTriangle);
 			
 //			System.out.println(currentTriangle.points[0].getX() + ", " + currentTriangle.points[0].getY());
@@ -263,7 +232,7 @@ public class NavMesh {
 		return route;
 	}
 	
-	public ArrayList<DelaunayTriangle> findTriangleRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID){
+	public synchronized ArrayList<DelaunayTriangle> findTriangleRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID){
 		
 		ArrayList<DelaunayTriangle> closed = new ArrayList<DelaunayTriangle>();
 		ArrayList<DelaunayTriangle> open = new ArrayList<DelaunayTriangle>();
@@ -337,6 +306,17 @@ public class NavMesh {
 		
 		return null;
 		
+	}
+	
+	public synchronized void resetNavMesh(){
+		for(int i =0;i<triangles.size();i++){
+			DelaunayTriangle t = triangles.get(i);
+			t.setChild(null);
+			t.setParent(null);
+			t.setG(Double.MAX_VALUE);
+			t.setH(0);
+			t.refreshF();
+		}
 	}
 	
 	public int findTriangle(float x,float y){

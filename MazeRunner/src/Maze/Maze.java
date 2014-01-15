@@ -8,6 +8,7 @@ import javax.media.opengl.GL;
 
 import GameObject.Enemy;
 import GameObject.VisibleObject;
+import LevelEditor.NavMesh;
 import Main.MainClass;
 import Utils.Point3D;
 
@@ -25,6 +26,9 @@ public class Maze  implements VisibleObject {
 	private double pickupColor = 0.0;
 	private boolean colorUp = true;
 	private int displayList = 0;
+	
+	//NavMesh
+	private NavMesh navMesh;
 	
 	public Maze(){
 		createMaze();
@@ -75,10 +79,20 @@ public class Maze  implements VisibleObject {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		generateNavMesh();
 	}
 	
 	public LevelInfo getLevelInfo(){
 		return lvlinfo;
+	}
+	
+	public void generateNavMesh(){
+		navMesh = new NavMesh(storeys); ;
+	}
+	
+	public NavMesh getNavMesh(){
+		return navMesh;
 	}
 	
 	/**

@@ -95,17 +95,17 @@ public class NavMeshGeneration {
 					int tempX = (int) (f.getPoints().get(j).x-1)*gridSize;
 					int tempY = (int) (f.getPoints().get(j).y-1)*gridSize;
 					if(tempX == 0){
-						tempX += 150;
+						tempX += 350;
 					}
 					else if(tempX == sizeX * gridSize){
-						tempX -= 150;
+						tempX -= 350;
 					}
 					
 					if(tempY == 0){
-						tempY += 150;
+						tempY += 350;
 					}
 					else if(tempY == sizeY * gridSize){
-						tempY -= 150;
+						tempY -= 350;
 					}
 					
 					
@@ -147,7 +147,7 @@ public class NavMeshGeneration {
 	}
 	
 	public void increaseBlockedAreaSize(){
-		blockedPolygonsClipper= (ArrayList<PolygonClipper>) Clipper.offsetPolygons(blockedPolygonsClipper, 150, JoinType.jtSquare);
+		blockedPolygonsClipper= (ArrayList<PolygonClipper>) Clipper.offsetPolygons(blockedPolygonsClipper, 350, JoinType.jtSquare);
 	}
 	
 	public void RemoveBlockedArea(){

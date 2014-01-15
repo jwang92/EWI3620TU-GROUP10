@@ -2,6 +2,7 @@ package GameObject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 import javax.sound.midi.Soundbank;
@@ -14,6 +15,7 @@ import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
 import Utils.Sounds;
+import Utils.Point3D;
 
 import com.sun.opengl.util.texture.Texture;
 
@@ -58,6 +60,10 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	//Sounds
 	public Sounds sound = new Sounds();
+	
+	//Route
+	private ArrayList<Point3D> route = new ArrayList<Point3D>();
+	public boolean findRoute = false;
 	
 	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName){
 		super(x, y, z);
@@ -221,49 +227,79 @@ public class Enemy extends GameObject implements VisibleObject {
 				double dZ = highestPher.z - locationZ;				
 				double distance = Math.sqrt(dZ*dZ + dX*dX);
 				
-				newX = locationX;		
-				newZ = locationZ;
-				
-				if(distance > 0.01){
-					dX = dX/distance * speed * deltaTime;
-					dZ = dZ/distance * speed * deltaTime;
-					
-					newX += dX;
-					newZ += dZ;
-					
-					if(!collision(newX, newZ, deltaTime)){
-						locationX = newX;
-						locationZ = newZ;
+				newLocation(dX, dZ, distance, deltaTime);
+
+			}
+			else{
+				if(findRoute && route.size()<=0){
+					findRoute();
+					findRoute = false;
+				}
+				if(route.size()>0){
+					double routeX = route.get(route.size()-1).getX() + 1;
+					double routeZ = route.get(route.size()-1).getZ() + 1;
+					boolean pointReached = false;
+					if((locationX/MainClass.maze.SQUARE_SIZE)>= (routeX-0.2) && (locationX/MainClass.maze.SQUARE_SIZE) <= (routeX + 0.2)){
+						if((locationZ/MainClass.maze.SQUARE_SIZE)>= (routeZ-0.2) && (locationZ/MainClass.maze.SQUARE_SIZE) <= (routeZ + 0.2)){
+							route.remove(route.size()-1);
+							pointReached = true;
+						}						
 					}
-					
-					else{
-						newX = locationX;
-						if(dX > 0.0){
-							newX += speed * deltaTime;
-						}
-						else if(dX < 0.0){
-							newX -= speed * deltaTime;
-						}
-							
-						newZ = locationZ;
-						if(dZ > 0.0){
-							newZ += speed * deltaTime;
-						}
+					if(!pointReached){
+						double dX = (route.get(route.size()-1).getX() + 1)*MainClass.maze.SQUARE_SIZE - locationX;				
+						double dZ = (route.get(route.size()-1).getZ() + 1)*MainClass.maze.SQUARE_SIZE - locationZ;				
+						double distance = Math.sqrt(dZ*dZ + dX*dX);
 						
-						else if(dZ < 0.0){
-							newZ -= speed * deltaTime;
-						}
-				
-						if(!collision(newX, locationZ, deltaTime)){
-							locationX = newX;
-						}else if(!collision(locationX, newZ, deltaTime)){
-							locationZ = newZ;
-						}
+						newLocation(dX, dZ, distance, deltaTime);
 					}
+					
 				}
 			}
 			
 			this.caught(player);
+		}
+	}
+	
+	public void newLocation(double dx, double dz, double distance, int deltaTime){
+		newX = locationX;		
+		newZ = locationZ;
+		
+		if(distance > 0.01){
+			dx = dx/distance * speed * deltaTime;
+			dz = dz/distance * speed * deltaTime;
+			
+			newX += dx;
+			newZ += dz;
+			
+			if(!collision(newX, newZ, deltaTime)){
+				locationX = newX;
+				locationZ = newZ;
+			}
+			
+			else{
+				newX = locationX;
+				if(dx > 0.0){
+					newX += speed * deltaTime;
+				}
+				else if(dx < 0.0){
+					newX -= speed * deltaTime;
+				}
+					
+				newZ = locationZ;
+				if(dz > 0.0){
+					newZ += speed * deltaTime;
+				}
+				
+				else if(dz < 0.0){
+					newZ -= speed * deltaTime;
+				}
+		
+				if(!collision(newX, locationZ, deltaTime)){
+					locationX = newX;
+				}else if(!collision(locationX, newZ, deltaTime)){
+					locationZ = newZ;
+				}
+			}
 		}
 	}
 
@@ -296,6 +332,19 @@ public class Enemy extends GameObject implements VisibleObject {
 					}
 					
 				}
+			else if(!alert && !dood){
+				if(route.size()>0){
+					double dX = (route.get(route.size()-1).getX() + 1)*MainClass.maze.SQUARE_SIZE - locationX;				
+					double inP = (route.get(route.size()-1).getZ() + 1)*MainClass.maze.SQUARE_SIZE - locationZ;
+					double lengteV = 1;
+					double lengteW = Math.sqrt(Math.pow(dX, 2)+Math.pow(inP, 2));
+					double test = inP/Math.max(lengteV*lengteW, 00001);
+					angle = Math.acos(test)*180/Math.PI;
+					if(dX<0){
+						angle = -angle;
+					}	
+				}
+			}	
 			else if(dood){
 				if(deathAngle>-90){
 					deathAngle -= 2.5;
@@ -459,8 +508,33 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public boolean alerted (Player player){
-		 boolean res = Math.sqrt(Math.pow(sx-player.locationX,2 )+Math.pow(sz-player.locationZ,2)) <15 ;
+		 boolean res = (Math.sqrt(Math.pow(locationX-player.locationX,2 )+Math.pow(locationZ-player.locationZ,2)) < 15) ;
+		 if(res == true){
+			 ArrayList<Enemy> enemies = MainClass.enemies;
+			 for(Enemy e: enemies){
+				 if(!this.equals(e) && !findRoute){
+					 double dx = locationX - e.getLocationX();
+					 double dy = locationY - e.getLocationY();
+					 double dz = locationZ - e.getLocationZ();
+					 double dis = Math.sqrt(dx*dx + dy*dy + dz*dz);
+					 if(dis<15){
+						 e.findRoute = true;
+					 }
+				 }
+			 }
+		 }
 		 return res;
+	}
+	
+	public void findRoute(){
+		route = MainClass.maze.getNavMesh().findRoute(
+				(float) (locationX/MainClass.maze.SQUARE_SIZE) -1 , 
+				(float) (locationZ/MainClass.maze.SQUARE_SIZE)-1, 
+				(float) (MainClass.player.getLocationX()/MainClass.maze.SQUARE_SIZE)-1, 
+				(float) (MainClass.player.getLocationZ()/MainClass.maze.SQUARE_SIZE)-1);
+		if(route == null){
+			route = new ArrayList<Point3D>();
+		}
 	}
 	
 	public boolean damage(double x, double y, double z, double h, double d){
