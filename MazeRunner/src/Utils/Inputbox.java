@@ -42,19 +42,19 @@ public class Inputbox {
 		margin = 2;
 		text = "";
 		selected = false;
+		bH = sH + 2*margin;
+		bL = sL*sH + 2*margin;
 		
-		// Fonts
-		f = new Font("Courier New", Font.PLAIN, sH);
 	}
 	
-	public void DrawInputbox(GL gl, int scrH, int scrW){
+	public void DrawInputbox(GL gl, int scrH, int scrW, TextRenderer tr){
 
 		adjustToReshape(scrH, scrW);
 		
 		DrawBox(gl);
 		
-		DrawText(gl);
-				
+		DrawText(gl, tr);
+		
 		gl.glLineWidth(1);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
 		
@@ -65,6 +65,9 @@ public class Inputbox {
 		double SY = (double) scrH / (double) screenHeight;
 				
 		if(SX != 1 || SY != 1){
+			System.out.println(screenHeight);
+			System.out.println(screenWidth);
+			
 			screenHeight = scrH;
 			screenWidth = scrW;
 			
@@ -77,7 +80,6 @@ public class Inputbox {
 	}
 	
 	public void DrawBox(GL gl){
-		
 		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor3f(1.0f, 1.0f, 1.0f);
@@ -100,17 +102,15 @@ public class Inputbox {
 
 	}
 
-	public TextRenderer setTR(int sH){
-		float size = (float) sH;
-		Font f = this.f.deriveFont(size);
+//	public TextRenderer setTR(int sH){
+//		float size = (float) sH;
+//		Font f = this.f.deriveFont(size);
+//	
+//		return new TextRenderer(f);
+//	}
 	
-		return new TextRenderer(f);
-	}
-	
-	public void DrawText(GL gl){
+	public void DrawText(GL gl, TextRenderer tr){
 		
-		TextRenderer tr = setTR(sH);
-
 		String text = this.text;
 
 		tr.setColor(0.0f, 0.0f, 0.0f, 1.0f);

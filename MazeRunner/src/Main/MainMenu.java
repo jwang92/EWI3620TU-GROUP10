@@ -109,15 +109,7 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 		
 		gl.glDisable(GL.GL_BLEND);
 		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
-		} catch (Exception e){
-			System.out.println("Fout: GeosansLight.ttf niet gevonden");
-		}
-		
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer t = new TextRenderer(f);
+		TextRenderer t = main.trenderers.get(0);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username + " --- Level: " + main.maze.getLevel(), (int) (fontSize * 0.65), (int) (fontSize * 0.65));

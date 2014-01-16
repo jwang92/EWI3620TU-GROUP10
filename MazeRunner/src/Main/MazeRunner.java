@@ -51,8 +51,6 @@ public class MazeRunner {
 		
 	// Fonts
 	private TextRenderer tr;
-	private Font f = new Font("SansSerif", Font.PLAIN, 20);
-	private Font fGeo = new Font("SansSerif", Font.PLAIN, 20);
 	private int previousHealth;
 	private boolean rw = false;
 	
@@ -235,18 +233,6 @@ public class MazeRunner {
         //Load the maze
         main.maze.genDisplayList(gl);
                 
-        // Fonts setten
-        try {
-			Font f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
-			f = f2.deriveFont(14f);
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
-			fGeo = f2.deriveFont(30f);
-		} catch (FontFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
 		previousHealth = main.player.getHealth();
 			
 	}
@@ -285,7 +271,7 @@ public class MazeRunner {
 		gl.glDisable( GL.GL_DEPTH_TEST );
 		
 		// Draw everything
-		tr = new TextRenderer(f);
+		tr = main.trenderers.get(2);
 		drawHit(gl);
 		drawHealthbar(gl);
 		drawUpgrades(gl);
@@ -370,9 +356,7 @@ public class MazeRunner {
 		
 		float fontsize = (float) Math.round(screenHeight / 33);
 		
-		Font fGeo2 = fGeo.deriveFont(fontsize);
-		
-		TextRenderer t = new TextRenderer(fGeo2);
+		TextRenderer t = main.trenderers.get(1);
 		t.beginRendering(screenWidth, screenHeight);
 		
 		
@@ -503,15 +487,12 @@ public class MazeRunner {
 	 */
 	public void drawLevelExit(GL gl){
 		if(main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ) != null){
-			f = f.deriveFont(36f);
 			
-			TextRenderer t = new TextRenderer(f);
+			TextRenderer t = main.trenderers.get(3);
 	
 			t.beginRendering(screenWidth, screenHeight);
 			t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
 			t.endRendering();
-			
-			f = f.deriveFont(14f);
 			
 		}
 	}
@@ -790,7 +771,7 @@ public class MazeRunner {
         }
         
         draw2D(gl);
-
+        
         gl.glLoadIdentity();
         // Flush the OpenGL buffer.
         gl.glFlush();

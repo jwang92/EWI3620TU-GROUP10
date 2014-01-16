@@ -104,8 +104,6 @@ public class Highscores implements MouseListener , MouseMotionListener {
 
 	public void drawUsername(GL gl){
 		
-		float fontSize = main.screenWidth / 60f;
-		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -119,15 +117,7 @@ public class Highscores implements MouseListener , MouseMotionListener {
 		
 		gl.glDisable(GL.GL_BLEND);
 		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
-		} catch (Exception e){
-			//
-		}
-		
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer t = new TextRenderer(f);
+		TextRenderer t = main.trenderers.get(0);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));
@@ -158,15 +148,7 @@ public class Highscores implements MouseListener , MouseMotionListener {
 		
 		// Titeltje erboven
 		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
-		} catch (Exception e){
-			//
-		}
-		float fontSize = main.screenWidth / 42f;
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer t = new TextRenderer(f);
+		TextRenderer t = main.trenderers.get(3);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Highscores", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f));
@@ -176,15 +158,9 @@ public class Highscores implements MouseListener , MouseMotionListener {
 	
 	public void drawScores(GL gl){
 		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
-		} catch (Exception e){
-			//
-		}
-		float fontSize = main.screenWidth / 60f;
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer t = new TextRenderer(f);
+		float fontSize = (float) Math.floor(main.screenHeight * 20.0f/600.0f);
+		
+		TextRenderer t = main.trenderers.get(0);
 		t.setColor((float)Math.random(), 1, (float)Math.random(), 1);
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		

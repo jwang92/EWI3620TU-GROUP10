@@ -188,21 +188,9 @@ public class Login implements MouseListener, MouseMotionListener {
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE);
 		
-		// Font
-		float fontSize = main.screenHeight *18.0f/600.0f;
-		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
-		} catch (Exception e){
-			System.out.println("foutje");
-		}
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer tr = new TextRenderer(f);
+		TextRenderer tr = main.trenderers.get(0);
 
 		tr.setColor(0.0f, 0.0f, 0.0f, 1.0f);
-				
-		
 		
 		for(int i = 0; i < 2; i++){
 			float x = main.screenWidth/2.0f;
@@ -231,7 +219,7 @@ public class Login implements MouseListener, MouseMotionListener {
 		gl.glDisable(GL.GL_BLEND);
 		
 		for( Inputbox input : inputs)
-			input.DrawInputbox(gl, main.screenHeight, main.screenWidth);
+			input.DrawInputbox(gl, main.screenHeight, main.screenWidth, main.trenderers.get(0));
 	}
 	
 	private void drawButtons(GL gl) {
@@ -258,17 +246,8 @@ public class Login implements MouseListener, MouseMotionListener {
 			gl.glEnd();
 		}
 		
-		// Fonts
-		float fontSize = main.screenWidth / 60f;
-		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
-		} catch (Exception e){
-			System.out.println("foutje");
-		}
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer tr = new TextRenderer(f);
+		int fontSize = main.trenderers.get(0).getFont().getSize();
+		TextRenderer tr = main.trenderers.get(0);
 
 		tr.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 				

@@ -108,15 +108,7 @@ public class GameOver implements MouseListener, MouseMotionListener {
 		
 		gl.glDisable(GL.GL_BLEND);
 		
-		Font f2 = null;
-		try {
-			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
-		} catch (Exception e){
-			//
-		}
-		
-		Font f = f2.deriveFont(fontSize);
-		TextRenderer t = new TextRenderer(f);
+		TextRenderer t = main.trenderers.get(0);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));

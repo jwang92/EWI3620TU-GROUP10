@@ -12,10 +12,8 @@ public class pwInputbox extends Inputbox {
 		super(xCoord, yCoord, FontSize, StringLength, defText, m);
 	}
 	
-	public void DrawText(GL gl){
+	public void DrawText(GL gl, TextRenderer tr){
 				
-		TextRenderer tr = setTR(sH);
-
 		String text = "";
 		for(int i = 0; i < this.text.length(); i++){
 			text = text + "*";		

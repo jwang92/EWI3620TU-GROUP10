@@ -1,10 +1,14 @@
 package Main;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,24 +35,31 @@ import UserInput.UserInput;
 import Utils.TextureLoader;
 
 import com.sun.opengl.util.Animator;
+import com.sun.opengl.util.j2d.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 
 public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
+	//main parameters
 	private final long serialVersionUID = 1L;
 	public GLCanvas canvas;
 	public int screenWidth = 600, screenHeight = 600;		// Screen size.
 	public int tel;
+	public String username = "0";
 	
-	public MazeRunner mazeRunner;
+	//gamestates
 	public GameStateManager state;
+	public MainMenu mainMenu;
+	public MazeRunner mazeRunner;
+	public Pause pause;
+	public GameOver gameover;
 	public Login login;
 	public Highscores highscores;
-	public MainMenu mainMenu;
+	
+	//Maze
 	public Maze maze;
-	public MazePheromones mazePheromones;
 	public Player player;
-	public String username = "0";
+	public MazePheromones mazePheromones;
 	
 	//Enemies
 	public ArrayList<Model> enemieModels = new ArrayList<Model>();
@@ -56,33 +67,38 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
-	public CursorHandler cursor;
-	public Camera camera;
-	public UserInput input;
-	public Pause pause;
-	public GameOver gameover;
+	//Objects
 	public Sword sword;
 	public Shield shield;
 	public RangedWeapons rWeapon;
 	public Door door;
 	public DoorSwitch doorSwitch;
 	
+	//User
+	public CursorHandler cursor;
+	public Camera camera;
+	public UserInput input;
+	
 	//Load the textures
 	public ArrayList<Texture> textures;
 	public ArrayList<String> textureNames;
 	private int numberOfTextures;
 	
+	//Load textrenderers
+	public ArrayList<TextRenderer> trenderers;
+	
+	
 	public MainClass(int Width, int Height, boolean fullscreen){
 		super("Medieval Invasion");
 		
 		// Let's change the window to our liking.
-		setSize( screenWidth, screenHeight);
 		setBackground(new Color(0.0f, 0.0f, 0.0f, 1));
 		setResizable(false);
 		if(fullscreen){
-			setExtendedState(JFrame.MAXIMIZED_BOTH);
-			screenHeight = getHeight();
-			screenWidth = getWidth();
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			screenWidth = (int) screenSize.getWidth();
+			screenHeight = (int) screenSize.getHeight();
+			setSize( screenWidth, screenHeight);
 			setUndecorated(true);
 		}
 		else{
@@ -143,6 +159,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public void render (GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
 
+//		System.out.println("render: "+screenWidth +"x"+ screenHeight);
+		
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
@@ -166,14 +184,12 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			break;
 		case 2:
 			pause.render(drawable);
-//			pause.init(drawable);
 			break;
 		case 3:
 			System.exit(0);
 			break;
 		case 4:
 			gameover.render(drawable);
-//			gameover.init(drawable);
 			break;
 		case 5:
 			login.render(drawable);
@@ -185,7 +201,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		initUpdater(drawable, 0, 0, screenWidth, screenHeight);
 
-}
+	}
 	
 /*
  * **********************************************
@@ -204,7 +220,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
 		
-
 		// Set the matrix mode to GL_PROJECTION, allowing us to manipulate the
 		// projection matrix
 		gl.glMatrixMode(GL.GL_PROJECTION);
@@ -233,7 +248,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		gl.glDisable(GL.GL_DEPTH_TEST);
 		
 		loadTextures();
-		
+
+		loadTRenderers();
+				
 		// First, we set up JOGL. We start with the default settings.
 		GLCapabilities caps = new GLCapabilities();
 		// Then we make sure that JOGL is hardware accelerated and uses double buffering.
@@ -245,7 +262,6 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		 */
 		Animator anim = new Animator( canvas );
 		anim.start();
-		
 				
 	}
 
@@ -303,32 +319,24 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
 		int tel=state.getState();
-//		System.out.print(tel + ": "); 
 		if(tel==0 && state.getStopTitle()==false){
 			mainMenu.init(drawable);
-//			System.out.print("title");
 		}
 		if(tel==1 && state.getStopMainGame()==false ){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
-//			System.out.print("game");
 		}
 		else if(tel==2 && state.getStopPause()==false){
 			pause.init(drawable);
-//			System.out.print("pause");
 		}
 		else if(tel==4 && state.getStopGameOver()==false){
 			gameover.init(drawable);
-//			System.out.print("gameover");
 		}
 		else if(tel==5 && state.getStopLogin()==false){
 			login.init(drawable);
-//			System.out.print("login");
 		}
 		else if(tel==6 && state.getStopHighscores()==false){
 			highscores.init(drawable);
-//			System.out.print("highscores");
 		}
-//		System.out.println();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -348,6 +356,49 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 	
+	public void loadTRenderers(){
+		trenderers = new ArrayList<TextRenderer>();
+		Font f2 = null;
+		
+		// load font geosanslight
+		try {
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("GeosansLight.ttf"));
+		} catch (Exception e){
+			System.out.println("Fout: GeosansLight.ttf niet gevonden");
+		}
+		
+		// geosanslight - 20f		main.trenders.get(0)
+		float fontSize = (float) Math.floor(screenHeight * 20.0f/600.0f);
+		Font f = f2.deriveFont(fontSize);
+		trenderers.add( new TextRenderer(f) );
+		
+		// geosanslight - 30f		main.trenders.get(1)
+		fontSize = (float) Math.floor(screenHeight * 30.0f/600.0f);
+		f = f2.deriveFont(fontSize);
+		trenderers.add( new TextRenderer(f) );
+		
+		//load font fontje
+		try {
+			f2 = Font.createFont(Font.TRUETYPE_FONT, new File("fontje.ttf"));
+		} catch (Exception e){
+			System.out.println("Fout: fontje.ttf niet gevonden");
+		}
+		
+		// fontje - 20f				main.trenders.get(2)
+		fontSize = (float) Math.floor(screenHeight * 20.0f/600.0f);
+		f = f2.deriveFont(fontSize);
+		trenderers.add( new TextRenderer(f) );
+
+		// fontje - 30f				main.trenders.get(3)
+		fontSize = (float) Math.floor(screenHeight * 30.0f/600.0f);
+		f = f2.deriveFont(fontSize);
+		trenderers.add( new TextRenderer(f) );
+
+	}
+	
+	/**
+	 * Zet alle condities (objects en enkele states) op beginwaarden
+	 */
 	public void initObjects(){
 
 		maze = new Maze(this);
@@ -388,6 +439,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 
+	/**
+	 * Zelfde als initObjects(), maar laad een nieuwe map/level in
+	 * @param newloadfolder naam van de nieuwe level
+	 */
 	public void initObjects(String newloadfolder){
 
 		maze = new Maze(newloadfolder,this);
