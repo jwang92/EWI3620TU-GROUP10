@@ -31,10 +31,10 @@ public class LeftArm extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/Predator/Predator_Youngblood/LeftArm.obj")));
+				m = OBJLoader.loadTexturedModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood/LeftArm.obj")));
+				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -100,9 +100,9 @@ public class LeftArm extends GameObject implements VisibleObject {
 			if(enemy.alert && !enemy.dood){
 				angle=enemy.angle;
 				
-				gl.glTranslated(0, 3.55, 0);
+				gl.glTranslated(0, 2.84, 0);
 				gl.glRotated(rotateAngle ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
-				gl.glTranslated(0, -3.55, 0);
+				gl.glTranslated(0, -2.84, 0);
 			}
 			else if(enemy.dood){
 				if(deathAngle>-90){

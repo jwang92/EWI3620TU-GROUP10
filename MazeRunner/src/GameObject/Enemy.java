@@ -86,14 +86,14 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 			}
 			else{
-				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood/Body.obj")));
+				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood2/Body.obj")));
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+		if(type.equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
 			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main);
 			leftArm.setEnemy(this);
 			rightArm= new RightArm(x,y,z,tex, "RightArm", main);
@@ -104,7 +104,7 @@ public class Enemy extends GameObject implements VisibleObject {
 			leftLeg.setEnemy(this);
 			
 			ymin=0;
-			ymax = 4.5;
+			ymax = 3.4;
 			dmgDet=1.0;
 		}
 		else if(type.equals("3d_object/Bathos/bathos.obj")){
@@ -445,7 +445,7 @@ public class Enemy extends GameObject implements VisibleObject {
 		if(!dood){
 			gl.glPushMatrix();
 			
-			gl.glTranslated(locationX, locationY+5,locationZ);
+				gl.glTranslated(locationX,locationY+3.6,locationZ);
 			
 			//berekening hoek
 				double inP = px-locationX;

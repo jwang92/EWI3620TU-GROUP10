@@ -208,7 +208,7 @@ public class MazeRunner {
         for(Enemy e: main.enemies){
         	if(!loadedModels.contains(e.getType())){
             	e.genVBO(gl);
-            	if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+            	if(e.getType().equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
 		        	e.leftArm.genVBO(gl);
 		        	e.rightArm.genVBO(gl);
 		        	e.rightLeg.genVBO(gl);
@@ -755,7 +755,7 @@ public class MazeRunner {
         		}
         		else{
         			e.display(gl);
-        			if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+        			if(e.getType().equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
 	        			e.leftArm.display(gl);
 	        			e.rightArm.display(gl);
 	        			e.rightLeg.display(gl);
@@ -847,7 +847,7 @@ public class MazeRunner {
 		//enemy
 		for(Enemy e: main.enemies){
 			e.update(deltaTime, main.player);
-			if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+			if(e.getType().equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
 				e.leftArm.update(deltaTime, main.player);
 				e.rightArm.update(deltaTime, main.player);
 				e.rightLeg.update(deltaTime, main.player);
