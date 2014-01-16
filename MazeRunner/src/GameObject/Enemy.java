@@ -494,7 +494,7 @@ public class Enemy extends GameObject implements VisibleObject {
 		
 		if( distance < (player.playersize + enemysize + 0.1) && Math.abs(locationY - player.locationY) < 0.6*maze.SQUARE_SIZE ){
 			if(attackTimeout == 0){
-				//player.setDeltaHealth(Math.min(0, -attackPower+player.getDefensePower()));
+				player.setDeltaHealth(Math.min(0, -attackPower+player.getDefensePower()));
 				attackTimeout = 15;
 			} else{
 				attackTimeout--;
