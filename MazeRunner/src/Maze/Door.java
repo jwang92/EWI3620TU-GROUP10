@@ -17,8 +17,8 @@ public class Door extends GameObject implements VisibleObject {
 	public double c, signD=1, lengte;	
 	public int doorGeluid = 0;
 	
-	public Door(double x, double y, double z, double x2, double y2, double z2){
-		super(x,y,z);
+	public Door(double x, double y, double z, double x2, double y2, double z2, MainClass m){
+		super(x,y,z, m);
 		dx=x2-x;
 		dy=y2-y;
 		dz=z2-z;
@@ -62,10 +62,10 @@ public class Door extends GameObject implements VisibleObject {
 		double y = dy;
 		double z = dz+0.2*Math.cos(initAngle*Math.PI/180);
 		
-		int textureID = MainClass.textureNames.lastIndexOf("textures/door.png");
+		int textureID = main.textureNames.lastIndexOf("textures/door.png");
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		MainClass.textures.get(textureID).bind();
+		main.textures.get(textureID).bind();
 		
 		gl.glBegin(GL.GL_QUADS);
 			//onderkant
@@ -105,14 +105,14 @@ public class Door extends GameObject implements VisibleObject {
 			gl.glTexCoord2f(1, 1); gl.glVertex3d(x, y, 0);
 		gl.glEnd();
 		
-		MainClass.textures.get(textureID).disable();
+		main.textures.get(textureID).disable();
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
 	}
 	
 	public void checkPlayer(){
-		if(MainClass.doorSwitch.getPressed()){
+		if(main.doorSwitch.getPressed()){
 			if(player.locationX >=locationX+0.5*dx-5 && player.locationX<= locationX+0.5*dx+5
 					&& player.locationZ >=locationZ+0.5*dz-5 && player.locationZ<= locationZ+0.5*dz+5){
 				inArea =  true;
@@ -133,19 +133,19 @@ public class Door extends GameObject implements VisibleObject {
 	}
 	
 	public double getStartX(){
-		return locationX/MainClass.maze.SQUARE_SIZE;
+		return locationX/main.maze.SQUARE_SIZE;
 	}
 	
 	public double getStartZ(){
-		return locationZ/MainClass.maze.SQUARE_SIZE;
+		return locationZ/main.maze.SQUARE_SIZE;
 	}
 	
 	public double getEndX(){
-		return (locationX+lengte*Math.cos(totalAngle*Math.PI/180)) /MainClass.maze.SQUARE_SIZE;
+		return (locationX+lengte*Math.cos(totalAngle*Math.PI/180)) /main.maze.SQUARE_SIZE;
 	}
 	
 	public double getEndZ(){
-		return (locationZ-lengte*Math.sin(totalAngle*Math.PI/180))/MainClass.maze.SQUARE_SIZE;
+		return (locationZ-lengte*Math.sin(totalAngle*Math.PI/180))/main.maze.SQUARE_SIZE;
 	}
 			
 	

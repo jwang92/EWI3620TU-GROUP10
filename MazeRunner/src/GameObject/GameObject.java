@@ -1,4 +1,7 @@
 package GameObject;
+
+import Main.MainClass;
+
 /**
  * GameObject is the superclass for all the objects in the game that need a location.
  * <p>
@@ -11,6 +14,7 @@ package GameObject;
  */
 public class GameObject {
 	public double locationX, locationY, locationZ;
+	protected MainClass main;
 
 	/**
 	 * The default GameObject constructor. 
@@ -23,7 +27,8 @@ public class GameObject {
 	 * @param y		the y-coordinate of the location
 	 * @param z		the z-coordinate of the location
 	 */
-	public GameObject( double x, double y, double z ) {
+	public GameObject( double x, double y, double z, MainClass m) {
+		main = m;
 		locationX = x;
 		locationY = y;
 		locationZ = z;

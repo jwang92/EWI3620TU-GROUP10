@@ -1,13 +1,15 @@
 package Utils;
 import javax.media.opengl.GL;
 
+import Main.MainClass;
+
 import com.sun.opengl.util.j2d.TextRenderer;
 
 
 public class pwInputbox extends Inputbox {
 
-	public pwInputbox(int xCoord, int yCoord, int FontSize, int StringLength, String defText){
-		super(xCoord, yCoord, FontSize, StringLength, defText);
+	public pwInputbox(int xCoord, int yCoord, int FontSize, int StringLength, String defText, MainClass m){
+		super(xCoord, yCoord, FontSize, StringLength, defText, m);
 	}
 	
 	public void DrawText(GL gl){

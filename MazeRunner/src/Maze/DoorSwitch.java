@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 import GameObject.GameObject;
 import GameObject.Player;
 import GameObject.VisibleObject;
+import Main.MainClass;
 
 
 public class DoorSwitch extends GameObject implements VisibleObject {
@@ -11,8 +12,8 @@ public class DoorSwitch extends GameObject implements VisibleObject {
 	public Player player;
 	private boolean pressed = false;
 	
-	public DoorSwitch(double x, double y, double z){
-		super(x,y,z);
+	public DoorSwitch(double x, double y, double z, MainClass mclass){
+		super(x,y,z, mclass);
 	}
 
 	public void display(GL gl) {

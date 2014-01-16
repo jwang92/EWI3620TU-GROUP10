@@ -31,8 +31,8 @@ public class RightWing extends GameObject implements VisibleObject {
 	
 	private float c=-1.0f;
 	
-	public RightWing(double x, double y, double z,boolean tex, String modelName){
-		super(x, y, z);
+	public RightWing(double x, double y, double z,boolean tex, String modelName, MainClass mclass){
+		super(x, y, z, mclass);
 		texture = tex;
 		try {
 			if(texture){
@@ -113,7 +113,7 @@ public class RightWing extends GameObject implements VisibleObject {
 				}
 				else if(deathAngle<=-90){
 					remove = true;
-					MainClass.player.setScore(100);
+					main.player.setScore(100);
 				}
 			}
 			

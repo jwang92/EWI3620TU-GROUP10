@@ -32,12 +32,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GameOver implements GLEventListener, MouseListener, MouseMotionListener {
+public class GameOver implements MouseListener, MouseMotionListener {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
 	 * **********************************************
 	 */
+	private MainClass main;
 	
 	boolean stop = false;
 	private boolean startup = true;
@@ -47,34 +48,35 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 	private ArrayList<Buttonbox> buttons;
 
 	
-	public GameOver(){
+	public GameOver(MainClass m){
+		main = m;
 		
 		setButtons();
 				
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
-		MainClass.canvas.addMouseMotionListener(this);
+		main.canvas.addMouseMotionListener(this);
 
 	}
 	
 	public void setButtons(){
 		buttons = new ArrayList<Buttonbox>();
 
-		int buttonSizeX = (int) (MainClass.screenWidth/7);
-		int buttonSizeY = (int) (MainClass.screenHeight/13);
+		int buttonSizeX = (int) (main.screenWidth/7);
+		int buttonSizeY = (int) (main.screenHeight/13);
 
-		int x = (int) (MainClass.screenWidth/6.0f - buttonSizeX/2.0f);
-		int y1 = (int) (MainClass.screenHeight/1.2f - 0.5f*buttonSizeY);
-		int y2 = (int) (MainClass.screenHeight/1.2f - 1.6f*buttonSizeY);
+		int x = (int) (main.screenWidth/6.0f - buttonSizeX/2.0f);
+		int y1 = (int) (main.screenHeight/1.2f - 0.5f*buttonSizeY);
+		int y2 = (int) (main.screenHeight/1.2f - 1.6f*buttonSizeY);
 		
-		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "start") );
-		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "exit") );
+		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "start", main));
+		buttons.add( new Buttonbox(x, y2, buttonSizeX, buttonSizeY, "exit", main));
 		
 	}
 		
-	public void render (GLAutoDrawable drawable){
+	public void render(GLAutoDrawable drawable){
 		GL gl = drawable.getGL();
-		// Set the clear color and clear the MainClass.screen.
+		// Set the clear color and clear the main.screen.
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
@@ -91,7 +93,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 	
 	public void drawUsername(GL gl){
 		
-		float fontSize = MainClass.screenWidth / 60f;
+		float fontSize = main.screenWidth / 60f;
 		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
@@ -99,9 +101,9 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f(0f, 0f, 0f, 0.5f);
 			gl.glVertex2f(0, 0);
-			gl.glVertex2f(0, MainClass.screenHeight * 0.07f);
-			gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight * 0.07f);
-			gl.glVertex2f(MainClass.screenWidth, 0);
+			gl.glVertex2f(0, main.screenHeight * 0.07f);
+			gl.glVertex2f(main.screenWidth, main.screenHeight * 0.07f);
+			gl.glVertex2f(main.screenWidth, 0);
 		gl.glEnd();
 		
 		gl.glDisable(GL.GL_BLEND);
@@ -116,8 +118,8 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 
-		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
-		t.draw("Ingelogd als " + MainClass.username, (int) (MainClass.screenWidth * 0.02f), (int) (MainClass.screenHeight * 0.02f));
+		t.beginRendering(main.screenWidth, main.screenHeight);
+		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));
 		t.endRendering();
 		
 	}
@@ -189,9 +191,9 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, MainClass.screenHeight);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(MainClass.screenWidth, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, main.screenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(main.screenWidth, main.screenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(main.screenWidth, 0);
 		gl.glEnd();
 		
 		BGTexture.disable();
@@ -201,7 +203,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		for( Buttonbox button : buttons)
-			button.drawButtonbox(gl, MainClass.screenHeight, MainClass.screenWidth);
+			button.drawButtonbox(gl, main.screenHeight, main.screenWidth);
 		
 	}
 	
@@ -211,18 +213,6 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
  * **********************************************
  */
 
-	@Override
-	public void display(GLAutoDrawable arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void init(GLAutoDrawable arg0) {
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
@@ -241,7 +231,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		 * active matrix. In this case, a simple 2D projection is performed,
 		 * matching the viewing frustum to the MainClass.screen size.
 		 */
-		gl.glOrtho(0, MainClass.screenWidth, 0, MainClass.screenHeight, -1, 1);
+		gl.glOrtho(0, main.screenWidth, 0, main.screenHeight, -1, 1);
 
 		// Set the matrix mode to GL_MODELVIEW, allowing us to manipulate the
 		// model-view matrix.
@@ -257,15 +247,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		gl.glDisable(GL.GL_LIGHTING);
 		
 //		MainClass.state.setStopMainGame(true);
-		MainClass.state.setStopGameOver(true);
-	}
-
-	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-//		GL gl = drawable.getGL();
-//
-//		gl.glViewport(0, 0, MainClass.screenWidth, MainClass.screenHeight);
-		
+		main.state.setStopGameOver(true);
 	}
 
 /*
@@ -304,19 +286,17 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		int Yin = me.getY();
 		
 		if (buttons.get(0).OnBox(Xin, Yin) ){
-			MainClass.canvas.removeGLEventListener(this);
-			MainClass.initObjects();
-			MainClass.state.GameStateUpdate(GameState.MAINGAME_STATE);
-			MainClass.state.setStopGameOver(true);
-			MainClass.input.setDefMouse(me);
-			MainClass.state.setStopMainGame(false);
+			main.initObjects();
+			main.state.GameStateUpdate(GameState.MAINGAME_STATE);
+			main.state.setStopGameOver(true);
+			main.input.setDefMouse(me);
+			main.state.setStopMainGame(false);
 		}
 		else if (buttons.get(1).OnBox(Xin, Yin) ){
-			MainClass.canvas.removeGLEventListener(this);
-			MainClass.initObjects();
-			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
-			MainClass.state.setStopGameOver(true);
-			MainClass.state.setStopTitle(false);
+			main.initObjects();
+			main.state.GameStateUpdate(GameState.TITLE_STATE);
+			main.state.setStopGameOver(true);
+			main.state.setStopTitle(false);
 		}
 	}
 
@@ -328,7 +308,7 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 		
 	@Override
 	public void mouseMoved(MouseEvent me){
-		if(MainClass.state.getState()==4){
+		if(main.state.getState()==4){
 			int Xin = me.getX();
 			int Yin = me.getY();
 			
@@ -345,10 +325,10 @@ public class GameOver implements GLEventListener, MouseListener, MouseMotionList
 			}
 			
 			if(onBox){
-				MainClass.cursor.setCursor(-2);
+				main.cursor.setCursor(-2);
 			}
 			else{
-				MainClass.cursor.setCursor(-1);
+				main.cursor.setCursor(-1);
 			}
 		}
 	}

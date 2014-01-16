@@ -31,7 +31,7 @@ import java.util.Iterator;
  * @author Bruno Scheele, revised by Mattijs Driel
  * 
  */
-public class MazeRunner implements GLEventListener{
+public class MazeRunner {
 	static final long serialVersionUID = 7526471155622776147L;
 
 	/*
@@ -39,6 +39,7 @@ public class MazeRunner implements GLEventListener{
  * *			Local variables					*
  * **********************************************
  */
+	private MainClass main;
 
 	public int screenWidth, screenHeight;					// Screen size.
 	boolean stop =false;
@@ -74,7 +75,8 @@ public class MazeRunner implements GLEventListener{
 	 * display MazeRunner. Finally, it adds itself as the OpenGL event listener, to be able 
 	 * to function as the view controller.
 	 */
-	public MazeRunner(int screenHeight, int screenWidth) {
+	public MazeRunner(int screenHeight, int screenWidth, MainClass m) {
+		main = m;
 		this.screenHeight = screenHeight;
 		this.screenWidth =screenWidth; 
 		initJOGL();							// Initialize JOGL.
@@ -98,7 +100,7 @@ public class MazeRunner implements GLEventListener{
 		/* We need to create an internal thread that instructs OpenGL to continuously repaint itself.
 		 * The Animator class handles that for JOGL.
 		 */
-		Animator anim = new Animator( MainClass.canvas );
+		Animator anim = new Animator( main.canvas );
 		anim.start();
 	}
 	
@@ -123,27 +125,27 @@ public class MazeRunner implements GLEventListener{
 		// displayed by MazeRunner.
 		visibleObjects = new ArrayList<VisibleObject>();
 		
-		visibleObjects.add(MainClass.maze);
+		visibleObjects.add(main.maze);
 
-		MainClass.player.setControl(MainClass.input);
-		MainClass.player.getMaze(MainClass.maze);
+		main.player.setControl(main.input);
+		main.player.getMaze(main.maze);
 		
 		
-		for(Enemy e: MainClass.enemies){
-			e.setMaze(MainClass.maze);
+		for(Enemy e: main.enemies){
+			e.setMaze(main.maze);
 		}
 		if(!rw){
-			MainClass.sword.setMaze(MainClass.maze);
-			MainClass.sword.setPlayer(MainClass.player);
-			MainClass.shield.setMaze(MainClass.maze);
-			MainClass.shield.setPlayer(MainClass.player);
+			main.sword.setMaze(main.maze);
+			main.sword.setPlayer(main.player);
+			main.shield.setMaze(main.maze);
+			main.shield.setPlayer(main.player);
 		}
 		else{
-			MainClass.rWeapon.setPlayer(MainClass.player);
+			main.rWeapon.setPlayer(main.player);
 		}
 		
-		MainClass.door.setPlayer(MainClass.player);
-		MainClass.doorSwitch.setPlayer(MainClass.player);
+		main.door.setPlayer(main.player);
+		main.doorSwitch.setPlayer(main.player);
 	}
 
 /*
@@ -203,7 +205,7 @@ public class MazeRunner implements GLEventListener{
         gl.glShadeModel( GL.GL_SMOOTH );
         ArrayList<String> loadedModels = new ArrayList<String>();
         ArrayList<Enemy> tempEnemies = new ArrayList<Enemy>();
-        for(Enemy e: MainClass.enemies){
+        for(Enemy e: main.enemies){
         	if(!loadedModels.contains(e.getType())){
             	e.genVBO(gl);
             	if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
@@ -226,12 +228,12 @@ public class MazeRunner implements GLEventListener{
         	}
 
         }
-        MainClass.sword.genVBO(gl);
-        MainClass.rWeapon.genVBO(gl);
-        MainClass.shield.genVBO(gl);
+        main.sword.genVBO(gl);
+        main.rWeapon.genVBO(gl);
+        main.shield.genVBO(gl);
         
         //Load the maze
-        MainClass.maze.genDisplayList(gl);
+        main.maze.genDisplayList(gl);
                 
         // Fonts setten
         try {
@@ -245,7 +247,7 @@ public class MazeRunner implements GLEventListener{
 			e.printStackTrace();
 		}
         
-		previousHealth = MainClass.player.getHealth();
+		previousHealth = main.player.getHealth();
 			
 	}
 	
@@ -318,7 +320,7 @@ public class MazeRunner implements GLEventListener{
 		
 		gl.glBegin(GL.GL_QUADS);
 		
-		if(previousHealth > MainClass.player.getHealth()){
+		if(previousHealth > main.player.getHealth()){
 			gl.glColor4f(1f, 0.0f, 0.0f, 0.7f);
 		}else{
 			gl.glColor4f(1f, 0.0f, 0.0f, 0.0f);
@@ -418,7 +420,7 @@ public class MazeRunner implements GLEventListener{
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		
-		ArrayList<int[]> ups = MainClass.player.getUpgrades();
+		ArrayList<int[]> ups = main.player.getUpgrades();
 	
 		int numDrawn = 0;
 		
@@ -428,8 +430,8 @@ public class MazeRunner implements GLEventListener{
 			if(ups.get(i)[0] == 1){
 				
 				gl.glEnable(GL.GL_TEXTURE_2D);
-				int textureID = MainClass.textureNames.lastIndexOf("textures/icon_speed.png");
-				MainClass.textures.get(textureID).bind();
+				int textureID = main.textureNames.lastIndexOf("textures/icon_speed.png");
+				main.textures.get(textureID).bind();
 				
 				double alpha = ups.get(i)[1] / 5000.0;
 							
@@ -453,8 +455,8 @@ public class MazeRunner implements GLEventListener{
 			} else if(ups.get(i)[0] == 5){
 				
 				gl.glEnable(GL.GL_TEXTURE_2D);
-				int textureID = MainClass.textureNames.lastIndexOf("textures/icon_2x.png");
-				MainClass.textures.get(textureID).bind();
+				int textureID = main.textureNames.lastIndexOf("textures/icon_2x.png");
+				main.textures.get(textureID).bind();
 				
 				double alpha = ups.get(i)[1] / 5000.0;
 							
@@ -489,7 +491,7 @@ public class MazeRunner implements GLEventListener{
 	 * @param t TextRenderer with which the score is drawn
 	 */
 	public void drawScore(GL gl, TextRenderer t){
-		int score = MainClass.player.getScore();
+		int score = main.player.getScore();
 		t.beginRendering(screenWidth, screenHeight);
 		t.draw(Integer.toString(score), screenWidth - 100, 10);
 		t.endRendering();
@@ -500,7 +502,7 @@ public class MazeRunner implements GLEventListener{
 	 * @param gl OpenGL
 	 */
 	public void drawLevelExit(GL gl){
-		if(MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ) != null){
+		if(main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ) != null){
 			f = f.deriveFont(36f);
 			
 			TextRenderer t = new TextRenderer(f);
@@ -525,8 +527,8 @@ public class MazeRunner implements GLEventListener{
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		
 		int textureID;
-		textureID = MainClass.textureNames.lastIndexOf("textures/icon_sword.png");
-		MainClass.textures.get(textureID).bind();
+		textureID = main.textureNames.lastIndexOf("textures/icon_sword.png");
+		main.textures.get(textureID).bind();
 		
 		int startX = screenWidth - 200;
 		int startY = 20;
@@ -549,7 +551,7 @@ public class MazeRunner implements GLEventListener{
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		
 		
-		ArrayList<int[]> ups = MainClass.player.getUpgrades();
+		ArrayList<int[]> ups = main.player.getUpgrades();
 		
 		int numDrawn = 1;
 		
@@ -563,8 +565,8 @@ public class MazeRunner implements GLEventListener{
 				int numStars = ups.get(i)[2] - 1;
 				
 				gl.glEnable(GL.GL_TEXTURE_2D);
-				textureID = MainClass.textureNames.lastIndexOf("textures/weapon_star.png");
-				MainClass.textures.get(textureID).bind();
+				textureID = main.textureNames.lastIndexOf("textures/weapon_star.png");
+				main.textures.get(textureID).bind();
 	
 				alpha = 0.3f;
 				if(!rw){
@@ -599,8 +601,8 @@ public class MazeRunner implements GLEventListener{
 			else if(ups.get(i)[0] == 4){ // Draw the gun icon
 				
 				gl.glEnable(GL.GL_TEXTURE_2D);
-				textureID = MainClass.textureNames.lastIndexOf("textures/icon_gun.png");
-				MainClass.textures.get(textureID).bind();
+				textureID = main.textureNames.lastIndexOf("textures/icon_gun.png");
+				main.textures.get(textureID).bind();
 				
 				alpha = 0.3f;
 				if(rw){
@@ -639,8 +641,8 @@ public class MazeRunner implements GLEventListener{
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		
 		int textureID;
-		textureID = MainClass.textureNames.lastIndexOf("textures/health_bg.png");
-		MainClass.textures.get(textureID).bind();
+		textureID = main.textureNames.lastIndexOf("textures/health_bg.png");
+		main.textures.get(textureID).bind();
 		
 		// Background box
 		gl.glColor3f(1, 1, 1);
@@ -654,8 +656,8 @@ public class MazeRunner implements GLEventListener{
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 	
-		textureID = MainClass.textureNames.lastIndexOf("textures/health_left.png");
-		MainClass.textures.get(textureID).bind();
+		textureID = main.textureNames.lastIndexOf("textures/health_left.png");
+		main.textures.get(textureID).bind();
 		
 		// Healthbar left
 		gl.glBegin(GL.GL_QUADS);
@@ -669,11 +671,11 @@ public class MazeRunner implements GLEventListener{
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		
-		textureID = MainClass.textureNames.lastIndexOf("textures/health_center.png");
-		MainClass.textures.get(textureID).bind();
+		textureID = main.textureNames.lastIndexOf("textures/health_center.png");
+		main.textures.get(textureID).bind();
 		
 		
-		int offset = (int) Math.floor(MainClass.player.getHealth() * 2.9);
+		int offset = (int) Math.floor(main.player.getHealth() * 2.9);
 	
 		// Healthbar center
 		gl.glBegin(GL.GL_QUADS);
@@ -686,8 +688,8 @@ public class MazeRunner implements GLEventListener{
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 	
-		textureID = MainClass.textureNames.lastIndexOf("textures/health_right.png");
-		MainClass.textures.get(textureID).bind();
+		textureID = main.textureNames.lastIndexOf("textures/health_right.png");
+		main.textures.get(textureID).bind();
 		
 		// Healthbar right
 		gl.glBegin(GL.GL_QUADS);
@@ -699,7 +701,7 @@ public class MazeRunner implements GLEventListener{
 	
 		gl.glDisable(GL.GL_BLEND);
 
-		previousHealth = MainClass.player.getHealth();
+		previousHealth = main.player.getHealth();
 	
 		
 	}
@@ -738,17 +740,17 @@ public class MazeRunner implements GLEventListener{
 		 
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT );
 		gl.glLoadIdentity();
-        glu.gluLookAt( MainClass.camera.getLocationX(), MainClass.camera.getLocationY(), MainClass.camera.getLocationZ(), 
-        		MainClass.camera.getVrpX(), MainClass.camera.getVrpY(), MainClass.camera.getVrpZ(),
-        		MainClass.camera.getVuvX(), MainClass.camera.getVuvY(), MainClass.camera.getVuvZ() );
+        glu.gluLookAt( main.camera.getLocationX(), main.camera.getLocationY(), main.camera.getLocationZ(), 
+        		main.camera.getVrpX(), main.camera.getVrpY(), main.camera.getVrpZ(),
+        		main.camera.getVuvX(), main.camera.getVuvY(), main.camera.getVuvZ() );
 
         // Display all the visible objects of MazeRunner.
         for( Iterator<VisibleObject> it = visibleObjects.iterator(); it.hasNext(); ) {
         	it.next().display(gl);
-        	for(int i=0;i<MainClass.enemies.size();i++){
-        		Enemy e = MainClass.enemies.get(i);
+        	for(int i=0;i<main.enemies.size();i++){
+        		Enemy e = main.enemies.get(i);
         		if(e.needRemoval()){
-        			MainClass.enemies.remove(e);
+        			main.enemies.remove(e);
         			i--;
         		}
         		else{
@@ -766,25 +768,25 @@ public class MazeRunner implements GLEventListener{
         		}
         	}
         	if(!rw){
-        		MainClass.sword.display(gl);
-        		MainClass.shield.display(gl);
+        		main.sword.display(gl);
+        		main.shield.display(gl);
         	}
         	else{
-        		MainClass.player.setDefensePower(0);
-        		MainClass.rWeapon.display(gl);
+        		main.player.setDefensePower(0);
+        		main.rWeapon.display(gl);
         	}
-            for(int i=0; i<MainClass.bullets.size(); i++){
-            	Bullet b = MainClass.bullets.get(i);
+            for(int i=0; i<main.bullets.size(); i++){
+            	Bullet b = main.bullets.get(i);
             	if(b.needRemoval()){
-            		MainClass.bullets.remove(i);
+            		main.bullets.remove(i);
             		i--;
             	}
             	else{
             		b.display(gl);
             	}
             }
-            MainClass.door.display(gl);
-            MainClass.doorSwitch.display(gl);
+            main.door.display(gl);
+            main.doorSwitch.display(gl);
         }
         
         draw2D(gl);
@@ -840,36 +842,36 @@ public class MazeRunner implements GLEventListener{
 	private void updateMovement(int deltaTime)
 	{
 		//player
-		MainClass.player.update(deltaTime);
+		main.player.update(deltaTime);
 		
 		//enemy
-		for(Enemy e: MainClass.enemies){
-			e.update(deltaTime, MainClass.player);
+		for(Enemy e: main.enemies){
+			e.update(deltaTime, main.player);
 			if(e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
-				e.leftArm.update(deltaTime, MainClass.player);
-				e.rightArm.update(deltaTime, MainClass.player);
-				e.rightLeg.update(deltaTime, MainClass.player);
-				e.leftLeg.update(deltaTime, MainClass.player);
+				e.leftArm.update(deltaTime, main.player);
+				e.rightArm.update(deltaTime, main.player);
+				e.rightLeg.update(deltaTime, main.player);
+				e.leftLeg.update(deltaTime, main.player);
 			}
         	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
-        		e.leftWing.update(deltaTime, MainClass.player);
-        		e.rightWing.update(deltaTime, MainClass.player);
+        		e.leftWing.update(deltaTime, main.player);
+        		e.rightWing.update(deltaTime, main.player);
         	}
 		}
 		
 		//weapons
 		if(!rw){
-			MainClass.sword.update(deltaTime, MainClass.player);
-			MainClass.shield.update(deltaTime, MainClass.player);
+			main.sword.update(deltaTime, main.player);
+			main.shield.update(deltaTime, main.player);
 		}
 		else{
-			MainClass.rWeapon.update(deltaTime, MainClass.player);
+			main.rWeapon.update(deltaTime, main.player);
 		}
 		
 		//pheromones
-		MainClass.mazePheromones.evapPheromones();
-		for(Bullet b: MainClass.bullets){
-			b.update(deltaTime, MainClass.player);
+		main.mazePheromones.evapPheromones();
+		for(Bullet b: main.bullets){
+			b.update(deltaTime, main.player);
 		}
 	}
 
@@ -879,20 +881,20 @@ public class MazeRunner implements GLEventListener{
 	 */
 	private void updateCamera() {
 		
-		MainClass.camera.setLocationX( MainClass.player.getLocationX() );
-		MainClass.camera.setLocationY( MainClass.player.getLocationY() );  
-		MainClass.camera.setLocationZ( MainClass.player.getLocationZ() );
-		MainClass.camera.setHorAngle( MainClass.player.getHorAngle() + (MainClass.input.lookback? 180:0));
-		MainClass.camera.setVerAngle( MainClass.player.getVerAngle() );
-		MainClass.camera.calculateVRP();
+		main.camera.setLocationX( main.player.getLocationX() );
+		main.camera.setLocationY( main.player.getLocationY() );  
+		main.camera.setLocationZ( main.player.getLocationZ() );
+		main.camera.setHorAngle( main.player.getHorAngle() + (main.input.lookback? 180:0));
+		main.camera.setVerAngle( main.player.getVerAngle() );
+		main.camera.calculateVRP();
 		
 	}
 	
-	//initializer which is called upon by MainClass
+	//initializer which is called upon by main
 	public void mazeInit(GLAutoDrawable drawable, int x, int y, int width, int height){
     	init(drawable);
     	reshape(drawable, 0, 0, screenWidth, screenHeight);
-    	MainClass.state.setStopMainGame(true);
+    	main.state.setStopMainGame(true);
         
 	}
 		

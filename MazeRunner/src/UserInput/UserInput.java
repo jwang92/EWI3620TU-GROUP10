@@ -35,7 +35,8 @@ import Utils.Inputbox;
 public class UserInput extends Control 
 		implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener
 {
-
+	private MainClass main;
+	
 	int x=0;
 	int y= 0;
 	int dx=0;
@@ -58,8 +59,9 @@ public class UserInput extends Control
 	 * 
 	 * @param canvas The GLCanvas to which to add the listeners.
 	 */
-	public UserInput(GLCanvas canvas)
+	public UserInput(GLCanvas canvas, MainClass mclass)
 	{
+		main = mclass;
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addKeyListener(this);
@@ -95,12 +97,12 @@ public class UserInput extends Control
 	@Override
 	public void mousePressed(MouseEvent event)
 	{
-		if(event.getButton()==1 && MainClass.state.getState() == 1 && !defense && !attack){
+		if(event.getButton()==1 && main.state.getState() == 1 && !defense && !attack){
 			
 			attack = true;
 			
 		}
-		else if(event.getButton()==3 && MainClass.state.getState() == 1 && !defense &&!attack){
+		else if(event.getButton()==3 && main.state.getState() == 1 && !defense &&!attack){
 			defense = true;
 		}
 
@@ -137,20 +139,20 @@ public class UserInput extends Control
         		} else if(keyCode == KeyEvent.VK_SPACE){
         			jump = true;
         		} else if(keyCode =='q'){
-        			MainClass.mazeRunner.setRW(false);
+        			main.mazeRunner.setRW(false);
         		} else if(keyCode =='r'){
         			if(rUpgrade){
-        				MainClass.mazeRunner.setRW(true);
+        				main.mazeRunner.setRW(true);
         			}
         		}
         		
-        		if(keyCode== KeyEvent.VK_ESCAPE && MainClass.state.getState() == 1){
-        			MainClass.state.GameStateUpdate(GameState.PAUSE_STATE);
-        			MainClass.state.setStopMainGame(true);
-        			MainClass.state.setStopPause(false);
+        		if(keyCode== KeyEvent.VK_ESCAPE && main.state.getState() == 1){
+        			main.state.GameStateUpdate(GameState.PAUSE_STATE);
+        			main.state.setStopMainGame(true);
+        			main.state.setStopPause(false);
         		}
         		
-        		if(keyCode=='e' && MainClass.state.getState() == 1){
+        		if(keyCode=='e' && main.state.getState() == 1){
         			lookback = true;
         		}
         		
@@ -164,7 +166,7 @@ public class UserInput extends Control
 	public void keyReleased(KeyEvent event)
 	{
 		
-		for(Inputbox input : MainClass.login.inputs){
+		for(Inputbox input : main.login.inputs){
 			if(input.getSelect()){
 				input.enteredKey(event);
 			}
@@ -190,14 +192,14 @@ public class UserInput extends Control
 		
 		if(event.getKeyCode()==KeyEvent.VK_ENTER){
 			
-			if(MainClass.mazeRunner.isText()){
-				MainClass.mazeRunner.removeText();
+			if(main.mazeRunner.isText()){
+				main.mazeRunner.removeText();
 			}
 			
-			LevelExit exit = MainClass.maze.isExit(MainClass.player.locationX, MainClass.player.locationY, MainClass.player.locationZ);
+			LevelExit exit = main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ);
 			if(exit != null){
-				MainClass.initObjects(exit.getNewLoadFolder());
-				MainClass.state.sMainGame = false;
+				main.initObjects(exit.getNewLoadFolder());
+				main.state.sMainGame = false;
 			}
 		}
 	}
@@ -212,7 +214,7 @@ public class UserInput extends Control
 	public void mouseMoved(MouseEvent event)
 	{
 
-		if(MainClass.state.getState() == 1){
+		if(main.state.getState() == 1){
 
 			int screenx = event.getXOnScreen();
 			int screeny = event.getYOnScreen();
@@ -265,7 +267,7 @@ public class UserInput extends Control
 	@Override
 	public void mouseReleased(MouseEvent event)
 	{
-		if(event.getButton()==3 && MainClass.state.getState() == 1 && defense){
+		if(event.getButton()==3 && main.state.getState() == 1 && defense){
 			defense = false;
 		}
 	}
@@ -275,10 +277,10 @@ public class UserInput extends Control
 		
 		if(rUpgrade){
 			
-			if(MainClass.mazeRunner.getRW()){
-				MainClass.mazeRunner.setRW(false);
+			if(main.mazeRunner.getRW()){
+				main.mazeRunner.setRW(false);
 			} else {
-				MainClass.mazeRunner.setRW(true);
+				main.mazeRunner.setRW(true);
 			}
 		}
 		

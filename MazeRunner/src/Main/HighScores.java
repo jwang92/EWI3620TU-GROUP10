@@ -22,12 +22,13 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class Highscores implements GLEventListener, MouseListener , MouseMotionListener {
+public class Highscores implements MouseListener , MouseMotionListener {
 	/*
 	 * **********************************************
 	 * *			Local Variables					*
 	 * **********************************************
 	 */
+	private MainClass main;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,13 +40,14 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 	private ArrayList<String[]> scores;
 	
 	
-	public Highscores(){
+	public Highscores(MainClass m){
+		main = m;
 		
 		setButtons();
 				
 		// Also add this class as mouse motion listener, allowing this class to
 		// react to mouse events that happen inside the GLCanvas.
-		MainClass.canvas.addMouseMotionListener(this);
+		main.canvas.addMouseMotionListener(this);
 		
 		SQLHandler sql = new SQLHandler();
 		ResultSet s = sql.query("SELECT u.username, s.score, l.lvlname FROM users u, highscores s, levels l WHERE s.user_id = u.id AND l.id = s.level_id ORDER BY s.score DESC");
@@ -67,13 +69,13 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 	public void setButtons(){
 		buttons = new ArrayList<Buttonbox>();
 
-		int buttonSizeX = (int) (MainClass.screenWidth/7);
-		int buttonSizeY = (int) (MainClass.screenHeight/13);
+		int buttonSizeX = (int) (main.screenWidth/7);
+		int buttonSizeY = (int) (main.screenHeight/13);
 
-		int x = (int) (MainClass.screenWidth/6.0f - buttonSizeX/2.0f);
-		int y1 = (int) (MainClass.screenHeight/1.2f - 0.5f*buttonSizeY);
+		int x = (int) (main.screenWidth/6.0f - buttonSizeX/2.0f);
+		int y1 = (int) (main.screenHeight/1.2f - 0.5f*buttonSizeY);
 		
-		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "exit") );
+		buttons.add( new Buttonbox(x, y1, buttonSizeX, buttonSizeY, "exit", main) );
 		
 	}
 	
@@ -102,7 +104,7 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 
 	public void drawUsername(GL gl){
 		
-		float fontSize = MainClass.screenWidth / 60f;
+		float fontSize = main.screenWidth / 60f;
 		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
@@ -110,9 +112,9 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f(0f, 0f, 0f, 0.5f);
 			gl.glVertex2f(0, 0);
-			gl.glVertex2f(0, MainClass.screenHeight * 0.07f);
-			gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight * 0.07f);
-			gl.glVertex2f(MainClass.screenWidth, 0);
+			gl.glVertex2f(0, main.screenHeight * 0.07f);
+			gl.glVertex2f(main.screenWidth, main.screenHeight * 0.07f);
+			gl.glVertex2f(main.screenWidth, 0);
 		gl.glEnd();
 		
 		gl.glDisable(GL.GL_BLEND);
@@ -127,8 +129,8 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 
-		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
-		t.draw("Ingelogd als " + MainClass.username, (int) (MainClass.screenWidth * 0.02f), (int) (MainClass.screenHeight * 0.02f));
+		t.beginRendering(main.screenWidth, main.screenHeight);
+		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));
 		t.endRendering();
 		
 	}
@@ -138,10 +140,10 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 			
-		int x0 = (int) (MainClass.screenWidth *200.0f/600.0f);
-		int x1 = (int) (MainClass.screenWidth *580.0f/600.0f);
-		int y0 = (int) (MainClass.screenHeight *20.0f/600.0f);
-		int y1 = (int) (MainClass.screenHeight *480.0f/600.0f);
+		int x0 = (int) (main.screenWidth *200.0f/600.0f);
+		int x1 = (int) (main.screenWidth *580.0f/600.0f);
+		int y0 = (int) (main.screenHeight *20.0f/600.0f);
+		int y1 = (int) (main.screenHeight *480.0f/600.0f);
 		
 		gl.glColor4f(0, 0, 0, 0.7f);
 		gl.glBegin(GL.GL_QUADS);
@@ -162,12 +164,12 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		} catch (Exception e){
 			//
 		}
-		float fontSize = MainClass.screenWidth / 42f;
+		float fontSize = main.screenWidth / 42f;
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 
-		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
-		t.draw("Highscores", (int) (MainClass.screenWidth * 0.35f), (int) (MainClass.screenHeight * 0.75f));
+		t.beginRendering(main.screenWidth, main.screenHeight);
+		t.draw("Highscores", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f));
 		t.endRendering();
 		
 	}
@@ -180,18 +182,18 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		} catch (Exception e){
 			//
 		}
-		float fontSize = MainClass.screenWidth / 60f;
+		float fontSize = main.screenWidth / 60f;
 		Font f = f2.deriveFont(fontSize);
 		TextRenderer t = new TextRenderer(f);
 		t.setColor((float)Math.random(), 1, (float)Math.random(), 1);
-		t.beginRendering(MainClass.screenWidth, MainClass.screenHeight);
+		t.beginRendering(main.screenWidth, main.screenHeight);
 		
 		for(int i = 1; i <= scores.size(); i++){
 			
-			t.draw(i + ".", (int) (MainClass.screenWidth * 0.35f), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Nummer
-			t.draw(scores.get(i-1)[0], (int) (MainClass.screenWidth * 0.35f + fontSize * 3), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Naam
-			t.draw(""+scores.get(i-1)[1], (int) (MainClass.screenWidth * 0.35f + fontSize * 20), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Scores	
-			t.draw(scores.get(i-1)[2], (int) (MainClass.screenWidth * 0.35f + fontSize * 25), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Level	
+			t.draw(i + ".", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Nummer
+			t.draw(scores.get(i-1)[0], (int) (main.screenWidth * 0.35f + fontSize * 3), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Naam
+			t.draw(""+scores.get(i-1)[1], (int) (main.screenWidth * 0.35f + fontSize * 20), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Scores	
+			t.draw(scores.get(i-1)[2], (int) (main.screenWidth * 0.35f + fontSize * 25), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Level	
 			
 		}
 			
@@ -278,9 +280,9 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 				
 		gl.glBegin(GL.GL_POLYGON);
 			gl.glTexCoord2f(0, 1); gl.glVertex2f(0, 0);
-			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, MainClass.screenHeight);
-			gl.glTexCoord2f(1, 0); gl.glVertex2f(MainClass.screenWidth, MainClass.screenHeight);
-			gl.glTexCoord2f(1, 1); gl.glVertex2f(MainClass.screenWidth, 0);
+			gl.glTexCoord2f(0, 0); gl.glVertex2f(0, main.screenHeight);
+			gl.glTexCoord2f(1, 0); gl.glVertex2f(main.screenWidth, main.screenHeight);
+			gl.glTexCoord2f(1, 1); gl.glVertex2f(main.screenWidth, 0);
 		gl.glEnd();
 		
 		BGTexture.disable();
@@ -290,7 +292,7 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 	private void drawButtons(GL gl) {
 		// Draw the background boxes
 		for( Buttonbox button : buttons)
-			button.drawButtonbox(gl, MainClass.screenHeight, MainClass.screenWidth);
+			button.drawButtonbox(gl, main.screenHeight, main.screenWidth);
 		
 	}
 	
@@ -300,18 +302,6 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
  * **********************************************
  */
 
-	@Override
-	public void display(GLAutoDrawable arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void init(GLAutoDrawable arg0) {
 		// Retrieve the OpenGL handle, this allows us to use OpenGL calls.
 		GL gl = arg0.getGL();
@@ -330,7 +320,7 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		 * active matrix. In this case, a simple 2D projection is performed,
 		 * matching the viewing frustum to the MainClass.screen size.
 		 */
-		gl.glOrtho(0, MainClass.screenWidth, 0, MainClass.screenHeight, -1, 1);
+		gl.glOrtho(0, main.screenWidth, 0, main.screenHeight, -1, 1);
 
 		// Set the matrix mode to GL_MODELVIEW, allowing us to manipulate the
 		// model-view matrix.
@@ -345,15 +335,7 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		gl.glDisable(GL.GL_DEPTH_TEST); 
 		gl.glDisable(GL.GL_LIGHTING);
 		
-		MainClass.state.setStopTitle(true);
-	}
-
-	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-//		GL gl = drawable.getGL();
-//
-//		gl.glViewport(0, 0, MainClass.screenWidth, MainClass.screenHeight);
-		
+		main.state.setStopTitle(true);
 	}
 
 /*
@@ -392,10 +374,9 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		int Yin = me.getY();
 		
 		if (buttons.get(0).OnBox(Xin, Yin) ){
-			MainClass.canvas.removeGLEventListener(this);
-			MainClass.initObjects();
-			MainClass.state.GameStateUpdate(GameState.TITLE_STATE);
-			MainClass.state.setStopTitle(false);
+			main.initObjects();
+			main.state.GameStateUpdate(GameState.TITLE_STATE);
+			main.state.setStopTitle(false);
 		}
 	}
 
@@ -407,7 +388,7 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 		
 		@Override
 		public void mouseMoved(MouseEvent me){
-			if(MainClass.state.getState()==6){
+			if(main.state.getState()==6){
 				int Xin = me.getX();
 				int Yin = me.getY();
 				
@@ -424,10 +405,10 @@ public class Highscores implements GLEventListener, MouseListener , MouseMotionL
 				}
 				
 				if(onBox){
-					MainClass.cursor.setCursor(-2);
+					main.cursor.setCursor(-2);
 				}
 				else{
-					MainClass.cursor.setCursor(-1);
+					main.cursor.setCursor(-1);
 				}
 			}
 		}

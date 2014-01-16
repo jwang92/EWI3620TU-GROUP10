@@ -63,9 +63,9 @@ public class Player extends GameObject {
 	 * @param h		the horizontal angle of the orientation in degrees
 	 * @param v		the vertical angle of the orientation in degrees
 	 */
-	public Player( double x, double y, double z, double h, double v ) {
+	public Player( double x, double y, double z, double h, double v, MainClass mclass) {
 		// Set the initial position and viewing direction of the player.
-		super( x, y, z );
+		super( x, y, z, mclass);
 		horAngle = h;
 		verAngle = v;
 		speed = 0.02;
@@ -170,7 +170,7 @@ public class Player extends GameObject {
 	public boolean checkEnemy(double x, double z, double dT){
 		double dX, dZ, distance;
 		
-		for(Enemy foe : MainClass.enemies){
+		for(Enemy foe : main.enemies){
 			if(foe.alert){
 				dX = Math.abs(x - foe.locationX);
 				dZ = Math.abs(z - foe.locationZ);
@@ -356,7 +356,7 @@ public class Player extends GameObject {
 			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.getWalk() == true){
 				sound.stopWalk();
 			}
-			if(control.getAttack() && MainClass.sword.attackCounter == 9){
+			if(control.getAttack() && main.sword.attackCounter == 9){
 				//sound.swing(); // Alleen hassan vond dat nog nodig
 			}
 			
@@ -367,7 +367,7 @@ public class Player extends GameObject {
 			checkUpgrades(deltaTime);
 			
 			//The player leaves a trail of pheromones which the enemies will follow
-			MainClass.mazePheromones.addPher(locationX, locationY, locationZ);
+			main.mazePheromones.addPher(locationX, locationY, locationZ);
 			
 			//Adjust walking animation to the playermovement
 			Walk();
@@ -443,7 +443,7 @@ public class Player extends GameObject {
 			case 1: // Speedupgrade
 				
 				String[] t = {"Speed upgrade", ""};	
-				MainClass.mazeRunner.setText(t, 5000);
+				main.mazeRunner.setText(t, 5000);
 				
 				sound.pickup();
 				int[] temp = new int[2];
@@ -458,7 +458,7 @@ public class Player extends GameObject {
 				currentUpgrades.add(temp);
 				break;
 			case 2: // Swordupgrade
-				MainClass.mazeRunner.setRW(false);
+				main.mazeRunner.setRW(false);
 
 				int[] temp2 = new int[3];	
 				temp2[0] = 2; // type 2
@@ -487,9 +487,9 @@ public class Player extends GameObject {
 
 				sound.dropSword();
 				
-				MainClass.rWeapon.switchGun(0);
-				MainClass.mazeRunner.setRW(true);
-				MainClass.input.rUpgrade = true;
+				main.rWeapon.switchGun(0);
+				main.mazeRunner.setRW(true);
+				main.input.rUpgrade = true;
 			
 				break;
 			case 5: // Score multiplier
@@ -530,7 +530,7 @@ public class Player extends GameObject {
 				
 		sound.dropSword();
 		
-		MainClass.sword.switchSword(swordToSet - 1);
+		main.sword.switchSword(swordToSet - 1);
 		
 		
 		return swordToSet;

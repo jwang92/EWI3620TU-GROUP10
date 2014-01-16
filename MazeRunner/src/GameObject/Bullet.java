@@ -10,8 +10,8 @@ public class Bullet extends GameObject implements VisibleObject {
 	private double tx, ty, tz;
 	private int teller=0;
 	
-	public Bullet(double x, double y, double z, Player player){
-		super(x,y-0.2,z);
+	public Bullet(double x, double y, double z, Player player, MainClass m){
+		super(x,y-0.2,z, m);
 		double h = Math.toRadians(player.getHorAngle());
 		double v = Math.toRadians(player.getVerAngle());
 		tx = -Math.cos(v)*Math.sin(h);
@@ -26,7 +26,7 @@ public class Bullet extends GameObject implements VisibleObject {
 		locationX += speed*tx;
 		locationY += speed*ty-0.2;
 		locationZ += speed*tz;
-		for(Enemy e: MainClass.enemies){
+		for(Enemy e: main.enemies){
 			if(e.damage(locationX, locationY,locationZ,player.getHorAngle(),50)){
 				removal =true;
 			}
@@ -51,7 +51,7 @@ public class Bullet extends GameObject implements VisibleObject {
 		double d2 = (speed*ty-0.2)/100;
 		double d3 = speed*tz/100;
 		for(int i =0; i<100; i++){
-			if(MainClass.maze.isWall(x+i*d1, y+i*d2, z+i*d3)){
+			if(main.maze.isWall(x+i*d1, y+i*d2, z+i*d3)){
 				return true;
 			}
 		}

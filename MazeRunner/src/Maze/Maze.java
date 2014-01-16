@@ -16,6 +16,7 @@ import LevelEditor.NavMesh;
  * Draws everything in the mazeF
  */
 public class Maze  implements VisibleObject {
+	private MainClass main;
 	
 	public final double SQUARE_SIZE = 5;
 	private Storey storey;
@@ -30,7 +31,8 @@ public class Maze  implements VisibleObject {
 	//NavMesh
 	private NavMesh navMesh;
 	
-	public Maze(){
+	public Maze(MainClass mclass){
+		main = mclass;
 		createMaze();
 	}
 	
@@ -38,7 +40,8 @@ public class Maze  implements VisibleObject {
 	 * Loads Maze from folder
 	 * @param loadfolder Folder to load from
 	 */
-	public Maze(String loadfolder){
+	public Maze(String loadfolder,MainClass mclass){
+		main = mclass;
 		this.loadfolder = loadfolder;
 		createMaze();
 	}
@@ -109,15 +112,15 @@ public class Maze  implements VisibleObject {
 		gl.glDisable(GL.GL_LIGHT1);
 		gl.glDisable( GL.GL_DEPTH_TEST );
 		
-		int textureID = MainClass.textureNames.lastIndexOf("textures/sky.png");
+		int textureID = main.textureNames.lastIndexOf("textures/sky.png");
 		
-		double x = MainClass.player.locationX - 1;
-		double z = MainClass.player.locationY - 1;
-		double y = MainClass.player.locationZ - 1;
+		double x = main.player.locationX - 1;
+		double z = main.player.locationY - 1;
+		double y = main.player.locationZ - 1;
 		double s = 2;
 		
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		MainClass.textures.get(textureID).bind();
+		main.textures.get(textureID).bind();
 		
 		int numTex = 2;
 		
@@ -150,13 +153,13 @@ public class Maze  implements VisibleObject {
 		gl.glEnd();
 				
 		
-		MainClass.textures.get(textureID).disable();
+		main.textures.get(textureID).disable();
 		
 		gl.glDisable(GL.GL_TEXTURE_2D);
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		
-		int textureID2 = MainClass.textureNames.lastIndexOf("textures/sky_top_big.png");
-		MainClass.textures.get(textureID2).bind();
+		int textureID2 = main.textureNames.lastIndexOf("textures/sky_top_big.png");
+		main.textures.get(textureID2).bind();
 		
 		// Top
 		gl.glBegin(GL.GL_QUADS);
@@ -174,7 +177,7 @@ public class Maze  implements VisibleObject {
 			gl.glTexCoord2f(0, 0); gl.glVertex3d(x, z, y + s);
 		gl.glEnd();
 		
-		MainClass.textures.get(textureID2).disable();
+		main.textures.get(textureID2).disable();
 		
 		gl.glEnable(GL.GL_LIGHTING);
 		gl.glEnable(GL.GL_LIGHT0);
@@ -221,7 +224,7 @@ public class Maze  implements VisibleObject {
 		else if(type == 5)
 			texture = "textures/upgrade_2x.png";
 
-		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		int textureID = main.textureNames.lastIndexOf(texture);
 		
 		double x = p.x * SQUARE_SIZE + 2;
 		double y = p.y * SQUARE_SIZE + 2;
@@ -251,7 +254,7 @@ public class Maze  implements VisibleObject {
 		gl.glColor3d(1, pickupColor, pickupColor);
 
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		MainClass.textures.get(textureID).bind();
+		main.textures.get(textureID).bind();
 		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, 1); gl.glVertex3d(x, z, y);
@@ -295,7 +298,7 @@ public class Maze  implements VisibleObject {
 			gl.glTexCoord2f(1, 0); gl.glVertex3d(x, z, y + s);
 		gl.glEnd();
 		
-		MainClass.textures.get(textureID).disable();
+		main.textures.get(textureID).disable();
 		
 		gl.glColor3f(1f, 1f, 1f);
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
@@ -367,7 +370,7 @@ public class Maze  implements VisibleObject {
 				p4.z = (float) (sy2 * SQUARE_SIZE);
 				p.add(p4);
 			}
-		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		int textureID = main.textureNames.lastIndexOf(texture);
 	
 		polygonOnScreen(gl,p,textureID);
 	}
@@ -429,7 +432,7 @@ public class Maze  implements VisibleObject {
 			point.z = (float) (p2D.get(i).y * SQUARE_SIZE);
 			p3D.add(point);
 		}
-		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		int textureID = main.textureNames.lastIndexOf(texture);
 		polygonOnScreen(gl, p3D, textureID);		
 		
 		// Spouwmuur
@@ -491,7 +494,7 @@ public class Maze  implements VisibleObject {
 			point.z = (float) (p2D.get(i).y * SQUARE_SIZE);
 			p3D.add(point);
 		}
-		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		int textureID = main.textureNames.lastIndexOf(texture);
 		polygonOnScreen(gl,p3D,textureID);		
 	}
 	
@@ -513,12 +516,12 @@ public class Maze  implements VisibleObject {
 		gl.glEnable(GL.GL_TEXTURE_2D);
 		
 		//Apply texture
-		MainClass.textures.get(textureID).getTarget();
+		main.textures.get(textureID).getTarget();
 		
 		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 2);
 		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 2);
 
-		MainClass.textures.get(textureID).bind();		
+		main.textures.get(textureID).bind();		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glTexCoord2f(0, numTex1);
 		    gl.glVertex3d(p.get(0).x,p.get(0).y,p.get(0).z);
@@ -531,7 +534,7 @@ public class Maze  implements VisibleObject {
 		gl.glEnd();
 		
 		//Disable texture
-		MainClass.textures.get(textureID).disable();
+		main.textures.get(textureID).disable();
 	}
 	
 	/**
@@ -579,7 +582,7 @@ public class Maze  implements VisibleObject {
 	 */
 	public boolean isDoor(double x, double y, double z)
 	{
-		Door w = MainClass.door;
+		Door w = main.door;
 		
 		double distance;
 		
@@ -871,7 +874,7 @@ public class Maze  implements VisibleObject {
 
 			p3D.add(point);
 		}
-		int textureID = MainClass.textureNames.lastIndexOf(texture);
+		int textureID = main.textureNames.lastIndexOf(texture);
 		polygonOnScreen(gl,p3D, textureID);
 		
 		float dx =0.04f*(p3D.get(3).x-p3D.get(0).x);
@@ -1122,9 +1125,9 @@ public class Maze  implements VisibleObject {
 					
 					ObjectEnemy t = (ObjectEnemy) o1.get(j);
 					Point2D.Float p = t.getPoints().get(0); 
-					enemies.add(new Enemy(	p.x * MainClass.maze.SQUARE_SIZE + MainClass.maze.SQUARE_SIZE / 2, 	// x-position
-							storey.getFloorHeight()+ 0.01 * MainClass.maze.SQUARE_SIZE,							// y-position
-							p.y * MainClass.maze.SQUARE_SIZE + MainClass.maze.SQUARE_SIZE / 2,0, true, t.getModel()));	// z-position, texture boolean				 				
+					enemies.add(new Enemy(	p.x * main.maze.SQUARE_SIZE + main.maze.SQUARE_SIZE / 2, 	// x-position
+							storey.getFloorHeight()+ 0.01 * main.maze.SQUARE_SIZE,							// y-position
+							p.y * main.maze.SQUARE_SIZE + main.maze.SQUARE_SIZE / 2,0, true, t.getModel(),main));	// z-position, texture boolean				 				
 				}
 			}
 		}
@@ -1138,7 +1141,6 @@ public class Maze  implements VisibleObject {
 	 * @param gl OpenGL
 	 */
 	public void genDisplayList(GL gl){
-		
 		int tempDisplayList = gl.glGenLists(1);
 	    gl.glNewList(tempDisplayList, GL.GL_COMPILE_AND_EXECUTE);
 	    {			

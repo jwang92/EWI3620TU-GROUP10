@@ -29,8 +29,8 @@ public class Sword extends GameObject implements VisibleObject {
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public Sword(double x, double y, double z, boolean tex, int type){
-		super(x, y, z);
+	public Sword(double x, double y, double z, boolean tex, int type, MainClass mclass){
+		super(x, y, z, mclass);
 		handles = new ArrayList<IntBuffer>();
 		models = new ArrayList<Model>();
 	
@@ -132,7 +132,7 @@ public class Sword extends GameObject implements VisibleObject {
 			}
 			
 			//Translate the model
-			gl.glTranslated(locationX, locationY + MainClass.player.getdY_walk(), locationZ);
+			gl.glTranslated(locationX, locationY + main.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
 			double tx = -Math.cos(v)*Math.sin(h);
@@ -161,7 +161,7 @@ public class Sword extends GameObject implements VisibleObject {
 						d = 30;
 						break;
 					}
-					for(Enemy e: MainClass.enemies){
+					for(Enemy e: main.enemies){
 						e.damage(player.getLocationX()-Math.sin(player.getHorAngle()*Math.PI/180), 
 								player.getLocationY(),
 								player.getLocationZ()-Math.cos(player.getHorAngle()*Math.PI/180), 

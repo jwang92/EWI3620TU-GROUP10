@@ -35,41 +35,41 @@ import com.sun.opengl.util.texture.Texture;
 
 public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
-	private static final long serialVersionUID = 1L;
-	public static GLCanvas canvas;
-	public static int screenWidth = 600, screenHeight = 600;		// Screen size.
+	private final long serialVersionUID = 1L;
+	public GLCanvas canvas;
+	public int screenWidth = 600, screenHeight = 600;		// Screen size.
 	public int tel;
 	
-	public static MazeRunner mazeRunner;
-	public static GameStateManager state;
-	public static Login login;
-	public static Highscores highscores;
-	public static MainMenu mainMenu;
-	public static Maze maze;
-	public static MazePheromones mazePheromones;
-	public static Player player;
-	public static String username = "0";
+	public MazeRunner mazeRunner;
+	public GameStateManager state;
+	public Login login;
+	public Highscores highscores;
+	public MainMenu mainMenu;
+	public Maze maze;
+	public MazePheromones mazePheromones;
+	public Player player;
+	public String username = "0";
 	
 	//Enemies
-	public static ArrayList<Model> enemieModels = new ArrayList<Model>();
-	public static ArrayList<String> enemieModelNames = new ArrayList<String>();
-	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	public static ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+	public ArrayList<Model> enemieModels = new ArrayList<Model>();
+	public ArrayList<String> enemieModelNames = new ArrayList<String>();
+	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	
-	public static CursorHandler cursor;
-	public static Camera camera;
-	public static UserInput input;
-	public static Pause pause;
-	public static GameOver gameover;
-	public static Sword sword;
-	public static Shield shield;
-	public static RangedWeapons rWeapon;
-	public static Door door;
-	public static DoorSwitch doorSwitch;
+	public CursorHandler cursor;
+	public Camera camera;
+	public UserInput input;
+	public Pause pause;
+	public GameOver gameover;
+	public Sword sword;
+	public Shield shield;
+	public RangedWeapons rWeapon;
+	public Door door;
+	public DoorSwitch doorSwitch;
 	
 	//Load the textures
-	public static ArrayList<Texture> textures;
-	public static ArrayList<String> textureNames;
+	public ArrayList<Texture> textures;
+	public ArrayList<String> textureNames;
 	private int numberOfTextures;
 	
 	public MainClass(int Width, int Height, boolean fullscreen){
@@ -123,11 +123,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// to mouse events that happen inside the GLCanvas.
 		canvas.addMouseListener(this);
 		
-		login = new Login();
-		highscores = new Highscores();
-		mainMenu = new MainMenu();
-		state = new GameStateManager();
-		cursor = new CursorHandler(MainClass.canvas);
+		login = new Login(this);
+		highscores = new Highscores(this);
+		mainMenu = new MainMenu(this);
+		state = new GameStateManager(this);
+		cursor = new CursorHandler(canvas);
 		
 		// Set the frame to visible. This automatically calls upon OpenGL to prevent a blank screen.
 		initObjects();
@@ -150,9 +150,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		if(tel != state.getState()){
 			if(state.getState() == 1)
-				MainClass.cursor.setCursor(2);
+				cursor.setCursor(2);
 			else
-				MainClass.cursor.setCursor(-1);
+				cursor.setCursor(-1);
 		}
 		
 		tel = state.getState();
@@ -348,80 +348,80 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 	
-	public static void initObjects(){
+	public void initObjects(){
 
-		maze = new Maze();
+		maze = new Maze(this);
 		
-		mazePheromones = new MazePheromones();
+		mazePheromones = new MazePheromones(this);
 		
 		player = new Player( maze.getLevelInfo().getPlayerPos().x * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							maze.getLevelInfo().getPlayerPos().z * 5 - 2.5,							// y-position
 							maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
-							 90, 0 );										// horizontal and vertical angle
+							 90, 0, this );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
-				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0, this);
 
 		rWeapon = new RangedWeapons( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 			 maze.SQUARE_SIZE / 2 -1,							
-			 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+			 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0, this);
 
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
-				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false, this);
 		
-		door = new Door(40,0,50, 40, 5 ,45);
-		doorSwitch = new DoorSwitch(25,0,50);
+		door = new Door(40,0,50, 40, 5 ,45, this);
+		doorSwitch = new DoorSwitch(25,0,50,this);
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
-				             player.getHorAngle(), player.getVerAngle() );
+				             player.getHorAngle(), player.getVerAngle() ,this);
 		
-		input = new UserInput(canvas);
+		input = new UserInput(canvas,this);
 		
-		mazeRunner = new MazeRunner(screenHeight, screenWidth);
-		pause = new Pause();
-		gameover = new GameOver();
+		mazeRunner = new MazeRunner(screenHeight, screenWidth, this);
+		pause = new Pause(this);
+		gameover = new GameOver(this);
 
 
 	}
 
-	public static void initObjects(String newloadfolder){
+	public void initObjects(String newloadfolder){
 
-		maze = new Maze(newloadfolder);
+		maze = new Maze(newloadfolder,this);
 		
-		mazePheromones = new MazePheromones();
+		mazePheromones = new MazePheromones(this);
 		
 		player = new Player( maze.getLevelInfo().getPlayerPos().x * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// x-position
 							maze.getLevelInfo().getPlayerPos().z * 5 - 2.5,							// y-position
 							maze.getLevelInfo().getPlayerPos().y * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2, 	// z-position
-							 90, 0 );										// horizontal and vertical angle
+							 90, 0 , this );										// horizontal and vertical angle
 		sword = new Sword( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 							 maze.SQUARE_SIZE / 2 -1,							
-							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+							 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0, this);
 		
 		rWeapon = new RangedWeapons( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
-				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0);
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, 0 , this);
 		
 		shield = new Shield( 6 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2 -1, 	
 				 maze.SQUARE_SIZE / 2 -1,							
-				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false);
+				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false , this);
 		
-		door = new Door(40,0,50, 45, 5, 50);
+		door = new Door(40,0,50, 45, 5, 50, this);
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
-				             player.getHorAngle(), player.getVerAngle() );
+				             player.getHorAngle(), player.getVerAngle() , this);
 		
 		
-		mazeRunner = new MazeRunner(screenHeight, screenWidth);
-		pause = new Pause();
-		gameover = new GameOver();
+		mazeRunner = new MazeRunner(screenHeight, screenWidth, this);
+		pause = new Pause(this);
+		gameover = new GameOver(this);
 
 	}
 

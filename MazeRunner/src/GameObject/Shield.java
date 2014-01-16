@@ -26,8 +26,8 @@ public class Shield extends GameObject implements VisibleObject {
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public Shield(double x, double y, double z,boolean tex, boolean upgrade){
-		super(x, y, z);
+	public Shield(double x, double y, double z,boolean tex, boolean upgrade, MainClass mclass){
+		super(x, y, z, mclass);
 		texture = tex;
 		try {
 			if(!upgrade){
@@ -94,7 +94,7 @@ public class Shield extends GameObject implements VisibleObject {
 		else{
 			
 			//Translate the model
-			gl.glTranslated(locationX, locationY - MainClass.player.getdY_walk(), locationZ);
+			gl.glTranslated(locationX, locationY - main.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
 			double tx = -Math.cos(v)*Math.sin(h);

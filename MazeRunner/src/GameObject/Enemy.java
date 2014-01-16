@@ -65,8 +65,8 @@ public class Enemy extends GameObject implements VisibleObject {
 	private ArrayList<Point3D> route = new ArrayList<Point3D>();
 	public boolean findRoute = false;
 	
-	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName){
-		super(x, y, z);
+	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName, MainClass mclass){
+		super(x, y, z, mclass);
 		sx=x;
 		sz=z;
 		this.angle = angle;
@@ -74,15 +74,15 @@ public class Enemy extends GameObject implements VisibleObject {
 		texture = tex;
 		try {
 			if(texture){
-				if(!MainClass.enemieModelNames.contains(modelName)){
-					MainClass.enemieModelNames.add(modelName);
+				if(!main.enemieModelNames.contains(modelName)){
+					main.enemieModelNames.add(modelName);
 					Model tempmodel = OBJLoader.loadTexturedModel((new File(modelName)));
-					MainClass.enemieModels.add(tempmodel);
+					main.enemieModels.add(tempmodel);
 				}
-				if(MainClass.enemieModelNames.contains(modelName)){
-					int modelID = MainClass.enemieModelNames.lastIndexOf(modelName);
+				if(main.enemieModelNames.contains(modelName)){
+					int modelID = main.enemieModelNames.lastIndexOf(modelName);
 					type = modelName;
-					m = MainClass.enemieModels.get(modelID);
+					m = main.enemieModels.get(modelID);
 				}
 			}
 			else{
@@ -94,13 +94,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 		
 		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
-			leftArm= new LeftArm(x,y,z,tex,"LeftArm");
+			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main);
 			leftArm.setEnemy(this);
-			rightArm= new RightArm(x,y,z,tex, "RightArm");
+			rightArm= new RightArm(x,y,z,tex, "RightArm", main);
 			rightArm.setEnemy(this);
-			rightLeg = new RightLeg(x,y,z,tex,"RightLeg");
+			rightLeg = new RightLeg(x,y,z,tex,"RightLeg", main);
 			rightLeg.setEnemy(this);
-			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg");
+			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg", main);
 			leftLeg.setEnemy(this);
 			
 			ymin=0;
@@ -108,9 +108,9 @@ public class Enemy extends GameObject implements VisibleObject {
 			dmgDet=1.0;
 		}
 		else if(type.equals("3d_object/Bathos/bathos.obj")){
-			leftWing = new LeftWing(x,y,z,tex,"LeftWing");
+			leftWing = new LeftWing(x,y,z,tex,"LeftWing", main);
 			leftWing.setEnemy(this);
-			rightWing = new RightWing(x,y,z,tex,"RighttWing");
+			rightWing = new RightWing(x,y,z,tex,"RighttWing", main);
 			rightWing.setEnemy(this);
 			
 			ymin=1.5;
@@ -150,7 +150,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean checkEnemy(double x, double z, double dT){
 		double dX, dZ, distance;
 		
-		for(Enemy foe : MainClass.enemies){
+		for(Enemy foe : main.enemies){
 			if(!this.equals(foe) && foe.alert){
 				dX = x - foe.locationX;
 				dZ = z - foe.locationZ;
@@ -164,11 +164,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public boolean checkPlayer(double x, double z, double dT){
-		double dX = x - MainClass.player.locationX;
-		double dZ = z - MainClass.player.locationZ;
+		double dX = x - main.player.locationX;
+		double dZ = z - main.player.locationZ;
 		double distance = Math.sqrt(dZ*dZ + dX*dX);
 		
-		if(distance <= MainClass.player.playersize + enemysize)
+		if(distance <= main.player.playersize + enemysize)
 			return true;
 		
 		return false;
@@ -220,7 +220,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				alert = alerted(player);
 			}
 			if(alert){
-				highestPher = MainClass.mazePheromones.Search(locationX, locationY, locationZ, 15);
+				highestPher = main.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
 				
 				double dX = highestPher.x - locationX;				
@@ -239,15 +239,15 @@ public class Enemy extends GameObject implements VisibleObject {
 					double routeX = route.get(route.size()-1).getX() + 1;
 					double routeZ = route.get(route.size()-1).getZ() + 1;
 					boolean pointReached = false;
-					if((locationX/MainClass.maze.SQUARE_SIZE)>= (routeX-0.2) && (locationX/MainClass.maze.SQUARE_SIZE) <= (routeX + 0.2)){
-						if((locationZ/MainClass.maze.SQUARE_SIZE)>= (routeZ-0.2) && (locationZ/MainClass.maze.SQUARE_SIZE) <= (routeZ + 0.2)){
+					if((locationX/main.maze.SQUARE_SIZE)>= (routeX-0.2) && (locationX/main.maze.SQUARE_SIZE) <= (routeX + 0.2)){
+						if((locationZ/main.maze.SQUARE_SIZE)>= (routeZ-0.2) && (locationZ/main.maze.SQUARE_SIZE) <= (routeZ + 0.2)){
 							route.remove(route.size()-1);
 							pointReached = true;
 						}						
 					}
 					if(!pointReached){
-						double dX = (route.get(route.size()-1).getX() + 1)*MainClass.maze.SQUARE_SIZE - locationX;				
-						double dZ = (route.get(route.size()-1).getZ() + 1)*MainClass.maze.SQUARE_SIZE - locationZ;				
+						double dX = (route.get(route.size()-1).getX() + 1)*main.maze.SQUARE_SIZE - locationX;				
+						double dZ = (route.get(route.size()-1).getZ() + 1)*main.maze.SQUARE_SIZE - locationZ;				
 						double distance = Math.sqrt(dZ*dZ + dX*dX);
 						
 						newLocation(dX, dZ, distance, deltaTime);
@@ -334,8 +334,8 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 			else if(!alert && !dood){
 				if(route.size()>0){
-					double dX = (route.get(route.size()-1).getX() + 1)*MainClass.maze.SQUARE_SIZE - locationX;				
-					double inP = (route.get(route.size()-1).getZ() + 1)*MainClass.maze.SQUARE_SIZE - locationZ;
+					double dX = (route.get(route.size()-1).getX() + 1)*main.maze.SQUARE_SIZE - locationX;				
+					double inP = (route.get(route.size()-1).getZ() + 1)*main.maze.SQUARE_SIZE - locationZ;
 					double lengteV = 1;
 					double lengteW = Math.sqrt(Math.pow(dX, 2)+Math.pow(inP, 2));
 					double test = inP/Math.max(lengteV*lengteW, 00001);
@@ -351,7 +351,7 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 				else if(deathAngle<=-90){
 					remove = true;
-					MainClass.player.setScore(100);
+					main.player.setScore(100);
 				}
 			}
 			
@@ -500,9 +500,9 @@ public class Enemy extends GameObject implements VisibleObject {
 				attackTimeout--;
 			}
 			if(player.getHealth() <= 0){
-				MainClass.state.GameStateUpdate(GameState.GAMEOVER_STATE);
-				MainClass.state.setStopMainGame(true);
-				MainClass.state.setStopGameOver(false);
+				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+				main.state.setStopMainGame(true);
+				main.state.setStopGameOver(false);
 			}
 		}
 	}
@@ -510,7 +510,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean alerted (Player player){
 		 boolean res = (Math.sqrt(Math.pow(locationX-player.locationX,2 )+Math.pow(locationZ-player.locationZ,2)) < 15) ;
 		 if(res == true){
-			 ArrayList<Enemy> enemies = MainClass.enemies;
+			 ArrayList<Enemy> enemies = main.enemies;
 			 for(Enemy e: enemies){
 				 if(!this.equals(e) && !findRoute){
 					 double dx = locationX - e.getLocationX();
@@ -527,11 +527,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public void findRoute(){
-		route = MainClass.maze.getNavMesh().findRoute(
-				(float) (locationX/MainClass.maze.SQUARE_SIZE) -1 , 
-				(float) (locationZ/MainClass.maze.SQUARE_SIZE)-1, 
-				(float) (MainClass.player.getLocationX()/MainClass.maze.SQUARE_SIZE)-1, 
-				(float) (MainClass.player.getLocationZ()/MainClass.maze.SQUARE_SIZE)-1);
+		route = main.maze.getNavMesh().findRoute(
+				(float) (locationX/main.maze.SQUARE_SIZE) -1 , 
+				(float) (locationZ/main.maze.SQUARE_SIZE)-1, 
+				(float) (main.player.getLocationX()/main.maze.SQUARE_SIZE)-1, 
+				(float) (main.player.getLocationZ()/main.maze.SQUARE_SIZE)-1);
 		if(route == null){
 			route = new ArrayList<Point3D>();
 		}

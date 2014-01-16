@@ -14,7 +14,8 @@ import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
 public class Buttonbox {
-
+	private MainClass main;
+	
 	private int buttonSizeX, buttonSizeY;
 	private int PosX, PosY;
 	private int screenWidth, screenHeight;
@@ -28,15 +29,16 @@ public class Buttonbox {
 	private String textureFileName;
 	private String textureFileType;
 
-	public Buttonbox(int xCoord, int yCoord, int xSize, int ySize, String textureName){
+	public Buttonbox(int xCoord, int yCoord, int xSize, int ySize, String textureName, MainClass mclass){
+		main = mclass;
 		PosX = xCoord;
 		PosY = yCoord;
 		buttonSizeX = xSize;
 		buttonSizeY = ySize;
 		this.textureName = textureName;
 		
-		screenHeight = MainClass.screenHeight;
-		screenWidth = MainClass.screenWidth;
+		screenHeight = main.screenHeight;
+		screenWidth = main.screenWidth;
 		
 		textureFileType = "png";
 	}

@@ -6,12 +6,14 @@ import Main.MainClass;
 
 
 public class MazePheromones {
+	private MainClass main;
 	private PriorityQueue<Pheromone> pheromonesOrder;
 	private ArrayList<Pheromone> pheromones;
 	private Pheromone lastPher;
 	
 	
-	public MazePheromones(){
+	public MazePheromones(MainClass mclass){
+		main = mclass;
 		pheromonesOrder = new PriorityQueue<Pheromone>();
 		pheromones = new ArrayList<Pheromone>();
 	}
@@ -83,7 +85,7 @@ public class MazePheromones {
 //				return true;
 //		}
 //		return false;
-		if(MainClass.maze.visionBlocked(x, y, z, pherX, pherZ)){
+		if(main.maze.visionBlocked(x, y, z, pherX, pherZ)){
 			return true;
 		}
 		return false;
@@ -108,7 +110,7 @@ public class MazePheromones {
 			double dz = pher.z - z;
 			double distance = Math.sqrt(dx*dx + dz*dz);			//calculate distance to current pheromone
 			
-			if( distance <= vision && Math.abs(dy) <= (MainClass.maze.SQUARE_SIZE/2.0) ){	//pheromone within vision?
+			if( distance <= vision && Math.abs(dy) <= (main.maze.SQUARE_SIZE/2.0) ){	//pheromone within vision?
 				if( pher.pheromone > highestPher.pheromone ){		//current pheromone higher than highest?
 					if(!obstructed(x, pher.x, z, pher.z, y))
 						highestPher = pher;

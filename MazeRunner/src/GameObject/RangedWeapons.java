@@ -27,8 +27,8 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 	//Shaders
 	private int shaderProgram = 0;
 	
-	public RangedWeapons(double x, double y, double z, boolean tex, int type) {
-		super(x,y,z);
+	public RangedWeapons(double x, double y, double z, boolean tex, int type, MainClass mclass) {
+		super(x,y,z, mclass);
 		currentGun = type;
 		handles = new ArrayList<IntBuffer>();
 		models = new ArrayList<Model>();
@@ -64,7 +64,7 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 		locationY=player.locationY;
 		locationZ=player.locationZ;
 		if(player.control.getAttack()){
-			MainClass.bullets.add(new Bullet(locationX,locationY,locationZ, player));
+			main.bullets.add(new Bullet(locationX,locationY,locationZ, player,main));
 			player.sound.photon();
 			player.control.setAttack(false);
 		}
@@ -92,7 +92,7 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 			vboHandle = handles.get(currentGun);
 			
 			//Translate the model
-			gl.glTranslated(locationX, locationY - MainClass.player.getdY_walk(), locationZ);
+			gl.glTranslated(locationX, locationY - main.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
 			double tx = -Math.cos(v)*Math.sin(h);

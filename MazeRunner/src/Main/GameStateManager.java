@@ -11,8 +11,12 @@ public class GameStateManager {
 					sLogin=false,
 					sHighscores=false;
 	
-	public CursorHandler c = new CursorHandler(MainClass.canvas);
+	public CursorHandler c;
 	
+	public GameStateManager(MainClass mClass) {
+		c = new CursorHandler(mClass.canvas);
+	}
+
 	public void GameStateUpdate(GameState m_curSTATE) {
 	     // handle update
 		

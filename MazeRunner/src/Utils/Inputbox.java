@@ -11,7 +11,8 @@ import com.sun.opengl.util.j2d.TextRenderer;
 
 
 public class Inputbox {
-
+	private MainClass main;
+	
 	protected String defText;		//default text of the inputbox
 	protected String text;			//text in the inputbox
 	protected int screenWidth, screenHeight;
@@ -22,12 +23,13 @@ public class Inputbox {
 	protected Font f;
 	protected boolean selected;		//selected
 	
-	public Inputbox(int xCoord, int yCoord, int FontSize, int StringLength, String defText){
+	public Inputbox(int xCoord, int yCoord, int FontSize, int StringLength, String defText, MainClass mclass){
+		main = mclass;
 		x = xCoord;
 		y = yCoord;
 		
-		screenHeight = MainClass.screenHeight;
-		screenWidth = MainClass.screenWidth;
+		screenHeight = main.screenHeight;
+		screenWidth = main.screenWidth;
 		
 		sH = FontSize;
 		sL = StringLength;

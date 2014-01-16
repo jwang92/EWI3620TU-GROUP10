@@ -26,8 +26,8 @@ public class LeftArm extends GameObject implements VisibleObject {
 	private int deathAngle = 0;
 	private boolean remove = false;
 	
-	public LeftArm(double x, double y, double z,boolean tex, String modelName){
-		super(x, y, z);
+	public LeftArm(double x, double y, double z,boolean tex, String modelName, MainClass mclass){
+		super(x, y, z, mclass);
 		texture = tex;
 		try {
 			if(texture){
@@ -110,7 +110,7 @@ public class LeftArm extends GameObject implements VisibleObject {
 				}
 				else if(deathAngle<=-90){
 					remove = true;
-					MainClass.player.setScore(100);
+					main.player.setScore(100);
 				}
 			}
 			

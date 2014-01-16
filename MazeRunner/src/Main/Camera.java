@@ -20,9 +20,9 @@ public class Camera extends GameObject {
 	private double vrpX, vrpY, vrpZ;
 	private double vuvX, vuvY, vuvZ;
 	
-	public Camera( double x, double y, double z, double h, double v ) {
+	public Camera( double x, double y, double z, double h, double v, MainClass mclass ) {
 		// Set the initial position and viewing direction of the player.
-		super( x, y, z );
+		super( x, y, z, mclass);
 		horAngle = h;
 		verAngle = v;
 		
