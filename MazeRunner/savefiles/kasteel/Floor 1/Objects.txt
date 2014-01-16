@@ -1,11 +1,7 @@
-NumberOfObjects: 9;
-Ramp: 8 3; 7 3; 7 2; 8 2; textures/arrow.png;
-Ramp: 7 12; 8 12; 8 13; 7 13; brick.png;
-Enemy: 4 4; 5 4; 5 5; 4 5; 3d_object/Predator_Youngblood/Predator_Youngblood.obj;
-Enemy: 9 4; 10 4; 10 5; 9 5; 3d_object/Predator_Youngblood/Predator_Youngblood.obj;
-Enemy: 4 10; 5 10; 5 11; 4 11; 3d_object/Predator_Youngblood/Predator_Youngblood.obj;
-Enemy: 8 9; 9 9; 9 10; 8 10; 3d_object/lion/lion.obj;
-Enemy: 3 6; 4 6; 4 7; 3 7; 3d_object/lion/lion.obj;
-Enemy: 7 4; 8 4; 8 5; 7 5; 3d_object/lion/lion.obj;
-Enemy: 11 6; 12 6; 12 7; 11 7; 3d_object/lion/lion.obj;
+NumberOfObjects: 5;
+Ramp: 8 3; 7 3; 7 2; 8 2; textures/wood.png;
+Ramp: 7 12; 8 12; 8 13; 7 13; textures/brick.png;
+Enemy: 2 10; 3 10; 3 11; 2 11; 3d_object/Bathos/bathos.obj;
+Enemy: 2 7; 3 7; 3 8; 2 8; 3d_object/lion/lion.obj;
+Enemy: 2 4; 3 4; 3 5; 2 5; 3d_object/Predator/Predator_Youngblood/Body.obj;
 End;
