@@ -490,7 +490,7 @@ public class Maze  implements VisibleObject {
 		for(int i =0; i<p2D.size();i++){
 			Point3D point = new Point3D();
 			point.x = (float) (p2D.get(i).x * SQUARE_SIZE);
-			point.y = (float) z;
+			point.y = (float) z - 0.201f;
 			point.z = (float) (p2D.get(i).y * SQUARE_SIZE);
 			p3D.add(point);
 		}
@@ -763,7 +763,7 @@ public class Maze  implements VisibleObject {
 			storey = storeys.get(i);
 			if(yOld>storey.getFloorHeight()&&yOld<storey.getRoofHeight()){
 				r = storey.getRoofList().getRoofs();
-				roofy = storey.getRoofHeight();
+				roofy = storey.getRoofHeight() - 0.201f;
 			}
 		}
 		
