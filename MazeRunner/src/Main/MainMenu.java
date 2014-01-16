@@ -202,7 +202,7 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Selecteer level");
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int retrival = fc.showOpenDialog(askResolution.mainclass);
+		int retrival = fc.showOpenDialog(main);
 		
 		if (retrival == JFileChooser.APPROVE_OPTION) {
 			try {

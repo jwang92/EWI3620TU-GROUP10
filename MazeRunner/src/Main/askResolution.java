@@ -20,7 +20,7 @@ public class askResolution  implements ActionListener {
 	private int screenWidth, screenHeight;
 	private boolean fullscreen;
 	
-	protected static MainClass mainclass;
+	protected MainClass mainclass;
 	
 	public askResolution(){
 		f = new JFrame( "Medieval Invasion (resolution)" );
