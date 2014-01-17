@@ -17,7 +17,7 @@ public class LeftArm extends GameObject implements VisibleObject {
 	
 	private boolean texture, forward =true;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
-	private double angle, rotateAngle=0;
+	private double angle, rotateAngle=0, trans;
 	
 	//Shaders
 	private int shaderProgram = 0;
@@ -26,18 +26,36 @@ public class LeftArm extends GameObject implements VisibleObject {
 	private int deathAngle = 0;
 	private boolean remove = false;
 	
-	public LeftArm(double x, double y, double z,boolean tex, String modelName, MainClass mclass){
+	public LeftArm(double x, double y, double z,boolean tex, String modelName, MainClass mclass, boolean groot){
 		super(x, y, z, mclass);
 		texture = tex;
-		try {
-			if(texture){
-				m = OBJLoader.loadTexturedModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
+		if(groot){
+			try {
+				if(texture){
+					m = OBJLoader.loadTexturedModel((new File("3d_object/Predator/Predator_Youngblood/LeftArm.obj")));
+				}
+				else{
+					m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood/LeftArm.obj")));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			else{
-				m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
+			
+			trans= 3.55;
+		}
+		else{
+			try {
+				if(texture){
+					m = OBJLoader.loadTexturedModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
+				}
+				else{
+					m = OBJLoader.loadModel((new File("3d_object/Predator/Predator_Youngblood2/LeftArm.obj")));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			
+			trans=2.84;
 		}
 	}
 
@@ -100,9 +118,9 @@ public class LeftArm extends GameObject implements VisibleObject {
 			if(enemy.alert && !enemy.dood){
 				angle=enemy.angle;
 				
-				gl.glTranslated(0, 2.84, 0);
+				gl.glTranslated(0, trans, 0);
 				gl.glRotated(rotateAngle ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
-				gl.glTranslated(0, -2.84, 0);
+				gl.glTranslated(0, -trans, 0);
 			}
 			else if(enemy.dood){
 				if(deathAngle>-90){
