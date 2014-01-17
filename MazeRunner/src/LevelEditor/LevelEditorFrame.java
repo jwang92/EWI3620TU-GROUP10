@@ -117,6 +117,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private ArrayList<Texture> textures;
 	private ArrayList<String> textureNames;
 	private String textureFileName = "";
+	
+	//Textrenderer
+	private TextRenderer t;
 
 	//Integers defining the selected options
 	private int objectToDraw = 1;
@@ -149,6 +152,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		//Textures
 		textures = new ArrayList<Texture>();
 		textureNames = new ArrayList<String>();
+		
+		//TextRenderer: SansSerif - 15f
+		Font f = new Font("SansSerif", Font.PLAIN, 15);
+		t = new TextRenderer(f);
 
 		// When the "X" close button is called, the application should exit.
 		this.addWindowListener(new WindowAdapter() {
@@ -452,10 +459,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				gl.glVertex2f(CursorPos.getX() + texName.length() * 9, screenHeight - CursorPos.getY() + 20);
 				gl.glVertex2f(CursorPos.getX() + texName.length() * 9, screenHeight - CursorPos.getY());
 			gl.glEnd();
-						
-			Font f = new Font("SansSerif", Font.PLAIN, 15);
 			
-			TextRenderer t = new TextRenderer(f);
 			t.beginRendering(screenWidth, screenHeight);
 			t.draw(texName, CursorPos.getX() + 4, screenHeight - CursorPos.getY() + 4);
 			t.endRendering();
