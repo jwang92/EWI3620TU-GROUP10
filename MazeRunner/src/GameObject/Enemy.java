@@ -165,14 +165,16 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 
 	public boolean checkEnemy(double x, double z, double dT){
-		double dX, dZ, distance;
+		double dX, dZ, dY, distance;
 		
 		for(Enemy foe : main.enemies){
 			if(!this.equals(foe) && foe.alert){
 				dX = x - foe.locationX;
 				dZ = z - foe.locationZ;
+				dY = locationY - foe.locationY;
 				distance = Math.sqrt(dZ*dZ + dX*dX);
-				if(distance <= foe.enemysize + enemysize)
+				if( distance <= foe.enemysize + enemysize 
+						&& Math.abs(dY) <= maze.SQUARE_SIZE / 2.0f )
 					return true;
 			}
 		}
@@ -183,9 +185,11 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean checkPlayer(double x, double z, double dT){
 		double dX = x - main.player.locationX;
 		double dZ = z - main.player.locationZ;
+		double dY = locationY - main.player.locationY;
 		double distance = Math.sqrt(dZ*dZ + dX*dX);
 		
-		if(distance <= main.player.playersize + enemysize)
+		if( distance <= main.player.playersize + enemysize 
+				&& (maze.SQUARE_SIZE*-0.9 <= dY && dY <= maze.SQUARE_SIZE*0.1 ) )
 			return true;
 		
 		return false;

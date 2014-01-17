@@ -68,7 +68,7 @@ public class Player extends GameObject {
 		super( x, y, z, mclass);
 		horAngle = h;
 		verAngle = v;
-		speed = 0.02;
+		speed = 0.015;
 		speedadjust = 1;
 		health = 100;
 		currentUpgrades = new ArrayList<int[]>();
@@ -167,15 +167,17 @@ public class Player extends GameObject {
 		return currentUpgrades;
 	}
 	
-	public boolean checkEnemy(double x, double z, double dT){
-		double dX, dZ, distance;
+	public boolean checkEnemy(double x, double z, double y, double dT){
+		double dX, dZ, dY, distance;
 		
 		for(Enemy foe : main.enemies){
 			if(foe.alert){
-				dX = Math.abs(x - foe.locationX);
-				dZ = Math.abs(z - foe.locationZ);
+				dX = x - foe.locationX;
+				dZ = z - foe.locationZ;
+				dY = y - foe.locationY;
 				distance = Math.sqrt(dZ*dZ + dX*dX);
-				if(distance <= foe.enemysize + playersize)
+				if(distance <= foe.enemysize + playersize 
+						&& ( maze.SQUARE_SIZE*-0.1 <= dY && dY <= maze.SQUARE_SIZE*0.9 ) )
 					return true;
 			}
 		}
@@ -202,8 +204,8 @@ public class Player extends GameObject {
 		return res;
 	}
 	
-	public boolean collision(double x, double z, double dT){
-			return checkWallOrDoor(x, z, dT) || checkEnemy(x, z, dT);
+	public boolean collision(double x, double z, double y, double dT){
+			return checkWallOrDoor(x, z, dT) || checkEnemy(x, z, y, dT);
 	}
 
 	/**
@@ -240,7 +242,7 @@ public class Player extends GameObject {
 			else if(maze.isFloor(locationX, locationY, locationZ)){
 				locationY = maze.getFloorHeight(locationY)+2.5;
 				if(control.getJump()){
-					verticalSpeed = 0.025;
+					verticalSpeed = 0.012;
 				}
 				else{
 					verticalSpeed = 0;
@@ -265,10 +267,12 @@ public class Player extends GameObject {
 				verticalSpeed = 0;
 			}
 			else{
-				locationY += verticalSpeed*deltaTime;
+				if( !collision(locationX, locationZ, newLocationY, deltaTime) )
+					locationY += verticalSpeed*deltaTime;
+				else
+					verticalSpeed = 0;
 			}
-
-			
+	
 			double oldX = locationX;
 			double oldZ = locationZ;
 
@@ -282,12 +286,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!collision(newX, locationZ, deltaTime)&& !throughRampTest2){
+				}else if(!collision(newX, locationZ, locationY, deltaTime)&& !throughRampTest2){
 					locationX = newX;
-				}else if(!collision(locationX, newZ, deltaTime)&& !throughRampTest2){
+				}else if(!collision(locationX, newZ, locationY, deltaTime)&& !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -301,12 +305,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -320,12 +324,12 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
@@ -339,17 +343,16 @@ public class Player extends GameObject {
 						throughRampTest2 = true;
 					}					
 				}
-				if(!collision(newX, newZ, deltaTime) && !throughRampTest2){
+				if(!collision(newX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
 					locationZ = newZ;
-				}else if(!collision(newX, locationZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(newX, locationZ, locationY, deltaTime) && !throughRampTest2){
 					locationX = newX;
-				}else if(!collision(locationX, newZ, deltaTime) && !throughRampTest2){
+				}else if(!collision(locationX, newZ, locationY, deltaTime) && !throughRampTest2){
 					locationZ = newZ;
 				}
 			}
-			
-			
+						
 			if((Math.abs(locationX - oldX) > 0.01 || Math.abs(locationZ - oldZ) > 0.01) && sound.getWalk() == false){
 				sound.walk();
 			}
@@ -397,7 +400,7 @@ public class Player extends GameObject {
 					currentUpgrades.set(i, temp);
 					if(currentUpgrades.get(i)[1] <= 0){
 						
-						this.speed = 0.01;
+						this.speed = 0.015;
 						currentUpgrades.remove(i);
 						
 					}
@@ -566,7 +569,7 @@ public class Player extends GameObject {
 			if(walkingdY >= 180)
 				walkingdY = 0;
 			else if(walkingdY < 180)
-				walkingdY += 10;
+				walkingdY += 5;
 		}
 	}
 	
