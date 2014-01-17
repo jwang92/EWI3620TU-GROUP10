@@ -26,7 +26,6 @@ import GameObject.RangedWeapons;
 import GameObject.Shield;
 import GameObject.Sword;
 import Maze.Door;
-import Maze.DoorSwitch;
 import Maze.Maze;
 import Maze.MazePheromones;
 import Model.Model;
@@ -41,7 +40,7 @@ import com.sun.opengl.util.texture.Texture;
 public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	//main parameters
-	private final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	public GLCanvas canvas;
 	public int screenWidth = 600, screenHeight = 600;		// Screen size.
 	public int tel;
@@ -71,8 +70,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public Sword sword;
 	public Shield shield;
 	public RangedWeapons rWeapon;
-	public Door door;
-	public DoorSwitch doorSwitch;
+	public ArrayList<Door> doors;
 	
 	//User
 	public CursorHandler cursor;
@@ -421,8 +419,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false, this);
 		
-		door = new Door(40,0,50, 40, 5 ,45, this);
-		doorSwitch = new DoorSwitch(25,0,50,this);
+		doors = maze.loadDoors();
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
@@ -465,10 +462,11 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 				 maze.SQUARE_SIZE / 2 -1,							
 				 5 * maze.SQUARE_SIZE + maze.SQUARE_SIZE / 2,true, false , this);
 		
-		door = new Door(40,0,50, 45, 5, 50, this);
+		doors = maze.loadDoors();
 
 		enemies.removeAll(enemies);
 		enemies = maze.loadEnemies();
+		
 		
 		camera = new Camera( player.getLocationX(), player.getLocationY(), player.getLocationZ(), 
 				             player.getHorAngle(), player.getVerAngle() , this);

@@ -86,8 +86,8 @@ public class NavMeshGeneration {
 		if(storeys.size()>0){
 			storey = storeys.get(0);
 			FloorList floors = storey.getFloorList();
-			int sizeX = storey.getSizeX() - 2;
-			int sizeY = storey.getSizeY() - 2;
+			int sizeX = storey.getSizeX();
+			int sizeY = storey.getSizeY();
 			for(int i =0;i<floors.getFloors().size(); i++){
 				Floor f = floors.getFloors().get(i);
 				PolygonClipper p = new PolygonClipper();

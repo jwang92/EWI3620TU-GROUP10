@@ -142,8 +142,10 @@ public class MazeRunner {
 			main.rWeapon.setPlayer(main.player);
 		}
 		
-		main.door.setPlayer(main.player);
-		main.doorSwitch.setPlayer(main.player);
+		for(int i =0; i<main.doors.size();i++){
+			main.doors.get(i).setPlayer(main.player);
+		}
+
 	}
 
 /*
@@ -768,8 +770,9 @@ public class MazeRunner {
             		b.display(gl);
             	}
             }
-            main.door.display(gl);
-            main.doorSwitch.display(gl);
+    		for(int i =0; i<main.doors.size();i++){
+    			main.doors.get(i).display(gl);
+    		}
         }
         
         draw2D(gl);

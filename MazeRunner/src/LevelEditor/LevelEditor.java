@@ -248,6 +248,9 @@ public class LevelEditor implements ActionListener{
 			whatObject = 5;
 		else if(pu.equals("Exit"))
 			whatObject = 4;
+		else if(pu.equals("Door")){
+			whatObject = 6;
+		}
 		
 		le.setWhatObject(whatObject);
 	}
@@ -720,7 +723,7 @@ public class LevelEditor implements ActionListener{
 		opties6c = new JPanel(new GridLayout(2, 1));
 	    opties6c.setBorder(BorderFactory.createTitledBorder("Objects:"));
 	    
-	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Flying Enemy", "Exit"};
+	    String[] opties5cString = {"Ramp", "Predator", "Lion", "Flying Enemy", "Exit", "Door"};
 	    
 	    JComboBox c = new JComboBox(opties5cString);
 		c.addActionListener(this);

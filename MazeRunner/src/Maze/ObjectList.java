@@ -45,6 +45,9 @@ public class ObjectList {
 			if(nextObj.equals("Exit:")){
 				objects.add(LevelExit.Read(s));
 			}
+			if(nextObj.equals("Door:")){
+				objects.add(ObjectDoor.Read(s));
+			}
 		}
 		
 	}
@@ -71,6 +74,9 @@ public class ObjectList {
 			}
 			else if(objects.get(i) instanceof LevelExit){
 				r += ((LevelExit) objects.get(i)).toFileFormat();
+			}
+			else if(objects.get(i) instanceof ObjectDoor){
+				r += ((ObjectDoor) objects.get(i)).toFileFormat();
 			}
 	
 		}

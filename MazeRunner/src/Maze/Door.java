@@ -16,9 +16,11 @@ public class Door extends GameObject implements VisibleObject {
 	public double initAngle,totalAngle;
 	public double c, signD=1, lengte;	
 	public int doorGeluid = 0;
+	public DoorSwitch doorSwitch;
 	
-	public Door(double x, double y, double z, double x2, double y2, double z2, MainClass m){
+	public Door(double x, double y, double z, double x2, double y2, double z2, double switchX, double switchY, double switchZ, MainClass m){
 		super(x,y,z, m);
+		doorSwitch = new DoorSwitch(switchX,switchY,switchZ,main);
 		dx=x2-x;
 		dy=y2-y;
 		dz=z2-z;
@@ -52,6 +54,7 @@ public class Door extends GameObject implements VisibleObject {
 		drawDoor(gl);
 		gl.glPopMatrix();
 
+		doorSwitch.display(gl);
 	}
 	
 	public void drawDoor(GL gl){
@@ -112,7 +115,7 @@ public class Door extends GameObject implements VisibleObject {
 	}
 	
 	public void checkPlayer(){
-		if(main.doorSwitch.getPressed()){
+		if(doorSwitch.getPressed()){
 			if(player.locationX >=locationX+0.5*dx-5 && player.locationX<= locationX+0.5*dx+5
 					&& player.locationZ >=locationZ+0.5*dz-5 && player.locationZ<= locationZ+0.5*dz+5){
 				inArea =  true;
@@ -129,6 +132,7 @@ public class Door extends GameObject implements VisibleObject {
 	
 	public void setPlayer(Player player){
 		this.player = player;
+		doorSwitch.setPlayer(player);
 		c=-dz*locationX +dx*locationZ;
 	}
 	

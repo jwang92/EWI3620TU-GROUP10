@@ -582,18 +582,16 @@ public class Maze  implements VisibleObject {
 	 */
 	public boolean isDoor(double x, double y, double z)
 	{
-		Door w = main.door;
-		
-		double distance;
-		
+		ArrayList<Door> doors = main.doors;
+		for(int i =0; i<doors.size();i++){
+			Door w = doors.get(i);
 			
-			distance = distToSegment(x / SQUARE_SIZE, z / SQUARE_SIZE, w.getStartX(), w.getStartZ(), w.getEndX(), w.getEndZ());
-		
-			if(distance < 0.1 && y >= w.locationY + 2.5 && w.locationY + 2.5 + SQUARE_SIZE >= y){
-				return true;
-			}
-			
-
+			double distance;
+				distance = distToSegment(x / SQUARE_SIZE, z / SQUARE_SIZE, w.getStartX(), w.getStartZ(), w.getEndX(), w.getEndZ());			
+				if(distance < 0.1 && y >= w.locationY + 2.5 && w.locationY + 2.5 + SQUARE_SIZE >= y){
+					return true;
+				}
+		}
 		return false;		
 		
 	}
@@ -1133,6 +1131,39 @@ public class Maze  implements VisibleObject {
 		}
 		
 		return enemies;
+		
+	}
+	
+	/**
+	 * Loads all the doors from file into the maze
+	 * @return The ArrayList with all the enemies in it
+	 */
+	public ArrayList<Door> loadDoors(){
+		ArrayList<Door> doors = new ArrayList<Door>();
+		for(int i = 0; i<numberOfStoreys;i++){
+			storey = storeys.get(i);
+			ArrayList<Object> o1 = storey.getObjectList().getObjects();
+			for(int j = 0; j < o1.size(); j++){	
+				if(o1.get(j) instanceof ObjectDoor){
+					
+					ObjectDoor t = (ObjectDoor) o1.get(j);
+					Point2D.Float p  = t.getPoints().get(0);
+					Point2D.Float p1 = t.getPoints().get(1);
+					Point2D.Float switchP = t.getSwitchLocation();
+					doors.add(new Door(p.x * main.maze.SQUARE_SIZE, 	// x-position
+							storey.getFloorHeight(), // y-position
+							p.y * main.maze.SQUARE_SIZE, 
+							p1.x * main.maze.SQUARE_SIZE, 
+							storey.getRoofHeight(),
+							p1.y * main.maze.SQUARE_SIZE,
+							switchP.x * main.maze.SQUARE_SIZE, 
+							storey.getFloorHeight(),
+							switchP.y * main.maze.SQUARE_SIZE,main));	// z-position, texture boolean				 				
+				}
+			}
+		}
+		
+		return doors;
 		
 	}
 	
