@@ -50,12 +50,12 @@ public class Highscores implements MouseListener , MouseMotionListener {
 		main.canvas.addMouseMotionListener(this);
 		
 		SQLHandler sql = new SQLHandler();
-		ResultSet s = sql.query("SELECT u.username, s.score, l.lvlname FROM users u, highscores s, levels l WHERE s.user_id = u.id AND l.id = s.level_id ORDER BY s.score DESC");
+		ResultSet s = sql.query("SELECT u.username, s.level, s.score FROM users u, highscores s WHERE s.user_id = u.id ORDER BY s.score DESC");
 		scores = new ArrayList<String[]>();
 		try {
 			while(s.next()){
 				
-				String[] temp = {s.getString("username"), Integer.toString(s.getInt("score")), s.getString("lvlname")};
+				String[] temp = {s.getString("username"), Integer.toString(s.getInt("score")), s.getString("level")};
 				scores.add(temp);
 			}
 			
