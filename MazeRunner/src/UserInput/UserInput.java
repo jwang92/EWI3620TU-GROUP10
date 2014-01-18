@@ -198,8 +198,15 @@ public class UserInput extends Control
 			
 			LevelExit exit = main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ);
 			if(exit != null){
-				main.initObjects(exit.getNewLoadFolder());
-				main.state.sMainGame = false;
+				if(exit.getNewLoadFolder().equals("finish")){				//end of game
+					main.state.GameStateUpdate(GameState.FINISH_STATE);
+					main.state.setStopMainGame(true);
+					main.state.setStopFinish(false);
+				}
+				else{														//next level
+					main.initObjects(exit.getNewLoadFolder());
+					main.state.sMainGame = false;
+				}
 			}
 		}
 	}

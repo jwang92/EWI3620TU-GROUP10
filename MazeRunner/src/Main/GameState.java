@@ -7,5 +7,6 @@ public enum GameState {
     STOP_STATE,
     GAMEOVER_STATE,
     LOGIN_STATE,
-    HIGHSCORES_STATE
+    HIGHSCORES_STATE,
+    FINISH_STATE
 }

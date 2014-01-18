@@ -54,6 +54,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	public GameOver gameover;
 	public Login login;
 	public Highscores highscores;
+	public Finish finish;
 	
 	//Maze
 	public Maze maze;
@@ -195,6 +196,9 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		case 6:
 			highscores.render(drawable);
 			break;
+		case 7:
+			finish.render(drawable);
+			break;
 		}
 		
 		initUpdater(drawable, 0, 0, screenWidth, screenHeight);
@@ -297,42 +301,50 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
-		if(tel==0){
+		switch(tel){
+		case 0:
 			mainMenu.mouseReleased(me);
-		}
-		else if(tel==2){
+			break;
+		case 2:
 			pause.mouseReleased(me);
-		}
-		else if(tel==4){
+			break;
+		case 4:
 			gameover.mouseReleased(me);
-		}
-		else if(tel==5){
+			break;
+		case 5:
 			login.mouseReleased(me);
-		}
-		else if(tel==6){
+			break;
+		case 6:
 			highscores.mouseReleased(me);
+			break;
+		case 7:
+			finish.mouseReleased(me);
+			break;
 		}
 
 	}
 	
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
 		int tel=state.getState();
-		if(tel==0 && state.getStopTitle()==false){
+		if(tel==0 && !state.getStopTitle() ){
 			mainMenu.init(drawable);
 		}
-		if(tel==1 && state.getStopMainGame()==false ){
+		else if(tel==1 && !state.getStopMainGame() ){
 			mazeRunner.mazeInit(drawable,0,0,screenWidth, screenHeight);
 		}
-		else if(tel==2 && state.getStopPause()==false){
+		else if(tel==2 && !state.getStopPause() ){
 			pause.init(drawable);
 		}
-		else if(tel==4 && state.getStopGameOver()==false){
+		else if(tel==4 && !state.getStopGameOver() ){
 			gameover.init(drawable);
 		}
-		else if(tel==5 && state.getStopLogin()==false){
+		else if(tel==5 && !state.getStopLogin() ){
 			login.init(drawable);
 		}
-		else if(tel==6 && state.getStopHighscores()==false){
+		else if(tel==6 && !state.getStopHighscores() ){
+			highscores.init(drawable);
+		}
+		else if(tel==7 && !state.getStopFinish() ){
 			highscores.init(drawable);
 		}
 	}
@@ -432,6 +444,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mazeRunner = new MazeRunner(screenHeight, screenWidth, this);
 		pause = new Pause(this);
 		gameover = new GameOver(this);
+		finish = new Finish(this);
 
 
 	}
@@ -475,6 +488,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		mazeRunner = new MazeRunner(screenHeight, screenWidth, this);
 		pause = new Pause(this);
 		gameover = new GameOver(this);
+		finish = new Finish(this);
 
 	}
 

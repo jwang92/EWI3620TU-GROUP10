@@ -36,7 +36,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private String type;
 	private Model m ;
 	
-	private double sx,sz, px,pz, ymax, ymin, dmgDet, healthBarPos;
+	private double sx,sz, px,pz, ymax, ymin, dmgDet;
 	protected boolean alert;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
@@ -93,35 +93,19 @@ public class Enemy extends GameObject implements VisibleObject {
 			e.printStackTrace();
 		}
 		
-		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
-			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main, true);
+		if(type.equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
+			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main);
 			leftArm.setEnemy(this);
-			rightArm= new RightArm(x,y,z,tex, "RightArm", main, true);
+			rightArm= new RightArm(x,y,z,tex, "RightArm", main);
 			rightArm.setEnemy(this);
-			rightLeg = new RightLeg(x,y,z,tex,"RightLeg", main, true);
+			rightLeg = new RightLeg(x,y,z,tex,"RightLeg", main);
 			rightLeg.setEnemy(this);
-			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg", main, true);
-			leftLeg.setEnemy(this);
-			
-			ymin=0;
-			ymax = 4.5;
-			dmgDet=1.25;
-			healthBarPos = 4.5;
-		}
-		else if(type.equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
-			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main, false);
-			leftArm.setEnemy(this);
-			rightArm= new RightArm(x,y,z,tex, "RightArm", main, false);
-			rightArm.setEnemy(this);
-			rightLeg = new RightLeg(x,y,z,tex,"RightLeg", main, false);
-			rightLeg.setEnemy(this);
-			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg", main, false);
+			leftLeg = new LeftLeg(x,y,z,tex,"LeftLeg", main);
 			leftLeg.setEnemy(this);
 			
 			ymin=0;
 			ymax = 3.4;
 			dmgDet=1.0;
-			healthBarPos = 3.6;
 		}
 		else if(type.equals("3d_object/Bathos/bathos.obj")){
 			leftWing = new LeftWing(x,y,z,tex,"LeftWing", main);
@@ -132,7 +116,6 @@ public class Enemy extends GameObject implements VisibleObject {
 			ymin=1.5;
 			ymax=3.4;
 			dmgDet=1.0;
-			healthBarPos = 3.6;
 		}
 	}
 	
@@ -466,7 +449,7 @@ public class Enemy extends GameObject implements VisibleObject {
 		if(!dood){
 			gl.glPushMatrix();
 			
-				gl.glTranslated(locationX,locationY+healthBarPos,locationZ);
+				gl.glTranslated(locationX,locationY+3.6,locationZ);
 			
 			//berekening hoek
 				double inP = px-locationX;
@@ -521,9 +504,12 @@ public class Enemy extends GameObject implements VisibleObject {
 				attackTimeout--;
 			}
 			if(player.getHealth() <= 0){
-				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+//				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
+//				main.state.setStopMainGame(true);
+//				main.state.setStopGameOver(false);
+				main.state.GameStateUpdate(GameState.FINISH_STATE);
 				main.state.setStopMainGame(true);
-				main.state.setStopGameOver(false);
+				main.state.setStopFinish(false);
 			}
 		}
 	}
