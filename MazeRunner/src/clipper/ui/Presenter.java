@@ -102,7 +102,7 @@ public class Presenter {
 		} catch (FileNotFoundException e) {
 			storeys = new ArrayList<Storey>();
 		}
-		NavMeshGeneration navGen = new NavMeshGeneration(storeys);
+		NavMeshGeneration navGen = new NavMeshGeneration(storeys,0);
 		navGen.generateWalkablePolygons();
 		navGen.MergeWalkablePolygons();
 		navGen.generateBlockAreas();

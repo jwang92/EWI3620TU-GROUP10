@@ -551,11 +551,15 @@ public class Enemy extends GameObject implements VisibleObject {
 	}
 	
 	public void findRoute(){
-		route = main.maze.getNavMesh().findRoute(
-				(float) (locationX/main.maze.SQUARE_SIZE) -1 , 
-				(float) (locationZ/main.maze.SQUARE_SIZE)-1, 
-				(float) (main.player.getLocationX()/main.maze.SQUARE_SIZE)-1, 
-				(float) (main.player.getLocationZ()/main.maze.SQUARE_SIZE)-1);
+		int storeyEnemy = main.maze.getStorey(locationY);
+		int storeyPlayer = main.maze.getStorey(main.player.getLocationY());
+		if(storeyEnemy == storeyPlayer){
+			route = main.maze.getNavMesh().get(storeyEnemy).findRoute(
+					(float) (locationX/main.maze.SQUARE_SIZE) -1, 
+					(float) (locationZ/main.maze.SQUARE_SIZE)-1, 
+					(float) (main.player.getLocationX()/main.maze.SQUARE_SIZE)-1, 
+					(float) (main.player.getLocationZ()/main.maze.SQUARE_SIZE)-1);
+		}
 		if(route == null){
 			route = new ArrayList<Point3D>();
 		}

@@ -108,7 +108,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private LevelInfo lvlinfo;
 	
 	//NavMesh
-	private NavMesh navMesh;
+	private ArrayList<NavMesh> navMesh;
 	private boolean drawNavMesh = false;
 	
 	//LevelExit
@@ -536,7 +536,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	public void generateNavMesh(){
-		navMesh = new NavMesh(storeys);
+		navMesh = NavMesh.createMultiLayerNavMesh(storeys);
 		setNavMeshDrawMode(true);
 	}
 	
@@ -946,7 +946,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	}
 	
 	public void drawNavMesh(GL gl){
-		navMesh.drawNavMeshEditor(gl,gridOffsetX,gridOffsetX,gridDistance,screenHeight);
+		
+		navMesh.get(storeyNumber-1).drawNavMeshEditor(gl,gridOffsetX,gridOffsetX,gridDistance,screenHeight);
 	}
 	
 	

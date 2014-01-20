@@ -15,8 +15,8 @@ import poly2tri.triangulation.delaunay.DelaunayTriangle;
 public class NavMesh {
 	public ArrayList<DelaunayTriangle> triangles;
 		
-	public NavMesh(ArrayList<Storey> storeys){
-		NavMeshGeneration navMeshGen = new NavMeshGeneration(storeys);
+	public NavMesh(ArrayList<Storey> storeys, int storeyID){
+		NavMeshGeneration navMeshGen = new NavMeshGeneration(storeys,storeyID);
 		triangles = navMeshGen.getResult();
 		
 //		DelaunayTriangle t = triangles.get(10);
@@ -25,6 +25,14 @@ public class NavMesh {
 //		}
 		
 		//System.out.println(findRoute(1.5f,1.5f,0.5f,0.5f));
+	}
+	
+	public static ArrayList<NavMesh> createMultiLayerNavMesh(ArrayList<Storey> storeys){
+		ArrayList<NavMesh> res = new ArrayList<NavMesh>();
+		for(int i =0; i<storeys.size();i++){
+			res.add(new NavMesh(storeys,i));			
+		}
+		return res;
 	}
 	
 	public synchronized ArrayList<Point3D> findRoute(float sx, float sy, float ex, float ey){

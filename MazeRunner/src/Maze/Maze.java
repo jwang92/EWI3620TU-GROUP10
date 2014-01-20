@@ -29,7 +29,7 @@ public class Maze  implements VisibleObject {
 	private int displayList = 0;
 	
 	//NavMesh
-	private NavMesh navMesh;
+	private ArrayList<NavMesh> navMesh;
 	
 	public Maze(MainClass mclass){
 		main = mclass;
@@ -88,10 +88,10 @@ public class Maze  implements VisibleObject {
 	}
 	
 	public void generateNavMesh(){
-		navMesh = new NavMesh(storeys); ;
+		navMesh = NavMesh.createMultiLayerNavMesh(storeys);
 	}
 	
-	public NavMesh getNavMesh(){
+	public ArrayList<NavMesh> getNavMesh(){
 		return navMesh;
 	}
 
@@ -535,6 +535,17 @@ public class Maze  implements VisibleObject {
 		
 		//Disable texture
 		main.textures.get(textureID).disable();
+	}
+	
+	public int getStorey(double y){
+		for(int i=0;i<storeys.size();i++){
+			storey = storeys.get(i);
+			if(y>storey.getFloorHeight()&&y<storey.getRoofHeight()){
+				return i;
+			}
+			
+		}
+		return -1;
 	}
 	
 	/**

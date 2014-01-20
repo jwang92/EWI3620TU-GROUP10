@@ -62,7 +62,11 @@ public class NavMeshGeneration {
 	//Clipper gridsize;
 	private int gridSize = 1000;
 	
-	public NavMeshGeneration(ArrayList<Storey> storeys){
+	//Storey ID
+	private int storeyID = -1;
+	
+	public NavMeshGeneration(ArrayList<Storey> storeys, int storeyID){
+		this.storeyID = storeyID;
 		this.storeys = storeys;
 		walkablePolygonsClipper = new ArrayList<PolygonClipper>();
 		blockedPolygonsClipper = new ArrayList<PolygonClipper>();
@@ -83,8 +87,8 @@ public class NavMeshGeneration {
 	}
 	
 	public void generateWalkablePolygons(){
-		if(storeys.size()>0){
-			storey = storeys.get(0);
+		if(storeys.size()>storeyID){
+			storey = storeys.get(storeyID);
 			FloorList floors = storey.getFloorList();
 			int sizeX = storey.getSizeX();
 			int sizeY = storey.getSizeY();
@@ -133,8 +137,8 @@ public class NavMeshGeneration {
 	}
 	
 	public void generateBlockAreas(){
-		if(storeys.size()>0){
-			storey = storeys.get(0);
+		if(storeys.size()>storeyID){
+			storey = storeys.get(storeyID);
 			WallList walls = storey.getWallList();
 			for(int i=0;i<walls.getWalls().size();i++){
 				Wall w = walls.getWalls().get(i);
