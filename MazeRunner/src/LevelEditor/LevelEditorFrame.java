@@ -112,7 +112,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private boolean drawNavMesh = false;
 	
 	//LevelExit
-	private String levelExitLoadFolder = "";
+	private String levelExitLoadFolder = "finish";
 		
 	//Texture
 	private ArrayList<Texture> textures;
