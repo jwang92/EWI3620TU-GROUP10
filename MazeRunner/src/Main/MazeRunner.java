@@ -224,6 +224,17 @@ public class MazeRunner {
         	}
         	else{
         		int modelID = loadedModels.indexOf(e.getType());
+            	if(e.getType().equals("3d_object/Predator/Predator_Youngblood2/Body.obj") ||
+            			e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+		        	e.leftArm.genVBO(gl);
+		        	e.rightArm.genVBO(gl);
+		        	e.rightLeg.genVBO(gl);
+		        	e.leftLeg.genVBO(gl);
+            	}
+            	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
+            		e.leftWing.genVBO(gl);
+            		e.rightWing.genVBO(gl);
+            	}
         		IntBuffer vbo = tempEnemies.get(modelID).getVBOHandle();
         		e.setVBOHandle(vbo);
         	}
