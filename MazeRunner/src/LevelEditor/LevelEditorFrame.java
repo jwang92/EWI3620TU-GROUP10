@@ -579,7 +579,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
 				else if(objectToDraw == 2){
-					Object obj = new ObjectEnemy(temp,"3d_object/Predator_Youngblood/Predator_Youngblood.obj");
+					Object obj = new ObjectEnemy(temp,"3d_object/Predator/Predator_Youngblood/Body.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
 				else if(objectToDraw == 3){
@@ -594,6 +594,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				}
 				else if(objectToDraw == 5){
 					Object obj = new ObjectEnemy(temp,"3d_object/Bathos/bathos.obj");
+					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
+				}
+				else if(objectToDraw == 7){
+					Object obj = new ObjectEnemy(temp,"3d_object/Predator/Predator_Youngblood2/Body.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
 			}
@@ -820,6 +824,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						textureID = textureNames.lastIndexOf("textures/lion.png");
 					} else if(model.equals("3d_object/Bathos/bathos.obj")){
 						textureID = textureNames.lastIndexOf("textures/bathos.png");
+					} else if(model.equals("3d_object/Predator/Predator_Youngblood2/Body.obj")){
+						textureID = textureNames.lastIndexOf("textures/predator2.png");
 					}
 					
 					for(int j = 0; j < or.getPoints().size(); j++){
