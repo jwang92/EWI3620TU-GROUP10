@@ -95,7 +95,9 @@ public class Maze  implements VisibleObject {
 		return navMesh;
 	}
 
-	
+	public ArrayList<Storey> getStoreys(){
+		return storeys;
+	}
 	
 	public LevelInfo getLevelInfo(){
 		return lvlinfo;
