@@ -1,0 +1,9 @@
+NumberOfObjects: 7;
+Ramp: 8 3; 7 3; 7 2; 8 2; textures/wood.png;
+Ramp: 7 12; 8 12; 8 13; 7 13; textures/brick.png;
+Exit: 8 4; 2; savefiles/kasteel;
+Door: 11 6; 11 5; 12 5; 12 6; 9 6;
+Exit: 9 9; 2; finish;
+Enemy: 4 4; 5 4; 5 5; 4 5; 3d_object/Predator/Predator_Youngblood/Body.obj;
+Enemy: 4 9; 5 9; 5 10; 4 10; 3d_object/Predator/Predator_Youngblood2/Body.obj;
+End;
