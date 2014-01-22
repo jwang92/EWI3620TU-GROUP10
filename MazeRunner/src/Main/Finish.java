@@ -88,8 +88,6 @@ public class Finish  implements MouseListener, MouseMotionListener {
 	
 	public void drawUsername(GL gl){
 		
-		float fontSize = main.screenWidth / 60f;
-		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -167,8 +165,6 @@ public class Finish  implements MouseListener, MouseMotionListener {
 			for( Buttonbox button : buttons)
 				button.loadTextures(gl);
 
-			addScoretoDB();
-			
 			startup = false;
 			
 		}
@@ -264,16 +260,6 @@ public class Finish  implements MouseListener, MouseMotionListener {
 			timer2++;
 		
 //		System.out.println(timer + " <timers> " + timer2 + " + score: " + score);
-	}
-	
-/*
- * **********************************************
- * *			DB methods						*
- * **********************************************
- */
-	
-	private void addScoretoDB(){
-		//TODO: add player with score to the database
 	}
 	
 	
