@@ -1143,7 +1143,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				// Add a new point to the points list.
 				points.add(new Point2D.Float((float)(gridHighlight.x*gridDistance),(float)(screenHeight - gridHighlight.y*gridDistance)));
 				gridpoints.add(gridHighlight);
-				System.out.println(gridHighlight.x*gridDistance + " " + (screenHeight - gridHighlight.y*gridDistance));
 				c.setCursor(-1);
 				
 			}

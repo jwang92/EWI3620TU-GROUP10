@@ -65,9 +65,6 @@ public class Inputbox {
 		double SY = (double) scrH / (double) screenHeight;
 				
 		if(SX != 1 || SY != 1){
-			System.out.println(screenHeight);
-			System.out.println(screenWidth);
-			
 			screenHeight = scrH;
 			screenWidth = scrW;
 			
