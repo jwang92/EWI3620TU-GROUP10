@@ -1,0 +1,11 @@
+NumberOfFloors: 9;
+1 16; 16 16; 16 14; 1 14; textures/wood.png;
+1 14; 3 14; 3 4; 1 4; textures/wood.png;
+14 8; 16 8; 16 6; 14 6; textures/wood.png;
+14 14; 16 14; 16 9; 14 9; textures/wood.png;
+15 9; 16 9; 16 8; 15 8; textures/wood.png;
+3 5; 14 5; 14 4; 3 4; textures/wood.png;
+14 6; 16 6; 16 4; 14 4; textures/wood.png;
+1 4; 16 4; 16 1; 1 1; textures/brick2.png;
+3 10; 14 10; 14 9; 3 9; textures/wood.png;
+End;

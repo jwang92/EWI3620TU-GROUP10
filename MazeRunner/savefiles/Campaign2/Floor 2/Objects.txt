@@ -1,0 +1,8 @@
+NumberOfObjects: 6;
+Door: 4 3; 4 2; 5 2; 5 3; 8 9;
+Door: 13 3; 13 2; 14 2; 14 3; 1 2;
+Enemy: 2 2; 3 2; 3 3; 2 3; 3d_object/Predator/Predator_Youngblood2/Body.obj;
+Enemy: 11 9; 12 9; 12 10; 11 10; 3d_object/Predator/Predator_Youngblood2/Body.obj;
+Enemy: 5 9; 6 9; 6 10; 5 10; 3d_object/Bathos/bathos.obj;
+Exit: 15 2; 2; finish;
+End;
