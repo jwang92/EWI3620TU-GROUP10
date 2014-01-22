@@ -372,7 +372,12 @@ public class Enemy extends GameObject implements VisibleObject {
 				}
 				else if(deathAngle<=-90){
 					remove = true;
-					main.player.setScore(100);
+					if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+						main.player.setScore(300);
+					}
+					else{
+						main.player.setScore(100);
+					}
 				}
 			}
 			

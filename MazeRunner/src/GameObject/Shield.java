@@ -111,11 +111,13 @@ public class Shield extends GameObject implements VisibleObject {
 			}
 			
 			if(player.control.getDefense() && defenseAngle <=-90){
-				player.setDefensePower(5);
+				player.setDefensePower(10);
 			} else if(!player.control.getDefense() && defenseAngle < 0) {
 					defenseAngle += 5;
+					player.setDefensePower(0);
 			} else if(!player.control.getDefense() && defenseAngle >= 0) {
 					defenseAngle = 0;
+					player.setDefensePower(0);
 			}		
 			
 			gl.glRotated(defenseAngle,0,1,0);

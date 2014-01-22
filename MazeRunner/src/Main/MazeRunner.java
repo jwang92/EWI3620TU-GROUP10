@@ -745,6 +745,17 @@ public class MazeRunner {
         	for(int i=0;i<main.enemies.size();i++){
         		Enemy e = main.enemies.get(i);
         		if(e.needRemoval()){
+        			if(e.getType().equals("3d_object/Predator/Predator_Youngblood2/Body.obj") ||
+        					e.getType().equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
+	        			e.leftArm = null;
+	        			e.rightArm = null;
+	        			e.rightLeg = null;
+	        			e.leftLeg = null;
+        			}
+                	else if(e.getType().equals("3d_object/Bathos/bathos.obj")){
+                		e.leftWing = null;
+                		e.rightWing = null;
+                	}
         			main.enemies.remove(e);
         			i--;
         		}
