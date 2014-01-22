@@ -3,10 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-
 import javax.media.opengl.GL;
-import javax.sound.midi.Soundbank;
-
 import Main.GameState;
 import Main.MainClass;
 import Maze.Maze;
@@ -36,7 +33,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	private String type;
 	private Model m ;
 	
-	private double sx,sz, px,pz, ymax, ymin, dmgDet, healthBarPos;
+	private double px,pz, ymax, ymin, dmgDet, healthBarPos;
 	protected boolean alert;
 	private boolean texture;
 	private IntBuffer vboHandle = IntBuffer.allocate(10);
@@ -67,8 +64,6 @@ public class Enemy extends GameObject implements VisibleObject {
 	
 	public Enemy(double x, double y, double z, double angle,boolean tex, String modelName, MainClass mclass){
 		super(x, y, z, mclass);
-		sx=x;
-		sz=z;
 		this.angle = angle;
 		alert = false;
 		texture = tex;
@@ -133,6 +128,12 @@ public class Enemy extends GameObject implements VisibleObject {
 			ymax=3.4;
 			dmgDet=1.0;
 			healthBarPos = 3.6;
+		}
+		else{
+			ymin=0;
+			ymax=2.6;
+			dmgDet=1.0;
+			healthBarPos = 2.8;
 		}
 	}
 	

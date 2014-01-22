@@ -37,7 +37,7 @@ public class Sword extends GameObject implements VisibleObject {
 		String[] modelNames = new String[3];
 		modelNames[0] = "3d_object/sword with arm/sword_and_arm.obj";
 		modelNames[1] = "3d_object/frostsword and arm/frostsword_and_arm.obj";
-		modelNames[2] = "3d_object/lion/lion.obj";
+		modelNames[2] = "3d_object/lightsaber/lightsaber.obj";
 		
 		texture = tex;
 		

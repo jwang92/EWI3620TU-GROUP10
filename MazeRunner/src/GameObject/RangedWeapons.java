@@ -3,20 +3,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-
 import javax.media.opengl.GL;
-
 import Main.MainClass;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
-
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.texture.Texture;
 
 public class RangedWeapons extends GameObject implements VisibleObject {
 	
-	private int displayList;
 	private Player player;
 	private boolean texture;
 	
@@ -50,9 +45,9 @@ public class RangedWeapons extends GameObject implements VisibleObject {
 			}
 			else{
 				Model m = OBJLoader.loadModel((new File("3d_object/raygun/raygun_mark2.obj")));
+				models.add(m);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
