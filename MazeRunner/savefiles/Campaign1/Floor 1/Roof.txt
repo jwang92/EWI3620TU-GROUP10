@@ -1,0 +1,6 @@
+NumberOfRoofs: 4;
+1 1; 9 1; 9 13; 1 13; textures/brick2.png;
+9 4; 13 4; 13 13; 9 13; textures/brick2.png;
+10 1; 13 1; 13 4; 10 4; textures/brick2.png;
+9 1; 10 1; 10 3; 9 3; textures/brick2.png;
+End;

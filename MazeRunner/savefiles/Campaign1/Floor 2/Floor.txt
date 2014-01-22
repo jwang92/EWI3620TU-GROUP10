@@ -1,0 +1,6 @@
+NumberOfFloors: 4;
+1 13; 1 1; 9 1; 9 13; textures/tile.png;
+9 1; 13 1; 13 3; 9 3; textures/tile.png;
+10 3; 13 3; 13 13; 10 13; textures/tile.png;
+9 4; 10 4; 10 13; 9 13; textures/tile.png;
+End;
