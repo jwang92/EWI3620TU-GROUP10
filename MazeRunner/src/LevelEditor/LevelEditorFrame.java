@@ -953,7 +953,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	public void drawNavMesh(GL gl){
 		
-		navMesh.get(storeyNumber-1).drawNavMeshEditor(gl,gridOffsetX,gridOffsetX,gridDistance,screenHeight);
+		navMesh.get(storeyNumber-1).drawNavMeshEditor(gl,gridOffsetX,gridOffsetY,gridDistance,screenHeight);
 	}
 	
 	

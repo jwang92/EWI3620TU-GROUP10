@@ -1,32 +1,19 @@
 package Main;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.Frame;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCanvas;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
 import Utils.Buttonbox;
 
-import com.sun.opengl.util.Animator;
-import com.sun.opengl.util.GLUT;
 import com.sun.opengl.util.j2d.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
-import javax.swing.*;
-
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -109,6 +96,7 @@ public class GameOver implements MouseListener, MouseMotionListener {
 		gl.glDisable(GL.GL_BLEND);
 		
 		TextRenderer t = main.trenderers.get(0);
+		t.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));

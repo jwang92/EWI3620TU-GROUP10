@@ -156,6 +156,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 		
 	public void render (GLAutoDrawable drawable){
+		
 		GL gl = drawable.getGL();
 
 //		System.out.println("render: "+screenWidth +"x"+ screenHeight);

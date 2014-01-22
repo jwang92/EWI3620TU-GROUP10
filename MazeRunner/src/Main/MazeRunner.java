@@ -502,10 +502,10 @@ public class MazeRunner {
 	public void drawLevelExit(GL gl){
 		if(main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ) != null){
 			
-			TextRenderer t = main.trenderers.get(3);
+			TextRenderer t = main.trenderers.get(1);
 	
 			t.beginRendering(screenWidth, screenHeight);
-			t.draw("press ENTER to enter next level", screenWidth/6, screenHeight-100);
+			t.draw("press ENTER to enter next level", (int) (screenWidth*0.2f), (int) (screenHeight*0.8f));
 			t.endRendering();
 			
 		}

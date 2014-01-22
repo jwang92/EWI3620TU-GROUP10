@@ -94,25 +94,24 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 	
 	public void drawUsername(GL gl){
 		
-		float fontSize = main.screenWidth / 60f;
-		
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
 		
 		gl.glBegin(GL.GL_QUADS);
 			gl.glColor4f(0f, 0f, 0f, 0.5f);
 			gl.glVertex2f(0, 0);
-			gl.glVertex2f(0, fontSize * 2);
-			gl.glVertex2f(main.screenWidth, fontSize * 2);
+			gl.glVertex2f(0, main.screenHeight * 0.07f);
+			gl.glVertex2f(main.screenWidth, main.screenHeight * 0.07f);
 			gl.glVertex2f(main.screenWidth, 0);
 		gl.glEnd();
 		
 		gl.glDisable(GL.GL_BLEND);
 		
 		TextRenderer t = main.trenderers.get(0);
+		t.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
-		t.draw("Ingelogd als " + main.username + " --- Level: " + main.maze.getLevel(), (int) (fontSize * 0.65), (int) (fontSize * 0.65));
+		t.draw("Ingelogd als " + main.username + " --- Level: " + main.maze.getLevel(), (int) (main.screenHeight * 0.02f), (int) (main.screenHeight * 0.02f));
 		t.endRendering();
 		
 	}

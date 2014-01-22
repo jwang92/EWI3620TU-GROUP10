@@ -118,6 +118,7 @@ public class Highscores implements MouseListener , MouseMotionListener {
 		gl.glDisable(GL.GL_BLEND);
 		
 		TextRenderer t = main.trenderers.get(0);
+		t.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));
@@ -149,6 +150,7 @@ public class Highscores implements MouseListener , MouseMotionListener {
 		// Titeltje erboven
 		
 		TextRenderer t = main.trenderers.get(3);
+		t.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Highscores", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f));
@@ -158,19 +160,20 @@ public class Highscores implements MouseListener , MouseMotionListener {
 	
 	public void drawScores(GL gl){
 		
-		float fontSize = (float) Math.floor(main.screenHeight * 20.0f/600.0f);
 		
 		TextRenderer t = main.trenderers.get(0);
 		t.setColor((float)Math.random(), 1, (float)Math.random(), 1);
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		
+		float fontSize = (float) Math.floor(main.screenHeight * 20.0f/600.0f);
+		
 		for(int i = 1; i <= scores.size(); i++){
-			
-			t.draw(i + ".", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Nummer
-			t.draw(scores.get(i-1)[0], (int) (main.screenWidth * 0.35f + fontSize * 3), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Naam
-			t.draw(""+scores.get(i-1)[1], (int) (main.screenWidth * 0.35f + fontSize * 20), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Scores	
-			t.draw(scores.get(i-1)[2], (int) (main.screenWidth * 0.35f + fontSize * 25), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Level	
-			
+			if( i < 15 ){
+				t.draw(i + ".", (int) (main.screenWidth * 0.35f), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Nummer
+				t.draw(scores.get(i-1)[0], (int) (main.screenWidth * 0.35f + fontSize*0.8f * 3), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Naam
+				t.draw(""+scores.get(i-1)[1], (int) (main.screenWidth * 0.35f + fontSize*0.8f * 12), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Scores	
+				t.draw(scores.get(i-1)[2], (int) (main.screenWidth * 0.35f + fontSize*0.8f * 17), (int) (main.screenHeight * 0.75f - (i * fontSize))); // Level	
+			}
 		}
 			
 	

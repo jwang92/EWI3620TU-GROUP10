@@ -526,12 +526,9 @@ public class Enemy extends GameObject implements VisibleObject {
 				attackTimeout--;
 			}
 			if(player.getHealth() <= 0){
-//				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
-//				main.state.setStopMainGame(true);
-//				main.state.setStopGameOver(false);
-				main.state.GameStateUpdate(GameState.FINISH_STATE);
+				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
 				main.state.setStopMainGame(true);
-				main.state.setStopFinish(false);
+				main.state.setStopGameOver(false);
 			}
 		}
 	}

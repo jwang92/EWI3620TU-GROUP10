@@ -20,6 +20,8 @@ public class Door extends GameObject implements VisibleObject {
 	
 	public Door(double x, double y, double z, double x2, double y2, double z2, double switchX, double switchY, double switchZ, MainClass m){
 		super(x,y,z, m);
+		switchX += main.maze.SQUARE_SIZE/2.0;
+		switchZ += main.maze.SQUARE_SIZE/2.0;
 		doorSwitch = new DoorSwitch(switchX,switchY,switchZ,main);
 		dx=x2-x;
 		dy=y2-y;

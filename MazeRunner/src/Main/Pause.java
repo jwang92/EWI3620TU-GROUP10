@@ -98,6 +98,7 @@ public class Pause implements MouseListener, MouseMotionListener {
 		gl.glDisable(GL.GL_BLEND);
 		
 		TextRenderer t = main.trenderers.get(0);
+		t.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 		t.beginRendering(main.screenWidth, main.screenHeight);
 		t.draw("Ingelogd als " + main.username, (int) (main.screenWidth * 0.02f), (int) (main.screenHeight * 0.02f));
