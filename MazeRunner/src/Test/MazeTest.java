@@ -77,16 +77,6 @@ public class MazeTest {
 	}
 	
 	@Test
-	public void isDoorTest() {
-		main = new MainClass(600,600,false);;
-		maze = new Maze("savefiles/JunitTestLevel",main);
-		assertTrue(maze.isDoor(55.47665365626652, 2.5, 28.714174813040593));
-		assertFalse(maze.isDoor(55.55134142706395, 2.5, 28.894487042243163));
-		assertFalse(maze.isDoor(55.47665365626652, -2.5, 28.714174813040593));
-		assertFalse(maze.isDoor(55.47665365626652, 20, 28.714174813040593));
-	}
-	
-	@Test
 	public void isPickupTest() {
 		assertEquals(maze.isPickup(53.30743438731379, 51.609460022599876, 2.5), 3);
 		assertEquals(maze.isPickup(52.91353151382229, 52.101131179223025, 2.5), 0);

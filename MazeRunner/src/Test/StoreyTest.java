@@ -143,10 +143,10 @@ public class StoreyTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(s.getFloorHeight(),0);
-		assertEquals(s.getRoofHeight(),5);
-		assertEquals(s.getSizeX(),15);
-		assertEquals(s.getSizeY(),15);
+		assertEquals(s1.getFloorHeight(),0);
+		assertEquals(s1.getRoofHeight(),5);
+		assertEquals(s1.getSizeX(),15);
+		assertEquals(s1.getSizeY(),15);
 	}
 
 }
