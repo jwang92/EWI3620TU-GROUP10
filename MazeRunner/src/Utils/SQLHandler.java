@@ -21,6 +21,11 @@ public class SQLHandler {
 		
 	}
 	
+	/**
+	 * ask database for data
+	 * @param sql
+	 * @return
+	 */
 	public ResultSet query(String sql){
 		
 		ResultSet r = null;
@@ -35,6 +40,11 @@ public class SQLHandler {
 		
 	}
 	
+	/**
+	 * writes data to database
+	 * @param sql
+	 * @return te be written data
+	 */
 	public boolean updatequery(String sql){
 		
 		try {

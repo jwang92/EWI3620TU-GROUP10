@@ -5,6 +5,7 @@ import Main.MainClass;
 
 import com.sun.opengl.util.j2d.TextRenderer;
 
+//extends inputbox but string is written by ******
 
 public class pwInputbox extends Inputbox {
 

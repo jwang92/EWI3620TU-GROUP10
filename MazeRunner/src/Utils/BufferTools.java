@@ -81,29 +81,6 @@ public class BufferTools {
     }
     
 
-//    /**
-//     * @param matrix4f the Matrix4f that is to be turned into a readable FloatBuffer
-//     *
-//     * @return a FloatBuffer representation of matrix4f
-//     */
-//    public static FloatBuffer asFloatBuffer(Matrix4f matrix4f) {
-//        FloatBuffer buffer = FloatBuffer.allocate(16);
-//        matrix4f.store(buffer);
-//        return buffer;
-//    }
-//
-//    /**
-//     * @param matrix4f the Matrix4f that is to be turned into a FloatBuffer that is readable to OpenGL (but not to you)
-//     *
-//     * @return a FloatBuffer representation of matrix4f
-//     */
-//    public static FloatBuffer asFlippedFloatBuffer(Matrix4f matrix4f) {
-//        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
-//        matrix4f.store(buffer);
-//        buffer.flip();
-//        return buffer;
-//    }
-
     /**
      * @param values the float values that are to be turned into a readable FloatBuffer
      *

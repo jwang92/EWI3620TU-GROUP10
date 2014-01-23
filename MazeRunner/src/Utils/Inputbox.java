@@ -23,6 +23,7 @@ public class Inputbox {
 	protected Font f;
 	protected boolean selected;		//selected
 	
+	//constructor
 	public Inputbox(int xCoord, int yCoord, int FontSize, int StringLength, String defText, MainClass mclass){
 		main = mclass;
 		x = xCoord;
@@ -38,6 +39,9 @@ public class Inputbox {
 		settup();
 	}
 	
+	/**
+	 * sets some variables
+	 */
 	private void settup(){
 		margin = 2;
 		text = "";
@@ -47,6 +51,13 @@ public class Inputbox {
 		
 	}
 	
+	/**
+	 * draws the inputbox with the string value
+	 * @param gl 
+	 * @param scrH screenheight
+	 * @param scrW screenwidth
+	 * @param tr  used textrenderer
+	 */
 	public void DrawInputbox(GL gl, int scrH, int scrW, TextRenderer tr){
 
 		adjustToReshape(scrH, scrW);
@@ -60,6 +71,11 @@ public class Inputbox {
 		
 	}
 	
+	/**
+	 * helps to reshape the inputboxes
+	 * @param scrH screenheight
+	 * @param scrW screenwidth
+	 */
 	public void adjustToReshape(int scrH, int scrW){
 		double SX = (double) scrW / (double) screenWidth;
 		double SY = (double) scrH / (double) screenHeight;
@@ -76,6 +92,10 @@ public class Inputbox {
 		}		
 	}
 	
+	/**
+	 * draws the box
+	 * @param gl
+	 */
 	public void DrawBox(GL gl){
 		
 		gl.glBegin(GL.GL_QUADS);
@@ -98,14 +118,12 @@ public class Inputbox {
 		gl.glEnd();
 
 	}
-
-//	public TextRenderer setTR(int sH){
-//		float size = (float) sH;
-//		Font f = this.f.deriveFont(size);
-//	
-//		return new TextRenderer(f);
-//	}
 	
+	/**
+	 * draws the text
+	 * @param gl
+	 * @param tr used textrenderer
+	 */
 	public void DrawText(GL gl, TextRenderer tr){
 		
 		String text = this.text;
@@ -143,6 +161,10 @@ public class Inputbox {
 		
 	}
 	
+	/**
+	 * adjust string --> no special signs
+	 * @param ke
+	 */
 	public void enteredKey(KeyEvent ke){
 		char Key = ke.getKeyChar();
 		

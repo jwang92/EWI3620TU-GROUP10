@@ -43,6 +43,10 @@ public class Buttonbox {
 		textureFileType = "png";
 	}
 
+	/**
+	 * load a texture
+	 * @param gl
+	 */
 	public void loadTextures(GL gl){
 		try {
 		    File folder = new File("menu_files/");
@@ -78,27 +82,19 @@ public class Buttonbox {
 	            	textureFileName = textureNames.get(0);
 	            }	
 	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
 		} catch (GLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
 	
+	/**
+	 * draws buttonboxes on screen using quads and textures
+	 * @param gl
+	 * @param scrH  screenHeight
+	 * @param scrW  screenWidth
+	 */
 	public void drawButtonbox(GL gl, int scrH, int scrW) {
 		
 		adjustToReshape(scrH, scrW);
@@ -132,6 +128,11 @@ public class Buttonbox {
 
 	}
 	
+	/**
+	 * helps reshaping buttonboxes
+	 * @param scrH  screenHeight
+	 * @param scrW  screenWidth
+	 */
 	public void adjustToReshape(int scrH, int scrW){
 		double SX = (double) scrW / (double) screenWidth;
 		double SY = (double) scrH / (double) screenHeight;

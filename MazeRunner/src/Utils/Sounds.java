@@ -3,7 +3,8 @@ import java.applet.Applet;
 import java.applet.AudioClip;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+ 
+//loads all the necessary sound files and lays them when called upon
 
 public class Sounds {
 	

@@ -1,5 +1,7 @@
 package Utils;
 
+//3D point(x,y,z)
+
 public class Point3D {
 	public float x;
 	public float y;
