@@ -1,9 +1,6 @@
 package LevelEditor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.media.opengl.GL;
 
@@ -14,19 +11,22 @@ import poly2tri.triangulation.delaunay.DelaunayTriangle;
 
 public class NavMesh {
 	public ArrayList<DelaunayTriangle> triangles;
-		
+	
+	/**
+	 * Create a navmesh of a storey
+	 * @param storeys Storeys
+	 * @param storeyID ID of the storey to load
+	 */
 	public NavMesh(ArrayList<Storey> storeys, int storeyID){
 		NavMeshGeneration navMeshGen = new NavMeshGeneration(storeys,storeyID);
 		triangles = navMeshGen.getResult();
-		
-//		DelaunayTriangle t = triangles.get(10);
-//		for(int i =0; i<t.neighbors.length;i++){
-//			System.out.println(triangles.indexOf(t.neighbors[i]));
-//		}
-		
-		//System.out.println(findRoute(1.5f,1.5f,0.5f,0.5f));
 	}
 	
+	/**
+	 * Create a navmesh for multiple storeys
+	 * @param storeys storeys to load
+	 * @return return the navmesh
+	 */
 	public static ArrayList<NavMesh> createMultiLayerNavMesh(ArrayList<Storey> storeys){
 		ArrayList<NavMesh> res = new ArrayList<NavMesh>();
 		for(int i =0; i<storeys.size();i++){
@@ -35,6 +35,14 @@ public class NavMesh {
 		return res;
 	}
 	
+	/**
+	 * Find a point route between s and e
+	 * @param sx
+	 * @param sy
+	 * @param ex
+	 * @param ey
+	 * @return return the route
+	 */
 	public synchronized ArrayList<Point3D> findRoute(float sx, float sy, float ex, float ey){
 		sx = sx*1000;
 		sy = sy*1000;
@@ -62,6 +70,17 @@ public class NavMesh {
 		return res;
 	}
 	
+	/**
+	 *  Find a point route between s and e with given triangles according to funnel algorithm
+	 * @param sx
+	 * @param sy
+	 * @param ex
+	 * @param ey
+	 * @param firstTriangleID triangle containing s
+	 * @param endTriangleID triangle containing e
+	 * @param closed triangle route
+	 * @return
+	 */
 	public synchronized ArrayList<Point3D> findPointRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID, ArrayList<DelaunayTriangle> closed){
 		ArrayList<Point3D> route = new ArrayList<Point3D>();
 		
@@ -78,22 +97,12 @@ public class NavMesh {
 		TriangulationPoint p1 = null;
 		TriangulationPoint p2 = null;
 		
-		TriangulationPoint oldtemp1 = null;
-		TriangulationPoint oldtemp2 = null;
-		
 		while(!currentTriangle.equals(firstTriangle)){
 			boolean updateCorner = false;
 			ArrayList<TriangulationPoint> sharingPoints = currentTriangle.getSharingPoints(previousTriangle);
 			
-//			System.out.println(currentTriangle.points[0].getX() + ", " + currentTriangle.points[0].getY());
-//			System.out.println(currentTriangle.points[1].getX() + ", " + currentTriangle.points[1].getY());
-//			System.out.println(currentTriangle.points[2].getX() + ", " + currentTriangle.points[2].getY());
-			
 			TriangulationPoint temp1 = sharingPoints.get(0);
 			TriangulationPoint temp2 = sharingPoints.get(1);
-
-//			System.out.println(temp1.getX() + ", " + temp1.getY());
-//			System.out.println(temp2.getX() + ", " + temp2.getY());
 
 			Point3D currentCorner = route.get(route.size()-1);
 			if(p1 == null && p2 == null){
@@ -123,6 +132,7 @@ public class NavMesh {
 				boolean outsideTemp1 = (sideOfLine1Temp1 == sideOfLine2Temp1);
 				boolean outsideTemp2 = (sideOfLine1Temp2 == sideOfLine2Temp2);
 				
+				//Both temp1 and temp2 are outside
 				if(outsideTemp1 && outsideTemp2){
 					
 					if(sideOfLine1Temp1 == sideOfLine1Temp2){
@@ -143,21 +153,7 @@ public class NavMesh {
 							
 							p1 = null;
 							p2 = null;
-							
-//							if(SideOfLine(tempCorner.getX(), tempCorner.getZ(), oldtemp1.getX()/1000, oldtemp1.getY()/1000, oldtemp2.getX()/1000, oldtemp2.getY()/1000)){
-//								System.out.println("test1");
-//								p1 = oldtemp1;
-//								p2 = oldtemp2;
-//							}
-//							else{
-//								System.out.println("test2");
-//								p1 = oldtemp2;
-//								p2 = oldtemp1;
-//							}
-							
 
-							
-//							updateCorner = true;
 						}
 						
 						else{
@@ -177,24 +173,13 @@ public class NavMesh {
 							
 							p1 = null;
 							p2 = null;
-							
-//							if(SideOfLine(tempCorner.getX(), tempCorner.getZ(), oldtemp1.getX()/1000, oldtemp1.getY()/1000, oldtemp2.getX()/1000, oldtemp2.getY()/1000)){
-//								System.out.println("test1");
-//								p1 = oldtemp1;
-//								p2 = oldtemp2;
-//							}
-//							else{
-//								System.out.println("test2");
-//								p1 = oldtemp2;
-//								p2 = oldtemp1;
-//							}
-//							updateCorner = true;
 						}
 					}
 					else{
 						//do nothing
 					}
 				}
+				//Temp1 is outside so update with temp2
 				else if(outsideTemp1){
 					if(sideOfLine1Temp1 == true){
 						p1 = temp2;
@@ -203,7 +188,7 @@ public class NavMesh {
 						p2 = temp2;
 					}
 				}
-				
+				//Temp2 is outside so update with temp1
 				else if(outsideTemp2){
 					if(sideOfLine1Temp2 == true){
 						p1 = temp1;
@@ -212,6 +197,7 @@ public class NavMesh {
 						p2 = temp1;
 					}
 				}
+				//Both are inside so update with both temp1 and temp2
 				else{
 					if(SideOfLine(currentCorner.getX(), currentCorner.getZ(), temp1.getX()/1000, temp1.getY()/1000, temp2.getX()/1000, temp2.getY()/1000)){
 						p1 = temp1;
@@ -231,8 +217,6 @@ public class NavMesh {
 				currentTriangle.setChild(previousTriangle);
 			}
 
-			oldtemp1 = temp1;
-			oldtemp2 = temp2;
 		}
 		
 		Point3D start = new Point3D(sx/1000,0,sy/1000);
@@ -240,6 +224,16 @@ public class NavMesh {
 		return route;
 	}
 	
+	/**
+	 * Find triangle route between s and e
+	 * @param sx
+	 * @param sy
+	 * @param ex
+	 * @param ey
+	 * @param firstTriangleID triangle containing s
+	 * @param endTriangleID triangle containing e
+	 * @return return triangle route
+	 */
 	public synchronized ArrayList<DelaunayTriangle> findTriangleRoute(float sx, float sy, float ex, float ey, int firstTriangleID, int endTriangleID){
 		
 		ArrayList<DelaunayTriangle> closed = new ArrayList<DelaunayTriangle>();
@@ -253,14 +247,11 @@ public class NavMesh {
 		
 		int bestTriangle = 0;
 		
+		//While closed doesn't contain end triangle
 		int result = 0;
 		while(result == 0){
 			DelaunayTriangle currentTriangle = open.get(bestTriangle);
 			closed.add(currentTriangle);
-			
-			//System.out.println(bestTriangle + ", " + open.size() + ", " + closed.size());
-			//System.out.println(test);
-			//System.out.println(triangles.indexOf(open.get(bestTriangle)));
 			
 			for(int i=0;i<currentTriangle.neighbors.length;i++){
 				DelaunayTriangle neighbor = currentTriangle.neighbors[i];
@@ -271,16 +262,21 @@ public class NavMesh {
 					open.add(neighbor);					
 					double g = currentTriangle.getG() + neighbor.distance(currentTriangle);
 					
+					//update h
 					if(neighbor.getH()==0){
 						double h = neighbor.distance(ex, ey);
+						neighbor.setH(h);
 					}
 					
+					//update g
 					if(g < neighbor.getG()){
 						neighbor.setParent(currentTriangle);
 						neighbor.setG(g);
 					}
+					//refresh f
 					neighbor.refreshF();
 				}
+				//If closed contains the neighbour only update g and f
 				else if(!closed.contains(neighbor) &&  triangles.indexOf(neighbor) >= 0){
 					double g = currentTriangle.getG() + neighbor.distance(currentTriangle);
 					if(g < neighbor.getG()){
@@ -292,6 +288,7 @@ public class NavMesh {
 				
 			}
 			
+			//Find the new triangle
 			bestTriangle = -1;
 			double minF = Double.MAX_VALUE;
 			for(int i=0;i<open.size();i++){
@@ -316,6 +313,9 @@ public class NavMesh {
 		
 	}
 	
+	/**
+	 * Reset the navmesh so it can be used again
+	 */
 	public synchronized void resetNavMesh(){
 		for(int i =0;i<triangles.size();i++){
 			DelaunayTriangle t = triangles.get(i);
@@ -327,6 +327,12 @@ public class NavMesh {
 		}
 	}
 	
+	/**
+	 * find a triangle containing point x,y
+	 * @param x
+	 * @param y
+	 * @return return the id of the triangle
+	 */
 	public int findTriangle(float x,float y){
 		for(int i =0; i<triangles.size();i++){
 			DelaunayTriangle t = triangles.get(i);
@@ -422,6 +428,13 @@ public class NavMesh {
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
 	}
 	
+	/**
+	 * Returns true if testx,testy is in the polygon build with walkable
+	 * @param walkable
+	 * @param testx
+	 * @param testy
+	 * @return Returns true if testx,testy is in the polygon build with walkable
+	 */
 	private boolean PointInPoly(TriangulationPoint[] walkable, float testx, float testy)
 	{	
 		int nvert = walkable.length;
@@ -476,6 +489,16 @@ public class NavMesh {
 	  return c;
 	}
 	
+	/**
+	 * Find on which side of the line the point is
+	 * @param lineX1 
+	 * @param lineY1
+	 * @param lineX2
+	 * @param lineY2
+	 * @param pointX
+	 * @param pointY
+	 * @return true if the point is left (when it is a vertical line) 
+	 */
 	public boolean SideOfLine(double lineX1, double lineY1, double lineX2, double lineY2,double pointX, double pointY){
 	     return ((lineX2 - lineX1)*(pointY - lineY1) - (lineY2 - lineY1)*(pointX - lineX1)) > 0;
 	}

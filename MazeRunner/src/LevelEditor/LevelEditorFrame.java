@@ -808,6 +808,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				case 3:
 					texture = "upgrade_health.png";
 					break;
+				case 4:
+					texture = "upgrade_gun.png";
+					break;
+				case 5:
+					texture = "upgrade_2x.png";
+					break;
 					
 				}
 				

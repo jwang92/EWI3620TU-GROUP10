@@ -1,21 +1,16 @@
 package LevelEditor;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import poly2tri.Poly2Tri;
 import poly2tri.geometry.polygon.PolygonPoint;
 import poly2tri.geometry.polygon.PolygonPoly2Tri;
-import poly2tri.geometry.primitives.Edge;
 import poly2tri.geometry.primitives.Point;
 import poly2tri.triangulation.TriangulationPoint;
 import poly2tri.triangulation.delaunay.DelaunayTriangle;
 import poly2tri.triangulation.delaunay.sweep.DTSweepConstraint;
-import poly2tri.triangulation.point.TPoint;
 import clipper.ClipType;
 import clipper.Clipper;
 import clipper.IntPoint;
@@ -86,6 +81,9 @@ public class NavMeshGeneration {
 		return triangleListPoly2Tri;
 	}
 	
+	/**
+	 * Generate the walkablepolygons from floors
+	 */
 	public void generateWalkablePolygons(){
 		if(storeys.size()>storeyID){
 			storey = storeys.get(storeyID);
@@ -122,26 +120,29 @@ public class NavMeshGeneration {
 					p.add(new IntPoint(tempX,tempY));
 				}
 
-//				p.add(new IntPoint( (int) (f.getPoints().get(0).x-1)*gridSize, (int) (f.getPoints().get(0).y-1)*gridSize));
-//				p.add(new IntPoint( (int) (f.getPoints().get(1).x-1)*gridSize, (int) (f.getPoints().get(1).y-1)*gridSize +1));
-//				p.add(new IntPoint( (int) (f.getPoints().get(2).x-1)*gridSize +1, (int) (f.getPoints().get(2).y-1)*gridSize +1));
-//				p.add(new IntPoint( (int) (f.getPoints().get(3).x-1)*gridSize +1, (int) (f.getPoints().get(3).y-1)*gridSize));
 				walkablePolygonsClipper.add(p);			
 			}
 		}
 	}
 	
+	/**
+	 * Merge the walkable polygons to one large polygon
+	 */
 	public void MergeWalkablePolygons(){
 		clipper.addPolygons(walkablePolygonsClipper, PolyType.ptClip);
 		clipper.execute(ClipType.UNION, tempClipper, PolyFillType.NONZERO, PolyFillType.NONZERO);
 	}
 	
+	/**
+	 * Generate the blockedareas from the walls
+	 */
 	public void generateBlockAreas(){
 		if(storeys.size()>storeyID){
 			storey = storeys.get(storeyID);
 			WallList walls = storey.getWallList();
 			for(int i=0;i<walls.getWalls().size();i++){
 				Wall w = walls.getWalls().get(i);
+				//Ignore the left wall of a level because it will not use it correctly
 				if((w.getStartx()-1 != 0) && w.getEndx()-1 != 0){
 					PolygonClipper p = getWallTop(w.getStartx()-1,w.getStarty()-1,w.getEndx()-1,w.getEndy()-1);
 					blockedPolygonsClipper.add(p);
@@ -150,10 +151,16 @@ public class NavMeshGeneration {
 		}
 	}
 	
+	/**
+	 * Increase the size of the walls
+	 */
 	public void increaseBlockedAreaSize(){
 		blockedPolygonsClipper= (ArrayList<PolygonClipper>) Clipper.offsetPolygons(blockedPolygonsClipper, 350, JoinType.jtSquare);
 	}
 	
+	/**
+	 * Calculate the difference between the walkable and blocked polygons
+	 */
 	public void RemoveBlockedArea(){
 		for(PolygonClipper p : blockedPolygonsClipper){
 			clipper = new Clipper();
@@ -165,6 +172,9 @@ public class NavMeshGeneration {
 		resultClipper = tempClipper;
 	}
 	
+	/**
+	 * Create triangles from result
+	 */
 	public void Triangulate(){
 		walkablePolygonsPoly2Tri = new ArrayList<PolygonPoly2Tri>();
 		blockedPolygonsPoly2Tri = new ArrayList<PolygonPoly2Tri>();
@@ -208,11 +218,17 @@ public class NavMeshGeneration {
 		
 	}
 	
+	/**
+	 * Find neighbours of the triangles
+	 */
 	public void getNeighbours(){
 		groupTrianglesSharingEdges();
 		getTriangleNeighbours();
 	}
 
+	/**
+	 * Find the triangles sharing edges.
+	 */
 	private void groupTrianglesSharingEdges(){
 		// group all triangles that share an edge
 		edgeToTriangles = new HashMap<DTSweepConstraint,ArrayList<Integer>>();
@@ -243,6 +259,9 @@ public class NavMeshGeneration {
 		}
 	}
 	
+	/**
+	 * Add the triangles sharing edges as eachothers neighbours
+	 */
 	private void getTriangleNeighbours(){
 		// gather each triangle's neighbours
 		for(int i=0;i<triangleListPoly2Tri.size();i++){
@@ -255,13 +274,11 @@ public class NavMeshGeneration {
 					int edgeID = edges.indexOf(e);
 					temp = edgesToTriangles.get(edgeID);
 					for(int j=0;j<temp.size();j++){
-						//System.out.println(temp.get(i));
 						DelaunayTriangle neighbour = triangleListPoly2Tri.get(temp.get(j));
 						if(!t.equals(neighbour)){
 							t.neighbors[j] = neighbour; 
 						}
 						else{
-							//System.out.println("test");
 						}
 					}
 				}
@@ -274,22 +291,11 @@ public class NavMeshGeneration {
 		}
 	}
 	
-//	private ArrayList<TriangulationPoint> generateSteinerPoints(){
-//		ArrayList<TriangulationPoint> SteinerPoints = new ArrayList <TriangulationPoint>();
-//		int sizeX = storey.getSizeX() - 2;
-//		int sizeY = storey.getSizeY() - 2;
-//		double SteinerDistance = 0.5;
-//		for(double i = 0.25; i<sizeX; i += SteinerDistance){
-//			for(double j = 0.25; j<sizeY; j += SteinerDistance){
-//				System.out.println("test");
-//				TriangulationPoint temp = new TPoint(i*gridSize,j*gridSize); 
-//				SteinerPoints.add(temp);
-//			}
-//		}
-//		
-//		return SteinerPoints;
-//	}
-	
+	/**
+	 * Get the edges of a triangle
+	 * @param t triangle
+	 * @return Return the edges as arraylist
+	 */
 	private ArrayList<DTSweepConstraint> getTriangleEdges(DelaunayTriangle t){
 		ArrayList<DTSweepConstraint> res = new ArrayList<DTSweepConstraint>();
 		DTSweepConstraint edge1 = new DTSweepConstraint(t.points[0], t.points[1]);
@@ -303,6 +309,14 @@ public class NavMeshGeneration {
 		return res;
 	}
 	
+	/**
+	 * Get the top view of the wall between points s and e 
+	 * @param sx 
+	 * @param sy
+	 * @param ex
+	 * @param ey
+	 * @return
+	 */
 	private PolygonClipper getWallTop(float sx, float sy, float ex, float ey){
 		PolygonClipper wallTop = new PolygonClipper();
 		
@@ -324,48 +338,15 @@ public class NavMeshGeneration {
 		wallTop.add((int)(gridSize * ex + perx + parx), (int)(gridSize * ey - pery - pary));
 		wallTop.add((int)(gridSize * sx + perx + parx), (int)(gridSize * sy - pery - pary));
 		
-//		if(Math.abs(ex-sx)==0){
-//		float c=1.0f;
-//			if(sy>ey){
-//				c=1.0f;
-//			}
-//			else{
-//				c=-1.0f;
-//			}
-//			wallTop.add((int)((sx-0.02f)), (int)(gridSize * (sy+0.019f*c)));
-//			wallTop.add((int)(gridSize * (ex-0.02f)), (int)(gridSize * (ey-0.019f*c)));
-//			wallTop.add((int)(gridSize * (ex+0.02f)), (int)(gridSize * (ey-0.019f*c)));
-//			wallTop.add((int)(gridSize * (sx+0.02f)), (int)(gridSize * (sy+0.019f*c)));
-//		}
-//		else if(Math.abs(ey-sy)/Math.abs(ex-sx)<1){
-//			float c = 1.0f;
-//			if(sx>ex){
-//				c=1.0f;
-//			}
-//			else{
-//				c=-1.0f;
-//			}
-//			wallTop.add((int)(gridSize * (sx+0.019f*c)), (int)(gridSize * (sy-0.02f)));
-//			wallTop.add((int)(gridSize * (ex-0.019f*c)), (int)(gridSize * (ey-0.02f)));
-//			wallTop.add((int)(gridSize * (ex-0.019f*c)), (int)(gridSize * (ey+0.02f)));
-//			wallTop.add((int)(gridSize * (sx+0.019f*c)), (int)(gridSize * (sy+0.02f)));
-//		}
-//		else if(Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
-//			float c=1.0f;
-//			if(sy>ey){
-//				c=1.0f;
-//			}
-//			else{
-//				c=-1.0f;
-//			}
-//			wallTop.add((int)(gridSize * (sx-0.02f)), (int)(gridSize * (sy+0.019f*c)));
-//			wallTop.add((int)(gridSize * (ex-0.02f)), (int)(gridSize * (ey-0.019f*c)));
-//			wallTop.add((int)(gridSize * (ex+0.02f)), (int)(gridSize * (ey-0.019f*c)));
-//			wallTop.add((int)(gridSize * (sx+0.02f)), (int)(gridSize * (sy+0.019f*c)));
-//		}
 		return wallTop;
 	}
 	
+	/**
+	 * Is poly blocked in poly walkable
+	 * @param walkable
+	 * @param blocked
+	 * @return true if poly blocked in poly walkable
+	 */
 	private boolean PolyInPoly(List<TriangulationPoint> walkable,List<TriangulationPoint> blocked){
 		for(int i=0;i<blocked.size();i++){
 			if(!PointInPoly(walkable,blocked.get(i).getXf(),blocked.get(i).getYf())){
@@ -375,6 +356,13 @@ public class NavMeshGeneration {
 		return true;
 	}
 	
+	/**
+	 * Returns true if testx,testy is in the polygon build with walkable
+	 * @param walkable
+	 * @param testx
+	 * @param testy
+	 * @return Returns true if testx,testy is in the polygon build with walkable
+	 */
 	private boolean PointInPoly(List<TriangulationPoint> walkable, float testx, float testy)
 	{	
 		int nvert = walkable.size();

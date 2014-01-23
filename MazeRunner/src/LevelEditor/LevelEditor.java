@@ -259,6 +259,10 @@ public class LevelEditor implements ActionListener{
 			whatPickup = 2;
 		else if(pu.equals("Health"))
 			whatPickup = 3;
+		else if(pu.equals("Gun"))
+			whatPickup = 4;
+		else if(pu.equals("Points"))
+			whatPickup = 5;
 		
 		le.setWhatPickup(whatPickup);
 	}
@@ -800,7 +804,7 @@ public class LevelEditor implements ActionListener{
 		opties6b = new JPanel(new GridLayout(1, 1));
 	    opties6b.setBorder(BorderFactory.createTitledBorder("Pickups:"));
 	    
-	    String[] opties5bString = {"Speed", "Zwaard", "Health"};
+	    String[] opties5bString = {"Speed", "Zwaard", "Health", "Gun", "Points"};
 	    
 	    JComboBox c = new JComboBox(opties5bString);
 		c.addActionListener(this);
