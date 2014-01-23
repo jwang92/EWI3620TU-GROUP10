@@ -1,6 +1,5 @@
 package UserInput;
 import java.awt.AWTException;
-import java.awt.Cursor;
 import java.awt.Robot;
 import java.awt.event.*;
 import java.util.HashSet;
@@ -14,7 +13,6 @@ import Main.MainClass;
 import Maze.LevelExit;
 import Utils.Inputbox;
 
-//import com.sun.media.sound.Toolkit;
 
 /**
  * The UserInput class is an extension of the Control class. It also implements three 
@@ -97,6 +95,7 @@ public class UserInput extends Control
 	@Override
 	public void mousePressed(MouseEvent event)
 	{
+		//rightmouse button is attacking during gameplay, leftmousebutton is defending
 		if(event.getButton()==1 && main.state.getState() == 1 && !defense && !attack){
 			
 			attack = true;
@@ -117,7 +116,7 @@ public class UserInput extends Control
 	@Override
 	public void keyPressed(KeyEvent event)
 	{
-		
+		//do right action dependng on input
 		pressed.add(event.getKeyChar());
         if (pressed.size() > 0) {
         	
@@ -139,10 +138,10 @@ public class UserInput extends Control
         		} else if(keyCode == KeyEvent.VK_SPACE){
         			jump = true;
         		} else if(keyCode =='q'){
-        			main.mazeRunner.setRW(false);
+        			main.mazeRunner.setRW(false);  //necessary for using sword
         		} else if(keyCode =='r'){
         			if(rUpgrade){
-        				main.mazeRunner.setRW(true);
+        				main.mazeRunner.setRW(true); //necessary for using rangedweapon
         			}
         		}
         		
@@ -165,7 +164,7 @@ public class UserInput extends Control
 	@Override
 	public void keyReleased(KeyEvent event)
 	{
-		
+		//do right action depending on input
 		for(Inputbox input : main.login.inputs){
 			if(input.getSelect()){
 				input.enteredKey(event);
@@ -196,6 +195,7 @@ public class UserInput extends Control
 				main.mazeRunner.removeText();
 			}
 			
+			//takes of exiting level
 			LevelExit exit = main.maze.isExit(main.player.locationX, main.player.locationY, main.player.locationZ);
 			if(exit != null){
 				if(exit.getNewLoadFolder().equals("finish")){				//end of game
@@ -217,6 +217,7 @@ public class UserInput extends Control
 	 * **********************************************
 	 */
 	
+	//takes care of mouse draggong
 	@Override
 	public void mouseMoved(MouseEvent event)
 	{
@@ -272,6 +273,9 @@ public class UserInput extends Control
 	}
 
 	@Override
+	/**
+	 * as long as leftmouse button is pressed, player keeps defending
+	 */
 	public void mouseReleased(MouseEvent event)
 	{
 		if(event.getButton()==3 && main.state.getState() == 1 && defense){
@@ -280,6 +284,9 @@ public class UserInput extends Control
 	}
 	
 	@Override
+	/**
+	 * scroll between sword and rangedweapon
+	 */
 	public void mouseWheelMoved(MouseWheelEvent me) {
 		
 		if(rUpgrade){

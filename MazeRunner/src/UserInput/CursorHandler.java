@@ -39,6 +39,9 @@ public class CursorHandler {
 		
 	}
 	
+	/**
+	 * loads the different cursor images
+	 */
 	public void loadCursors(){
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();  
@@ -69,6 +72,10 @@ public class CursorHandler {
 		
 	}
 	
+	/**
+	 * depending on given id: adjust the cursor image to suite appropriate cursor 
+	 * @param id
+	 */
 	public void setCursor(int id){
 		
 		cursorID = id;
