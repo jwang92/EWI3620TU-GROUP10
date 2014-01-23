@@ -17,6 +17,18 @@ public class Storey {
 	private ObjectList objects;
 	private PickupList pickups;
 	
+	/**
+	 * Create a storey
+	 * @param sizeX sizeX of the storey
+	 * @param sizeY sizeY of the storey
+	 * @param floorh height of the floor
+	 * @param heightOfStorey height of the storey
+	 * @param wall walls
+	 * @param floor floors
+	 * @param roof roofs
+	 * @param object objects 
+	 * @param pickup pickups
+	 */
 	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey, WallList wall, FloorList floor, RoofList roof, ObjectList object, PickupList pickup){
 		xSize = sizeX;
 		ySize = sizeY;
@@ -29,6 +41,9 @@ public class Storey {
 		pickups = pickup;
 	}
 	
+	/**
+	 * Create an empty storey
+	 */
 	public Storey(){
 		xSize = 0;
 		ySize = 0;
@@ -41,6 +56,13 @@ public class Storey {
 		pickups = new PickupList();
 	}
 	
+	/**
+	 * Create a storey without walls,floors,roofs,objects, or pickups
+	 * @param sizeX sizeX of the storey
+	 * @param sizeY sizeY of the storey
+	 * @param floorh height of the floor
+	 * @param heightOfStorey height of the storey
+	 */
 	public Storey(int sizeX, int sizeY, int floorh,int heightOfStorey){
 		xSize = sizeX;
 		ySize = sizeY;
@@ -125,6 +147,12 @@ public class Storey {
 		objects = o;
 	}
 	
+	/**
+	 * Read a storey from a file
+	 * @param FileName The path of the file
+	 * @return Returns the storey
+	 * @throws FileNotFoundException Throws an exception if the savefile is not found
+	 */
 	public static Storey Read(String FileName) throws FileNotFoundException{
 		Scanner s = new Scanner(new File(FileName + "/Storey.txt"));
 		s.next();
@@ -152,6 +180,11 @@ public class Storey {
 		return res; 
 	}
 	
+	/**
+	 * Write a storey to a file
+	 * @param FileName File to save the storey
+	 * @throws IOException Exception if the writing fails
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "Size: " + xSize + " " + ySize + ";\r\n";

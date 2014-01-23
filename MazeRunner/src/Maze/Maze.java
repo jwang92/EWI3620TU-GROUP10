@@ -21,7 +21,7 @@ public class Maze  implements VisibleObject {
 	public final double SQUARE_SIZE = 5;
 	private Storey storey;
 	private ArrayList<Storey> storeys;
-	private String loadfolder = "savefiles/kasteel";
+	private String loadfolder = "savefiles/Campaign1";
 	private int numberOfStoreys;
 	private LevelInfo lvlinfo;
 	private double pickupColor = 0.0;
@@ -188,6 +188,9 @@ public class Maze  implements VisibleObject {
 		
 	}
 	
+	/**
+	 * Display the maze
+	 */
 	public void display(GL gl){
 		gl.glDisable(GL.GL_CULL_FACE);
 		drawBackground(gl);
@@ -340,6 +343,21 @@ public class Maze  implements VisibleObject {
 		
 	}
 
+	/**
+	 * Draw the 1 of the polygons of the wall
+	 * @param gl Jogl
+	 * @param sx sx
+	 * @param sy sy
+	 * @param ex ex
+	 * @param ey ex
+	 * @param texture texture of the wall
+	 * @param zfloor height of the floor
+	 * @param zroof height of the roof
+	 * @param sx2 sx2
+	 * @param sy2 sy2
+	 * @param ex2 ex2
+	 * @param ey2 ey2
+	 */
 	public void drawWall2(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof,
 			float sx2, float sy2, float ex2, float ey2){
 		ArrayList<Point3D> p = new ArrayList<Point3D>();
@@ -377,6 +395,17 @@ public class Maze  implements VisibleObject {
 		polygonOnScreen(gl,p,textureID);
 	}
 	
+	/**
+	 * Draw all the sides of the walls
+	 * @param gl jogl
+	 * @param sx sx
+	 * @param sy sy
+	 * @param ex ex
+	 * @param ey ey
+	 * @param texture texture of the wall
+	 * @param zfloor height of the floor
+	 * @param zroof height of the roof
+	 */
 	public void drawWall(GL gl, float sx, float sy, float ex, float ey,String texture, float zfloor, float zroof){
 		if(Math.abs(ex-sx)==0 || Math.abs(ey-sy)/Math.abs(ex-sx)>=1){
 			float c=1.0f;
@@ -983,13 +1012,46 @@ public class Maze  implements VisibleObject {
 		return false;
 	}
 	
+	/**
+	 * Find on which side of the line the point is
+	 * @param lineX1 
+	 * @param lineY1
+	 * @param lineX2
+	 * @param lineY2
+	 * @param pointX
+	 * @param pointY
+	 * @return true if the point is left (when it is a vertical line) 
+	 */
 	public boolean SideOfLine(double lineX1, double lineY1, double lineX2, double lineY2,double pointX, double pointY){
 	     return ((lineX2 - lineX1)*(pointY - lineY1) - (lineY2 - lineY1)*(pointX - lineX1)) > 0;
 	}
 
-		
-	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
+	//All the code about distance is found on http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 	
+	/**
+	 * Distance between to points 
+	 * @param vx point1x
+	 * @param vy point1y
+	 * @param wx point2x
+	 * @param wy point2y
+	 * @return
+	 */	
+	public double dist2(double vx, double vy, double wx, double wy) 
+	{ 
+		return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); 
+	}
+	
+
+	/**
+	 * Distance from a point to a segment of a line (squared)
+	 * @param px PointX to be tested
+	 * @param py Pointy to be tested
+	 * @param vx Line1X
+	 * @param vy Line1Y
+ 	 * @param wx Line2X
+	 * @param wy Line2Y
+	 * @return return the distance squared
+	 */
 	public double distToSegmentSquared(double px, double py, double vx, double vy, double wx, double wy) {
 	  double l2 = dist2(vx, vy, wx, wy);
 	  if (l2 == 0) return dist2(px, py, vx, vy);
@@ -999,6 +1061,11 @@ public class Maze  implements VisibleObject {
 	  return dist2(px, py, vx + t * (wx - vx), vy + t * (wy - vy));
 	}
 	
+	/**
+	 * Return the polygon as function
+	 * @param p
+	 * @return
+	 */
 	public double[] getSurface(ArrayList<Point3D> p){
 		double[] surface = new double[4];
 		Point3D vector1 = new Point3D(p.get(1).x - p.get(0).x,p.get(1).y - p.get(0).y,p.get(1).z - p.get(0).z);
