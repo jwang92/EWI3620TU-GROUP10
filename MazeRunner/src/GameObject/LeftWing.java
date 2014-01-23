@@ -68,6 +68,7 @@ public class LeftWing extends GameObject implements VisibleObject {
 		locationX=enemy.locationX;
 		locationY=enemy.locationY;
 		locationZ=enemy.locationZ;
+		//rotation angle must be in between 40 and -40
 		if(rotateAngle>=40){
 			c=-1.0f;
 		}
@@ -94,6 +95,7 @@ public class LeftWing extends GameObject implements VisibleObject {
 			//Translate the model to the right location
 			gl.glTranslated(locationX, locationY, locationZ);
 			
+			//animation
 			gl.glTranslated(0, 2.5, 0);
 			gl.glRotated(20 ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
 			gl.glTranslated(0, -2.5, 0);
@@ -105,6 +107,7 @@ public class LeftWing extends GameObject implements VisibleObject {
 			if(enemy.alert && !enemy.dood){
 				angle=enemy.angle;
 			}
+			//angle for deathanimation
 			else if(enemy.dood){
 				if(deathAngle>-90){
 					deathAngle -= 2.5;

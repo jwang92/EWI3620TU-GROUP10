@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.media.opengl.GL;
 
 import Main.MainClass;
-import Maze.Maze;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
@@ -15,8 +14,7 @@ import Model.OBJLoader;
 import com.sun.opengl.util.texture.Texture;
 
 
-public class Sword extends GameObject implements VisibleObject {
-	private Maze maze; 										// The maze.
+public class Sword extends GameObject implements VisibleObject {										
 	private double speed = 0.0015;
 	private Player player;
 	public int attackCounter=0;
@@ -56,7 +54,6 @@ public class Sword extends GameObject implements VisibleObject {
 				models.add(m);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -73,18 +70,7 @@ public class Sword extends GameObject implements VisibleObject {
 	public void setShaderProgram(int program){
 		shaderProgram = program;
 	}
-	
-	public boolean checkWall(double x, double z, double dT){
-		double d = 2.0d; 		//distance from the wall
-		boolean res = false;
 		
-		for(int i = 0; i < 360; i = i + 15)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z-0.8f+d*Math.cos(i*Math.PI/180) ))
-				res = true;
-		
-		return res;
-	}
-	
 	public void genVBO(GL gl){
 		
 		for(int i = 0; i < models.size(); i++){
@@ -126,12 +112,13 @@ public class Sword extends GameObject implements VisibleObject {
 			IntBuffer vboHandle = IntBuffer.allocate(10);
 			vboHandle = handles.get(currentSword);
 			
+			//zorgt ervoor dat je niet kan aanvallen tijdens het aanvallen
 			if(player.control.getAttack() && attackCounter==18){
 				attackCounter=0;
 				player.control.setAttack(false);
 			}
 			
-			//Translate the model
+			//Translate het model met bolcoördinaten
 			gl.glTranslated(locationX, locationY + main.player.getdY_walk(), locationZ);
 			double h = Math.toRadians(player.getHorAngle());
 			double v = Math.toRadians(player.getVerAngle());
@@ -140,7 +127,7 @@ public class Sword extends GameObject implements VisibleObject {
 			double ty = Math.sin(v);
 			gl.glTranslated(tx, ty, tz);
 			
-			//Rotate the model
+			//Rotate het model
 			gl.glRotated(player.getHorAngle(), 0, 1, 0);
 			gl.glRotated(player.getVerAngle(), 1,0 ,0);
 			if(player.control.getAttack()){
@@ -148,6 +135,7 @@ public class Sword extends GameObject implements VisibleObject {
 				gl.glRotated(-5*attackCounter,1,0,0);
 				gl.glTranslated(0, 0.8, 0);
 				attackCounter +=1;
+				//attack damage afhankelijk van soort zwaard
 				if(attackCounter==18){
 					int d = 0;
 					switch(currentSword+1){
@@ -161,6 +149,7 @@ public class Sword extends GameObject implements VisibleObject {
 						d = 30;
 						break;
 					}
+					//voor elk enemy kijk of hitpoint overeenkomt met hitbox
 					for(Enemy e: main.enemies){
 						e.damage(player.getLocationX()-2.2*Math.sin(player.getHorAngle()*Math.PI/180), 
 								player.getLocationY(),
@@ -254,10 +243,6 @@ public class Sword extends GameObject implements VisibleObject {
 		gl.glPopMatrix();
 	}
 	
-	public void setMaze(Maze maze){
-		this.maze = maze;
-	}
-
 	public void setPlayer(Player player){
 		this.player=player;
 	}

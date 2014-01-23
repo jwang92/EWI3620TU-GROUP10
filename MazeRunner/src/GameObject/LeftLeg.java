@@ -29,6 +29,7 @@ public class LeftLeg extends GameObject implements VisibleObject {
 	public LeftLeg(double x, double y, double z,boolean tex, String modelName, MainClass mclass, boolean groot){
 		super(x, y, z, mclass);
 		texture = tex;
+		//test which kind of predator
 		if(groot){
 			try {
 				if(texture){
@@ -85,6 +86,8 @@ public class LeftLeg extends GameObject implements VisibleObject {
 		locationX=enemy.locationX;
 		locationY=enemy.locationY;
 		locationZ=enemy.locationZ;
+		//rotation angle must be in between 20 and -20
+		// booleaan forward: if Rightleg moves forward then leftleg must move backward
 		if(rotateAngle<= 20 && !forward){
 			rotateAngle+=(1.0/3.0);
 		}
@@ -119,10 +122,12 @@ public class LeftLeg extends GameObject implements VisibleObject {
 			if(enemy.alert && !enemy.dood){
 				angle=enemy.angle;
 				
+				//animation
 				gl.glTranslated(0, trans, 0);
 				gl.glRotated(rotateAngle ,Math.cos(angle*Math.PI/180), 0, -Math.sin(angle*Math.PI/180));
 				gl.glTranslated(0, -trans, 0);
 			}
+			//angle of deathanimation
 			else if(enemy.dood){
 				if(deathAngle>-90){
 					deathAngle -= 2.5;

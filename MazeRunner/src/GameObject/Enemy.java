@@ -88,6 +88,8 @@ public class Enemy extends GameObject implements VisibleObject {
 			e.printStackTrace();
 		}
 		
+		//afhankekelijk van soort enemy: laadt juiste model en onderdelen en hitbix waardes
+		
 		if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
 			leftArm= new LeftArm(x,y,z,tex,"LeftArm", main, true);
 			leftArm.setEnemy(this);
@@ -165,6 +167,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		return false;
 	}
 
+	/**
+	 * collision with other enemy
+	 * @param x  x coördinaat
+	 * @param z  x coördinaat
+	 * @param dT deltatijd
+	 * @return
+	 */
 	public boolean checkEnemy(double x, double z, double dT){
 		double dX, dZ, dY, distance;
 		
@@ -183,6 +192,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		return false;
 	}
 	
+	/**
+	 *  check collision with player
+	 * @param x  x coördinaat
+	 * @param z  x coördinaat
+	 * @param dT deltatijd
+	 * @return
+	 */
 	public boolean checkPlayer(double x, double z, double dT){
 		double dX = x - main.player.locationX;
 		double dZ = z - main.player.locationZ;
@@ -196,6 +212,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		return false;
 	}
 	
+	/**
+	 * check collision with wall or door
+	 * @param x  x coördinaat
+	 * @param z  x coördinaat
+	 * @param dT deltatijd
+	 * @return
+	 */
 	public boolean checkWallOrDoor(double x, double z, double dT){
 		boolean res = false;
 		
@@ -207,6 +230,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		return res;
 	}
 	
+	/**
+	 * check all collisions
+	 * @param x  x coördinaat
+	 * @param z  x coördinaat
+	 * @param dT deltatijd
+	 * @return
+	 */
 	public boolean collision(double x, double z, double dT){
 		return checkWallOrDoor(x, z, dT)
 				|| checkEnemy(x, z, dT)
@@ -237,6 +267,7 @@ public class Enemy extends GameObject implements VisibleObject {
 		px = player.locationX;
 		pz = player.locationZ;
 
+		//update location 
 		if(!dood){
 			if(alerted(player)){
 				alert = alerted(player);
@@ -282,6 +313,13 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 	}
 	
+	/**
+	 * test if collision, if not calculate new location
+	 * @param dx delta X
+	 * @param dz delat Z
+	 * @param distance distance new and old location
+	 * @param deltaTime
+	 */
 	public void newLocation(double dx, double dz, double distance, int deltaTime){
 		newX = locationX;		
 		newZ = locationZ;
@@ -343,7 +381,7 @@ public class Enemy extends GameObject implements VisibleObject {
 			gl.glTranslated(locationX, locationY, locationZ);
 			
 			if(alert && !dood){
-				//berekening hoek
+				//calculate angle: wich direction to look at
 					double inP = highestPher.z-locationZ;
 					double lengteV = 1;
 					double lengteW = Math.sqrt(Math.pow(highestPher.x-locationX, 2)+Math.pow(highestPher.z-locationZ, 2));
@@ -355,6 +393,7 @@ public class Enemy extends GameObject implements VisibleObject {
 					
 				}
 			else if(!alert && !dood){
+				//calculate angle: wich direction to look at
 				if(route.size()>0){
 					double dX = (route.get(route.size()-1).getX() + 1)*main.maze.SQUARE_SIZE - locationX;				
 					double inP = (route.get(route.size()-1).getZ() + 1)*main.maze.SQUARE_SIZE - locationZ;
@@ -367,10 +406,12 @@ public class Enemy extends GameObject implements VisibleObject {
 					}	
 				}
 			}	
+			//angle for dying animation
 			else if(dood){
 				if(deathAngle>-90){
 					deathAngle -= 2.5;
 				}
+				//remove when dead
 				else if(deathAngle<=-90){
 					remove = true;
 					if(type.equals("3d_object/Predator/Predator_Youngblood/Body.obj")){
@@ -474,7 +515,7 @@ public class Enemy extends GameObject implements VisibleObject {
 			
 				gl.glTranslated(locationX,locationY+healthBarPos,locationZ);
 			
-			//berekening hoek
+			//berekening angle: to direct player
 				double inP = px-locationX;
 				double lengteV = 1;
 				double lengteW = Math.sqrt(Math.pow(px-locationX, 2)+Math.pow(pz-locationZ, 2));
@@ -514,11 +555,16 @@ public class Enemy extends GameObject implements VisibleObject {
 		this.maze = maze;
 	}
 
+	/**
+	 * if player is in catching range, do damage
+	 * @param player
+	 */
 	public void caught(Player player){
 		double dX = player.locationX - locationX;				
 		double dZ = player.locationZ - locationZ;				
 		double distance = Math.sqrt(dZ*dZ + dX*dX);
 		
+		//do damage
 		if( distance < (player.playersize + enemysize + 0.1) && Math.abs(locationY - player.locationY) < 0.6*maze.SQUARE_SIZE ){
 			if(attackTimeout == 0){
 				player.setDeltaHealth(Math.min(0, -attackPower+player.getDefensePower()));
@@ -526,6 +572,7 @@ public class Enemy extends GameObject implements VisibleObject {
 			} else{
 				attackTimeout--;
 			}
+			//if player dies, go to gameover state
 			if(player.getHealth() <= 0){
 				main.state.GameStateUpdate(GameState.GAMEOVER_STATE);
 				main.state.setStopMainGame(true);
@@ -534,6 +581,11 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 	}
 	
+	/**
+	 * if player in area, then enemy gets alerted
+	 * @param player
+	 * @return
+	 */
 	public boolean alerted (Player player){
 		 boolean res = (Math.sqrt(Math.pow(locationX-player.locationX,2 )+Math.pow(locationZ-player.locationZ,2)) < 15) ;
 		 if(res == true){
@@ -568,6 +620,15 @@ public class Enemy extends GameObject implements VisibleObject {
 		}
 	}
 	
+	/**
+	 * checks if hitpoint is in hitbox
+	 * @param x  x coordinaat
+	 * @param y  y coordinaat
+	 * @param z  z coordinaat
+	 * @param h  horizontal angle of player
+	 * @param d  damage to be done to enemy
+	 * @return
+	 */
 	public boolean damage(double x, double y, double z, double h, double d){
 		double c=Math.sqrt((locationX-x)*(locationX-x)+(locationZ-z)*(locationZ-z));
 		if(c<dmgDet && y>ymin + locationY && y <ymax +locationY){

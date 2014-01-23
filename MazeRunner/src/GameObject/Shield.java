@@ -6,15 +6,13 @@ import java.nio.IntBuffer;
 import javax.media.opengl.GL;
 
 import Main.MainClass;
-import Maze.Maze;
 import Model.Model;
 import Model.ModelPart;
 import Model.OBJLoader;
 
 import com.sun.opengl.util.texture.Texture;
 
-public class Shield extends GameObject implements VisibleObject {
-	private Maze maze; 										// The maze.
+public class Shield extends GameObject implements VisibleObject {									
 	private double speed = 0.0015;
 	private Model m ;
 	private Player player;
@@ -55,17 +53,6 @@ public class Shield extends GameObject implements VisibleObject {
 	
 	public void setShaderProgram(int program){
 		shaderProgram = program;
-	}
-	
-	public boolean checkWall(double x, double z, double dT){
-		double d = 2.0d; 		//distance from the wall
-		boolean res = false;
-		
-		for(int i = 0; i < 360; i = i + 15)
-			if(maze.isWall( x+d*Math.sin(i*Math.PI/180) , locationY , z-0.8f+d*Math.cos(i*Math.PI/180) ))
-				res = true;
-		
-		return res;
 	}
 	
 	public void genVBO(GL gl){
@@ -111,7 +98,7 @@ public class Shield extends GameObject implements VisibleObject {
 			}
 			
 			if(player.control.getDefense() && defenseAngle <=-90){
-				player.setDefensePower(10);
+				player.setDefensePower(10); //setdefensepower
 			} else if(!player.control.getDefense() && defenseAngle < 0) {
 					defenseAngle += 5;
 					player.setDefensePower(0);
@@ -203,10 +190,6 @@ public class Shield extends GameObject implements VisibleObject {
 		gl.glPopMatrix();
 	}
 	
-	public void setMaze(Maze maze){
-		this.maze = maze;
-	}
-
 	public void setPlayer(Player player){
 		this.player=player;
 	}

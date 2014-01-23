@@ -167,6 +167,14 @@ public class Player extends GameObject {
 		return currentUpgrades;
 	}
 	
+	/**
+	 * check collision with enemy
+	 * @param x  x coordinaat
+	 * @param z  z coorddinaat
+	 * @param y  y coordinaat
+	 * @param dT  delta tijd
+	 * @return
+	 */
 	public boolean checkEnemy(double x, double z, double y, double dT){
 		double dX, dZ, dY, distance;
 		
@@ -214,6 +222,7 @@ public class Player extends GameObject {
 	 */
 	public void update(int deltaTime)
 	{
+		//updates player location dependent on keys pressed and colission checks
 		if (control != null)
 		{
 			control.update();
@@ -358,9 +367,6 @@ public class Player extends GameObject {
 			}
 			else if((Math.abs(locationX - oldX) < 0.01 && Math.abs(locationZ - oldZ) < 0.01) && sound.getWalk() == true){
 				sound.stopWalk();
-			}
-			if(control.getAttack() && main.sword.attackCounter == 9){
-				//sound.swing(); // Alleen hassan vond dat nog nodig
 			}
 			
 			// Pickupcheck
@@ -516,6 +522,13 @@ public class Player extends GameObject {
 		
 	}
 	
+	/**
+	 * load new model after sword upgrade is picked up
+	 * @param x  x location for new model
+	 * @param y  y location " "
+	 * @param z  z location " "
+	 * @return
+	 */
 	public int upgradeSword(double x, double y, double z){
 		
 		int maxSword = 3;
