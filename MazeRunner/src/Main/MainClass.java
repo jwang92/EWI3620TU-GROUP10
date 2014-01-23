@@ -17,7 +17,6 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
-import javax.swing.JFrame;
 
 import GameObject.Bullet;
 import GameObject.Enemy;
@@ -138,6 +137,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		// to mouse events that happen inside the GLCanvas.
 		canvas.addMouseListener(this);
 		
+		//init objecten die niet meer dan één keer moeten worden ge-init
 		login = new Login(this);
 		highscores = new Highscores(this);
 		mainMenu = new MainMenu(this);
@@ -157,14 +157,10 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 	public void render (GLAutoDrawable drawable){
 		
-		GL gl = drawable.getGL();
-
-//		System.out.println("render: "+screenWidth +"x"+ screenHeight);
-		
+		GL gl = drawable.getGL();		
 		// Set the clear color and clear the screen.
 		gl.glClearColor(1.0f, 0.0f, 0.0f, 1);
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-//	    gl.glFlush();
 		
 		if(tel != state.getState()){
 			if(state.getState() == 1)
@@ -175,6 +171,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 		
 		tel = state.getState();
 		
+		//doe render van huidige state 
 		switch(tel){
 		case 0:
 			mainMenu.render(drawable);
@@ -201,7 +198,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 			finish.render(drawable);
 			break;
 		}
-		
+
+		//bij net binnenkomen nieuwe state moet init één keer worden aangeroepen
 		initUpdater(drawable, 0, 0, screenWidth, screenHeight);
 
 	}
@@ -213,9 +211,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
  */
 
 	@Override
-	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		
+	public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {		
 	}
 
 	@Override
@@ -282,26 +278,23 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// Not relevant
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// Not relevant
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// Not relevant
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// Not relevant
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent me) {
+		//roep mousereleased van huidge state aan
 		switch(tel){
 		case 0:
 			mainMenu.mouseReleased(me);
@@ -325,6 +318,8 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 
 	}
 	
+	//methode die init van een nieuw geopend state aanroept en samen met gamestatmanager ervoor zorgt dat het ook maar 
+	//één keer gebeurt
 	public void initUpdater(GLAutoDrawable drawable, int x, int y, int screenWidth, int screenHeight){
 		int tel=state.getState();
 		if(tel==0 && !state.getStopTitle() ){
@@ -408,7 +403,7 @@ public class MainClass extends Frame implements GLEventListener, MouseListener {
 	}
 	
 	/**
-	 * Zet alle condities (objects en enkele states) op beginwaarden
+	 * Zet alle condities (objects en enkele states) op beginwaarden, (bijvoorbeeld als je een new game na het dood gaan)
 	 */
 	public void initObjects(){
 

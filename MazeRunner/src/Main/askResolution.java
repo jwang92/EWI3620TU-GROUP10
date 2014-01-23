@@ -49,6 +49,9 @@ public class askResolution  implements ActionListener {
 
 	}
 	
+	/**
+	 * adds a dropbox for screensize selection
+	 */
 	public void addDropbox(){
 		JPanel dropdown = new JPanel(new GridLayout(1, 1));
 		
@@ -82,6 +85,7 @@ public class askResolution  implements ActionListener {
 		String cmd = evt.getActionCommand();
 		
 		if(cmd.equals("screensize")){
+			@SuppressWarnings("rawtypes")
 			JComboBox type = (JComboBox) evt.getSource();
 			setScreensize( (String) type.getSelectedItem() );
 		}

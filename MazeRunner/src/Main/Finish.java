@@ -109,7 +109,13 @@ public class Finish  implements MouseListener, MouseMotionListener {
 		t.endRendering();
 		
 	}
-
+	
+	/**
+	 * loads a texture for te background
+	 * @param gl     Gl gl
+	 * @param textureName    file name of texture  
+	 * @param textureFileType    file type of texture 
+	 */
 	public void loadBackground(GL gl, String textureName, String textureFileType){
 		try {
 		    File folder = new File("menu_files/");
@@ -135,24 +141,10 @@ public class Finish  implements MouseListener, MouseMotionListener {
 	    			BGTexture.setTexParameteri(GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 	    			
 	            }	
-	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
+	        }		
 		} catch (GLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
@@ -314,26 +306,18 @@ public class Finish  implements MouseListener, MouseMotionListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -392,9 +376,7 @@ public class Finish  implements MouseListener, MouseMotionListener {
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseDragged(MouseEvent arg0) {		
 	}
 	
 	

@@ -4,20 +4,17 @@ import java.awt.event.MouseListener;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 import javax.swing.JFileChooser;
 
 import LevelEditor.LevelEditor;
 import Utils.Buttonbox;
 
-import com.sun.opengl.util.Animator;
 import com.sun.opengl.util.j2d.TextRenderer;
 import com.sun.opengl.util.texture.Texture;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -116,6 +113,12 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 		
 	}
 	
+	/**
+	 * loads a texture for te background
+	 * @param gl     Gl gl
+	 * @param textureName    file name of texture  
+	 * @param textureFileType    file type of texture 
+	 */
 	public void loadBackground(GL gl, String textureName, String textureFileType){
 		try {
 		    File folder = new File("menu_files/");
@@ -144,10 +147,8 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 	        }
 		
 		} catch (GLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
@@ -188,7 +189,9 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 		
 	}
 		
-	
+	/**
+	 * takes care of choosing a different map
+	 */
 	private void ChooseLevel(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Selecteer level");
@@ -255,26 +258,18 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -338,8 +333,6 @@ public class MainMenu implements MouseListener , MouseMotionListener {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

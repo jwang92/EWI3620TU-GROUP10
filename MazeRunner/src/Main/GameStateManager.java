@@ -3,7 +3,10 @@ import UserInput.CursorHandler;
 
 public class GameStateManager {
 	
+	//start in login state
 	public int gamestate = 5;
+	
+	//booleans: takes care that init-methode is used only once when entering a new gamestate
 	public boolean sTitle=false,
 					sMainGame=false,
 					sPause=false,
@@ -23,44 +26,28 @@ public class GameStateManager {
 		
 	    switch(m_curSTATE) {
 	       case TITLE_STATE:
-	          //
-	    	   //MainMenu.setTeller(0);
 	    	   gamestate = 0;
 	          break;
 	       case MAINGAME_STATE:
-	          //
-	    	   //MainMenu.setTeller(1);
 	    	   gamestate = 1;
 	          break;
 	       case PAUSE_STATE:
-	           //
 	    	   gamestate = 2;
-	    	   //MainMenu.setTeller(2);
 	           break;
 	       case STOP_STATE:
-	           //
 	    	   gamestate = 3;
-	    	   //MainMenu.setTeller(3);
 	           break;
 	       case GAMEOVER_STATE:
-	    	   //
 	    	   gamestate = 4;
-	    	   //MainMenu.setTeller(4);
 	    	   break;
 	       case LOGIN_STATE:
-	    	   //
 	    	   gamestate = 5;
-	    	   //MainMenu.setTeller(5);
 	    	   break;
 	       case HIGHSCORES_STATE:
-	    	   //
 	    	   gamestate = 6;
-	    	   //MainMenu.setTeller(6);
 	    	   break;
 	       case FINISH_STATE:
-	    	   //
 	    	   gamestate = 7;
-	    	   //MainMenu.setTeller(6);
 	    	   break;
 	    }
 	}

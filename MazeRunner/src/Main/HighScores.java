@@ -1,11 +1,9 @@
 package Main;
-import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
 import Utils.Buttonbox;
@@ -29,8 +27,6 @@ public class Highscores implements MouseListener , MouseMotionListener {
 	 * **********************************************
 	 */
 	private MainClass main;
-	
-	private static final long serialVersionUID = 1L;
 	
 	private boolean startup = true;
 	
@@ -176,18 +172,6 @@ public class Highscores implements MouseListener , MouseMotionListener {
 			}
 		}
 			
-	
-		
-		/*
-		for(int i = 1; i < 21; i++){
-		
-			t.draw(i + ".", (int) (MainClass.screenWidth * 0.35f), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Nummer
-			t.draw("Bertvanderven123", (int) (MainClass.screenWidth * 0.35f + fontSize * 3), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Naam
-			t.draw(""+(100 * i), (int) (MainClass.screenWidth * 0.35f + fontSize * 20), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Scores	
-			t.draw("Kasteel", (int) (MainClass.screenWidth * 0.35f + fontSize * 25), (int) (MainClass.screenHeight * 0.75f - (i * fontSize))); // Level	
-		
-		}*/
-			
 		t.endRendering();
 		
 	}
@@ -218,23 +202,9 @@ public class Highscores implements MouseListener , MouseMotionListener {
 	    			
 	            }	
 	        }
-			
-			//GenerateMipmap
-			//gl.glGenerateMipmapEXT(GL.GL_TEXTURE_2D);
-			
-			// Use linear filter for texture if image is larger than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			// Use linear filter for texture if image is smaller than the original texture
-			//gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR_MIPMAP_LINEAR);
-			
-			//Select the texture coordinates
-
 		} catch (GLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 	catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
@@ -324,27 +294,19 @@ public class Highscores implements MouseListener , MouseMotionListener {
  */
 	
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseClicked(MouseEvent arg0) {		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -394,8 +356,6 @@ public class Highscores implements MouseListener , MouseMotionListener {
 
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			
 		}
 		
 	

@@ -1,7 +1,4 @@
 package Main;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.nio.IntBuffer;
 
 import javax.media.opengl.*;
@@ -122,9 +119,10 @@ public class MazeRunner {
 		// We define an ArrayList of VisibleObjects to store all the objects that need to be
 		// displayed by MazeRunner.
 		visibleObjects = new ArrayList<VisibleObject>();
-		
+
 		visibleObjects.add(main.maze);
 
+		//taking care of necessary sets
 		main.player.setControl(main.input);
 		main.player.getMaze(main.maze);
 		
@@ -133,9 +131,7 @@ public class MazeRunner {
 			e.setMaze(main.maze);
 		}
 		if(!rw){
-			main.sword.setMaze(main.maze);
 			main.sword.setPlayer(main.player);
-			main.shield.setMaze(main.maze);
 			main.shield.setPlayer(main.player);
 		}
 		else{

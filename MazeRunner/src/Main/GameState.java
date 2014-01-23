@@ -1,5 +1,6 @@
 package Main;
 
+//the gamestates
 public enum GameState {
     TITLE_STATE,
     MAINGAME_STATE,
