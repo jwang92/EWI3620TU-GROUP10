@@ -259,19 +259,30 @@ public class Enemy extends GameObject implements VisibleObject {
 		vboHandle = vbo;
 	}
 	
+	/**
+	 * Check if the enemy needs to be removed
+	 * @return True if the enemy needs to be removed
+	 */
 	public boolean needRemoval(){
 		return remove;
 	}
-		
+	
+	/**
+	 * Every Frame update the location of the player
+	 * @param deltaTime Time since the last Frame
+	 * @param player main player
+	 */
 	public void update(int deltaTime, Player player){
 		px = player.locationX;
 		pz = player.locationZ;
 
 		//update location 
 		if(!dood){
+			//Check if the player alerts the enemy (player within range)
 			if(alerted(player)){
 				alert = alerted(player);
 			}
+			//If the enemy is alerted follow maze pheromones.
 			if(alert){
 				highestPher = main.mazePheromones.Search(locationX, locationY, locationZ, 15);
 				
@@ -283,12 +294,15 @@ public class Enemy extends GameObject implements VisibleObject {
 				newLocation(dX, dZ, distance, deltaTime);
 
 			}
+			
+			//If there is a route to follow and the enemy doesn't follow pheromones, follow the route
 			else{
 				if(findRoute && route.size()<=0){
 					findRoute();
 					findRoute = false;
 				}
 				if(route.size()>0){
+					//Delete the point on the route if the enemy is already there, else walk to the next point.
 					double routeX = route.get(route.size()-1).getX() + 1;
 					double routeZ = route.get(route.size()-1).getZ() + 1;
 					boolean pointReached = false;
@@ -589,6 +603,7 @@ public class Enemy extends GameObject implements VisibleObject {
 	public boolean alerted (Player player){
 		 boolean res = (Math.sqrt(Math.pow(locationX-player.locationX,2 )+Math.pow(locationZ-player.locationZ,2)) < 15) ;
 		 if(res == true){
+			 //If there are other enemies in the enemies range, tell them the location of the player.
 			 ArrayList<Enemy> enemies = main.enemies;
 			 for(Enemy e: enemies){
 				 if(!this.equals(e) && !findRoute){
@@ -605,6 +620,9 @@ public class Enemy extends GameObject implements VisibleObject {
 		 return res;
 	}
 	
+	/**
+	 * Find a route between the player and the enemy
+	 */
 	public void findRoute(){
 		int storeyEnemy = main.maze.getStorey(locationY);
 		int storeyPlayer = main.maze.getStorey(main.player.getLocationY());
