@@ -31,6 +31,11 @@ public class ObjectDoor {
 		return switchLocation;
 	}
 	
+	/**
+	 * reads a door from file
+	 * @param s  the scanner 
+	 * @return  the door object that is read
+	 */
 	public static ObjectDoor Read(Scanner s){
 		
 		s.useDelimiter(" |; |;\r\n");
@@ -47,6 +52,10 @@ public class ObjectDoor {
 		return new ObjectDoor(p,tempP);
 	}
 	
+	/**
+	 * changes string to used file format
+	 * @return
+	 */
 	public String toFileFormat()
 	{
 		String res = "Door: ";

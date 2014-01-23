@@ -16,6 +16,7 @@ public class DoorSwitch extends GameObject implements VisibleObject {
 		super(x,y,z, mclass);
 	}
 
+
 	public void display(GL gl) {
 		checkPlayer();
 		gl.glPushMatrix();
@@ -32,7 +33,14 @@ public class DoorSwitch extends GameObject implements VisibleObject {
 		gl.glPopMatrix();
 
 	}
-	
+
+	/**
+	 * tekent doorswitch: bestaat uit 2 quads boven elkaar
+	 * @param gl
+	 * @param sizeWidth   breedte/lengte van switch(vierkant)
+	 * @param sizeHeight  hoogte van switch
+	 * @param type		  type switch: ingedrukt of nog niet
+	 */
 	public void drawSwitch(GL gl, double sizeWidth, double sizeHeight, int type){
 		gl.glEnable(GL.GL_COLOR_MATERIAL);
 		if(type==1){
@@ -100,6 +108,9 @@ public class DoorSwitch extends GameObject implements VisibleObject {
 		this.player=player;
 	}
 	
+	/**
+	 * kijk of player op knop is; om in te drukken
+	 */
 	public void checkPlayer(){
 		if(player.locationX >=locationX+0.25-0.75 && player.locationX<= locationX+0.25+0.75
 				&& player.locationZ >=locationZ+0.25-0.75 && player.locationZ<= locationZ+0.25+0.75){

@@ -33,6 +33,11 @@ public class ObjectRamp {
 		return texture;
 	}
 	
+	/**
+	 * reads a ramp from file
+	 * @param s scanner
+	 * @return The ramp object that is read
+	 */
 	public static ObjectRamp Read(Scanner s){
 		
 		s.useDelimiter(" |; |;\r\n");
@@ -47,6 +52,10 @@ public class ObjectRamp {
 		return new ObjectRamp(p,tex);
 	}
 	
+	/**
+	 * changes string to used file format
+	 * @return
+	 */
 	public String toFileFormat()
 	{
 		String res = "Ramp: ";

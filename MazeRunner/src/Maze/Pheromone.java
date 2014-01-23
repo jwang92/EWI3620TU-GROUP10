@@ -11,13 +11,16 @@ public class Pheromone extends Point3D implements Comparable<Pheromone> {
 		pheromone = 100;
 	}
 
-//	PriorityQueue<Pheromone> pq = new PriorityQueue<>();
-	
-	
+	/**
+	 * evaporates the pheromone
+	 */
 	public void evapPher(){
 		pheromone = pheromone * evapconst;
 	}
 	
+	/**
+	 * checks if pheromone equals given object
+	 */
 	public boolean equals(Object that){
 		if(that instanceof Pheromone){
 			Pheromone other = (Pheromone) that;
@@ -33,6 +36,9 @@ public class Pheromone extends Point3D implements Comparable<Pheromone> {
 	}
 
 	@Override
+	/**
+	 * compares 2 pheromones
+	 */
 	public int compareTo(Pheromone pher) {
 		if(this.pheromone < pher.pheromone){
 			return 1;

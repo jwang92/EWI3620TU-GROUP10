@@ -32,6 +32,11 @@ public class ObjectEnemy {
 		return model;
 	}
 	
+	/**
+	 * reads a enemy from file
+	 * @param s scanner
+	 * @return the enemy object that is read
+	 */
 	public static ObjectEnemy Read(Scanner s){
 		
 		s.useDelimiter(" |; |;\r\n");
@@ -46,6 +51,10 @@ public class ObjectEnemy {
 		return new ObjectEnemy(p,model);
 	}
 	
+	/**
+	 * changes string to used file format
+	 * @return
+	 */
 	public String toFileFormat()
 	{
 		String res = "Enemy: ";

@@ -18,19 +18,38 @@ public class Door extends GameObject implements VisibleObject {
 	public int doorGeluid = 0;
 	public DoorSwitch doorSwitch;
 	
+	/**
+	 * constructor van Door
+	 * @param x  x coordinaat beginpunt
+	 * @param y  y coordinaat ""
+	 * @param z  z coordinaat ""
+	 * @param x2 x coordinaat eindpunt
+	 * @param y2 y coordinaat ""
+	 * @param z2 z coordinaat ""
+	 * @param switchX x coordinaat van switch
+	 * @param switchY y coordinaat "" 
+	 * @param switchZ z coordinaat ""
+	 * @param m
+	 */
 	public Door(double x, double y, double z, double x2, double y2, double z2, double switchX, double switchY, double switchZ, MainClass m){
 		super(x,y,z, m);
 		switchX += main.maze.SQUARE_SIZE/2.0;
 		switchZ += main.maze.SQUARE_SIZE/2.0;
+		//maak switch
 		doorSwitch = new DoorSwitch(switchX,switchY,switchZ,main);
+		//aftand tussen begin en eind punt
 		dx=x2-x;
 		dy=y2-y;
 		dz=z2-z;
+		
+		//richting deur
 		double inP = x2-x;
 		double lengteV = 1;
 		double lengteW = Math.sqrt(Math.pow(x2-x, 2)+Math.pow(z2-z, 2));
 		double test = inP/Math.max(lengteV*lengteW, 00001);
 		initAngle= Math.acos(test)*180/Math.PI;
+		
+		//checkwelke kant op deur staat
 		if(z2>z){
 			initAngle= -initAngle;
 		}
@@ -42,7 +61,11 @@ public class Door extends GameObject implements VisibleObject {
 	public void display(GL gl) {
 		checkPlayer();
 		gl.glPushMatrix();
+		
+		//translate model
 		gl.glTranslated(locationX, locationY, locationZ);
+		
+		//pas angle aan voor animatie en speel geluid af
 		if(angle<90 && angle>-90  && inArea){
 			angle +=signD*0.5;
 			totalAngle +=signD*0.5;
@@ -59,6 +82,10 @@ public class Door extends GameObject implements VisibleObject {
 		doorSwitch.display(gl);
 	}
 	
+	/**
+	 * tekent deur met texture erop
+	 * @param gl
+	 */
 	public void drawDoor(GL gl){
 		
 		gl.glEnable(GL.GL_COLOR_MATERIAL);
@@ -116,12 +143,18 @@ public class Door extends GameObject implements VisibleObject {
 		gl.glDisable(GL.GL_COLOR_MATERIAL);
 	}
 	
+	/**
+	 * checkt collision met player en als deur open moet dan gaat het altijd van player af open
+	 */
 	public void checkPlayer(){
+		//check of deur open kan
 		if(doorSwitch.getPressed()){
+			//checkof speler in de buurt en 
 			if(player.locationX >=locationX+0.5*dx-5 && player.locationX<= locationX+0.5*dx+5
 					&& player.locationZ >=locationZ+0.5*dz-5 && player.locationZ<= locationZ+0.5*dz+5){
 				inArea =  true;
 				if(doorGeluid==0){
+					//zorgt ervoor dat deur van player af open gaat
 					double s= (player.locationX*dz-player.locationZ*dx+c)/
 							lengte;
 					if(s>0){
@@ -135,6 +168,7 @@ public class Door extends GameObject implements VisibleObject {
 	public void setPlayer(Player player){
 		this.player = player;
 		doorSwitch.setPlayer(player);
+		//variabel nodig voor berekening: welke kant deur open moet gaan
 		c=-dz*locationX +dx*locationZ;
 	}
 	

@@ -25,6 +25,11 @@ public class PickupList {
 		pickups.add(p);
 	}
 	
+	/**
+	 * Reads a file and creates a pickuplist from the file
+	 * @param FileName
+	 * @throws FileNotFoundException
+	 */
 	public void Read(String FileName) throws FileNotFoundException{
 		
 		pickups.clear();
@@ -43,6 +48,11 @@ public class PickupList {
 				
 	}
 	
+	/**
+	 * adds pickuo to arraylist
+	 * @param FileName  
+	 * @throws IOException
+	 */
 	 void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfPickups: " + pickups.size() + ";\r\n";

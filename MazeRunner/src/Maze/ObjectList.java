@@ -24,7 +24,11 @@ public class ObjectList {
 	}
 	
 	
-	
+	/**
+	 * Fills the list with objects found in the file
+	 * @param filename the name of file to be read
+	 * @throws FileNotFoundException
+	 */
 	public void Read(String filename) throws FileNotFoundException{
 		
 		Scanner s = new Scanner(new File(filename));
@@ -60,6 +64,10 @@ public class ObjectList {
 		
 	}
 	
+	/**
+	 * changes string to used file format
+	 * @return
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "NumberOfObjects: " + objects.size() + ";\r\n";

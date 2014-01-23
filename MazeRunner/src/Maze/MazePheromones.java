@@ -18,10 +18,16 @@ public class MazePheromones {
 		pheromones = new ArrayList<Pheromone>();
 	}
 	
+	/**
+	 * adds pheromones to arraylist
+	 * @param x x coordinaat
+	 * @param y y cordinaat
+	 * @param z z coordinaat
+	 */
 	public void addPher(double x, double y, double z){
 		Pheromone newpheromone = new Pheromone(x, y, z);
 		
-//		System.out.print(pheromones.contains(newpheromone)+ ": ");
+		//overwrite existing pheromone
 		if(pheromones.contains(newpheromone)){
 			int index = pheromones.indexOf(newpheromone);
 			pheromones.remove(index);
@@ -29,10 +35,10 @@ public class MazePheromones {
 
 		pheromonesOrder = new PriorityQueue<Pheromone>(pheromones);
 		
+		//adds pheromone to ordered pheromonelist by pheromone amount
 		if(pheromonesOrder.size() > 1){
 			if(pherDistance(lastPher, newpheromone) > 1){
 				pheromonesOrder.add(newpheromone);
-//				System.out.println(newpheromone.x +", "+newpheromone.z+", "+newpheromone.y);
 				lastPher = newpheromone;
 			}
 		}
@@ -41,21 +47,16 @@ public class MazePheromones {
 			lastPher = newpheromone;
 		}
 		
-//		System.out.println("player: " + newpheromone.x + " , " + newpheromone.z);
-		
-//		System.out.print(pheromonesOrder.size()+"-"+ pheromonesOrder.peek().pheromone + "; ");
-		
+		//write PriorityQueue to arraylist
 		pheromones = new ArrayList<Pheromone>();
 		while(pheromonesOrder.size() != 0){
 			pheromones.add(pheromonesOrder.poll());
 		}
-		
-//		System.out.print("size "+pheromones.size());
-//		for(Pheromone pher : pheromones)
-//			System.out.print(" - "+ pher.pheromone);
-//		System.out.println();
 	}
 	
+	/**
+	 * evaporates and deletes pheromones
+	 */
 	public void evapPheromones(){
 		for( Pheromone pher : pheromones ){
 			pher.evapPher();
@@ -63,12 +64,16 @@ public class MazePheromones {
 		for(int i = pheromones.size()-1; i >= 0; i--){
 			if(pheromones.get(i).pheromone < 3){
 				pheromones.remove(i);
-//				System.out.println("pheromone deleted");
 			}
 		}
-//		System.out.println(pheromones.size());
 	}
 	
+	/**
+	 * distance between pheromones
+	 * @param pher1  pheromone 1
+	 * @param pher2 pheromone 2
+	 * @return
+	 */
 	public double pherDistance(Pheromone pher1, Pheromone pher2){
 		double dx = Math.abs(pher1.x - pher2.x);
 		double dy = Math.abs(pher1.z - pher2.z);
@@ -76,20 +81,20 @@ public class MazePheromones {
 		return Math.sqrt(dx*dx + dy+dy);
 	}
 	
+	/**
+	 * checks if pheromone is visible
+	 * @param x  x location object
+	 * @param pherX  pheromone x location
+	 * @param z  z location object
+	 * @param pherZ pheromone z location 
+	 * @param y y location object
+	 * @return
+	 */
 	public boolean obstructed(double x, double pherX, double z, double pherZ, double y){
-		
-//		for( int i = 0; i < 200; i++ ){
-//			double tx = x + deltaX*i/200.0;
-//			double tz = z + deltaZ*i/200.0;
-//			if( MainClass.maze.isWall(tx, y, tz) )
-//				return true;
-//		}
-//		return false;
 		if(main.maze.visionBlocked(x, y, z, pherX, pherZ)){
 			return true;
 		}
 		return false;
-//		System.out.println(obstructed);
 	}
 	
 	/**
@@ -120,9 +125,6 @@ public class MazePheromones {
 			if(highestPher.pheromone > 0.0)
 				break;
 		}
-		
-//		System.out.println(highestPher.pheromone);
-//		System.out.println("first: "+pheromones.get(0).pheromone);
 		
 		return highestPher;
 	}

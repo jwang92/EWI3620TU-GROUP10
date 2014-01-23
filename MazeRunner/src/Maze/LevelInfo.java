@@ -26,10 +26,15 @@ public class LevelInfo {
 		return startpos;
 	}
 	
+	/**
+	 * read from file
+	 * @param FileName 
+	 */
 	public void Read(String FileName){
 		
 		try {
 			
+			@SuppressWarnings("resource")
 			Scanner s = new Scanner(new File(FileName));
 			s.useDelimiter(" |; |;\r\n");
 			s.next();
@@ -37,13 +42,12 @@ public class LevelInfo {
 			String type = s.next();
 			
 			if(type.equals("PlayerPos:")){
-				
+				//player start position
 				startpos.x = s.nextInt();
 				startpos.y = s.nextInt();
 				startpos.z = s.nextInt();
 				
 			}
-			
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -51,6 +55,11 @@ public class LevelInfo {
 		
 	}
 	
+	/**
+	 * write to file
+	 * @param FileName
+	 * @throws IOException
+	 */
 	public void WriteToFile(String FileName) throws IOException{
 		
 		String r = "LevelInfo;\r\n";

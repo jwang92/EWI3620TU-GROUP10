@@ -29,6 +29,10 @@ public class Pickup {
 		return type;
 	}
 	
+	/**
+	 * changes string to used file format
+	 * @return
+	 */
 	public String toFileFormat()
 	{
 		
@@ -36,6 +40,11 @@ public class Pickup {
 		
 	}
 	
+	/**
+	 * reads a pickup from file
+	 * @param s scanner
+	 * @return the pickup object that is read
+	 */
 	public static Pickup Read(Scanner s){
 		
 		s.useDelimiter(": | |; |;\r\n");

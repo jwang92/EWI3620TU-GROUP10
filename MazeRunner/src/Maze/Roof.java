@@ -58,9 +58,9 @@ public class Roof {
 	
 	
 	/**
-	 * Reads a floor from the scanner
-	 * @param s The Scanner with start Floor
-	 * @return The Floor object that is read
+	 * Reads a roof from the scanner
+	 * @param s The Scanner with start roof
+	 * @return The roof object that is read
 	 */
 	public static Roof Read(Scanner s)
 	{
