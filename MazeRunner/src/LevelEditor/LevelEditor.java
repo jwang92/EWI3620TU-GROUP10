@@ -40,6 +40,7 @@ public class LevelEditor implements ActionListener{
 	private JPanel opties7;
 
 	private JPanel controlArea;
+	@SuppressWarnings("rawtypes")
 	private JComboBox cOptie4;
 	
 	//Frame
@@ -52,7 +53,11 @@ public class LevelEditor implements ActionListener{
 	public static void main(String[] args) {
 		new LevelEditor(false);
 	}
-	  
+	
+	/**
+	 * Create the new levelEditor
+	 * @param redirected Check if the editor is loaded from the main game.
+	 */
 	public LevelEditor(final boolean redirected){
 		
 		f = new JFrame("Medieval Invasion leveleditor");
@@ -122,6 +127,8 @@ public class LevelEditor implements ActionListener{
 	    f.setVisible(true);
 	    f.setDefaultCloseOperation (JFrame.DO_NOTHING_ON_CLOSE);
 
+	    
+	    //Close the program if the user exit the levelEditor.
 	    f.addWindowListener(new WindowAdapter() {
 	    	@Override
 	    	  public void windowClosing(WindowEvent e) {
@@ -140,11 +147,16 @@ public class LevelEditor implements ActionListener{
 		
 	}
 
+	/**
+	 * Is called if the an action is performed by jFrame
+	 */
+	@SuppressWarnings("rawtypes")
 	public void actionPerformed(ActionEvent evt) {
 
 		String cmd = evt.getActionCommand();
 		le.setNavMeshDrawMode(false);
 		
+		//Drawing modes
 		if(cmd.equals("Muur")){
 			le.setDrawMode(1);
 			changeOptie5(0);
@@ -170,56 +182,73 @@ public class LevelEditor implements ActionListener{
 		}
 		else if(cmd.equals("LevelInfo")){
 			le.setDrawMode(6);
-			le.setWhatLevelinfo(1);
 			changeOptie5(1);
 		}
 		else if(cmd.equals("Pickups")){
 			le.setDrawMode(7);
 			changeOptie5(2);
 		}
+		
+		//Selector for pickups
 		else if(cmd.equals("setPickups")){
 			JComboBox type = (JComboBox) evt.getSource();
 			setPickups(type);
 		}
+		//Selector for objects
 		else if(cmd.equals("setObjects")){
 			JComboBox type = (JComboBox) evt.getSource();
 			setObjects(type);
 		}
+		//Saving
 		else if(cmd.equals("save")){
 			save();
 		}
+		//Loading
 		else if(cmd.equals("load")){
 			load();		
 		}
+		//New Map
 		else if(cmd.equals("newMap")){
 			newMap();			
 		}
 		
+		//Select texture
 		else if(cmd.equals("textures"))
 		{
 			JComboBox type = (JComboBox) evt.getSource();
 			le.setTexture((String)type.getSelectedItem());
 		}
 		
+		//Create new storey
 		else if(cmd.equals("newStorey")){
 			newStorey();
 		}
 		
+		//Change storey
 		else if(cmd.equals("verdieping"))
 		{
 			JComboBox type = (JComboBox) evt.getSource();
 			verdieping(type);
 		}
+		
+		//Change the next level
 		else if(cmd.equals("nextLevel"))
 		{
 			nextLevel();
 		}
+		
+		//Generate the navmesh
 		else if(cmd.equals("navMesh"))
 		{
 			le.generateNavMesh();
 		}
 	}
 	
+	/**
+	 * Is fired when the user changes PickUps to draw. 
+	 * @param type Information from the selector
+	 */
+	@SuppressWarnings("rawtypes")
 	private void setPickups(JComboBox type){
 		String pu =(String)type.getSelectedItem();
 		
@@ -234,6 +263,11 @@ public class LevelEditor implements ActionListener{
 		le.setWhatPickup(whatPickup);
 	}
 	
+	/**
+	 * Is fired changes objects to draw. 
+	 * @param type Information from the selector
+	 */
+	@SuppressWarnings("rawtypes")
 	private void setObjects(JComboBox type){
 		String pu =(String)type.getSelectedItem();
 		
@@ -258,6 +292,9 @@ public class LevelEditor implements ActionListener{
 		le.setWhatObject(whatObject);
 	}
 	
+	/**
+	 * Save a level to a map
+	 */
 	private void save(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Map opslaan");
@@ -273,6 +310,9 @@ public class LevelEditor implements ActionListener{
 	    }
 	}
 	
+	/**
+	 * Load a level from a map
+	 */
 	private void load(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Map openen");
@@ -300,6 +340,9 @@ public class LevelEditor implements ActionListener{
 	    }
 	}
 	
+	/**
+	 * Create a new map
+	 */
 	private void newMap(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Nieuwe map");
@@ -323,6 +366,9 @@ public class LevelEditor implements ActionListener{
 	    }
 	}
 	
+	/**
+	 * Create a new storey
+	 */
 	private void newStorey(){
 		ArrayList<Storey> storeys = le.getStoreys();
 		Storey s = newStorey(le.getStoreys().get(le.getStoreys().size()-1).getRoofHeight());
@@ -342,6 +388,11 @@ public class LevelEditor implements ActionListener{
 		controlArea.updateUI();
 	}
 	
+	/**
+	 *Is fired if the users changes storeys. 
+	 * @param type Information from the selector
+	 */
+	@SuppressWarnings("rawtypes")
 	private void verdieping(JComboBox type){
 		String verdiepingtest =(String)type.getSelectedItem();
 		String verdiepingCheck = verdiepingtest.substring(0,verdiepingtest.length() - 2);
@@ -355,10 +406,19 @@ public class LevelEditor implements ActionListener{
 		}
 	}
 	
+	/**
+	 * Load a different storey in the drawing frame
+	 * @param verdiepingChange
+	 */
 	private void changeVerdieping(int verdiepingChange){
 		le.changeStorey(verdiepingChange);
 	}
 	
+	/**
+	 * Save the level to the selected folder
+	 * @param selectedFolder Folder to save the level
+	 * @throws IOException Throws a exception if the file isn't read correctly
+	 */
 	private void saveToFile(String selectedFolder) throws IOException{
 		ArrayList<Storey> storeys = le.getStoreys();
 		for(int i = 0;i<numberOfStoreys;i++){
@@ -373,6 +433,11 @@ public class LevelEditor implements ActionListener{
 		savefolder = selectedFolder;
 	}
 	
+	/**
+	 * Load the selector for changing storeys from the loadFolder
+	 * @param loadfolder
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createVerdiepingList(String loadfolder){
 		File folder = new File(loadfolder);
 		File[] tList = folder.listFiles();
@@ -400,6 +465,11 @@ public class LevelEditor implements ActionListener{
 		cOptie4.setActionCommand("verdieping");
 	}
 	
+	/**
+	 * Load the selector for changing storeys when the storeys are provided
+	 * @param storeys Storeys to generate the list for
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void createVerdiepingList(ArrayList<Storey> storeys){
 		numberOfStoreys = storeys.size();
 		String[] verdiepingList = new String[numberOfStoreys];
@@ -412,6 +482,11 @@ public class LevelEditor implements ActionListener{
 		cOptie4.setActionCommand("verdieping");
 	}
 	
+	/**
+	 * Create a new map to save the level in
+	 * @param selectedFolder Folder to create the new map
+	 * @throws IOException throws IOException if the map isn't created correctly
+	 */
 	private void createNewSaveMap(String selectedFolder) throws IOException{
 		ArrayList<Storey> storeys = new ArrayList<Storey>();
 		Storey s = newStorey(0);
@@ -421,6 +496,11 @@ public class LevelEditor implements ActionListener{
 		f.mkdirs();
 	}
 	
+	/**
+	 * Create a new storey with an assigned floorheight
+	 * @param floorHeight Floorheight to start the storey
+	 * @return return the storey
+	 */
 	private Storey newStorey(int floorHeight){
 		String xMap = (String)JOptionPane.showInputDialog(
 				f,
@@ -460,6 +540,9 @@ public class LevelEditor implements ActionListener{
 		return new Storey(xMapInt,yMapInt,floorHeight,heightInt);	
 	}
 	
+	/**
+	 * Select the nextLevel to be played when exiting this level through a level exit
+	 */
 	private void nextLevel(){
 		JFileChooser fc = new JFileChooser(defaultLoadFolder);
 		fc.setDialogTitle("Next Level");
@@ -486,6 +569,9 @@ public class LevelEditor implements ActionListener{
 	    }
 	}
 	
+	/**
+	 * Change the 5 option from type 
+	 */
 	private void changeOptie5(int type){
 		switch(type){
 		case 0:
@@ -603,6 +689,7 @@ public class LevelEditor implements ActionListener{
 	    option2f.addActionListener(this);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void createComponentOpties3(){
 		String[] textures = loadTextureNames();
 	    opties3 = new JPanel(new GridLayout(1, 1));
@@ -618,6 +705,10 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties3);
 	}
 	
+	/**
+	 * Load the names of the textures to use in the selector
+	 * @return A string array with the names of the textures
+	 */
 	private String[] loadTextureNames(){
 		File folder = new File("textures/");
 	    File[] tList = folder.listFiles();
@@ -684,6 +775,7 @@ public class LevelEditor implements ActionListener{
 	    controlArea.add(opties5);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void createComponentOpties6a(){
 		opties6a = new JPanel(new GridLayout(1, 1));
 	    opties6a.setBorder(BorderFactory.createTitledBorder("Level info:"));
@@ -703,6 +795,7 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties6a);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void createComponentOpties6b(){
 		opties6b = new JPanel(new GridLayout(1, 1));
 	    opties6b.setBorder(BorderFactory.createTitledBorder("Pickups:"));
@@ -722,6 +815,7 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties6b);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void createComponentOpties6c(){
 		opties6c = new JPanel(new GridLayout(2, 1));
 	    opties6c.setBorder(BorderFactory.createTitledBorder("Objects:"));
@@ -760,7 +854,15 @@ public class LevelEditor implements ActionListener{
 		controlArea.add(opties7);
 	}
 	
-	
+	/**
+	 * Lock the option to a fixed position
+	 * @param optie option to be locked
+	 * @param ipadX Width of the element
+	 * @param ipadY Height of the element
+	 * @param weightY Height of the element in comparison to the other elements
+	 * @param gridX place horizontal
+	 * @param gridY place vertical
+	 */
 	private void setConstraints(JPanel optie, int ipadX,int ipadY,double weightY, int gridX, int gridY){
 	    cons.ipady = ipadX;
         cons.ipadx = ipadY;

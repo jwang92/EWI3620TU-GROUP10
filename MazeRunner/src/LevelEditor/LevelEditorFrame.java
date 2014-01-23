@@ -47,7 +47,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	
 	// Screen size.
 	private int screenWidth = 800, screenHeight = 600;
-	private float buttonSize = screenHeight / 10.0f;
 	
 	//Grid distances
 	//private int worldSizeX = 10, worldSizeY = 10; 
@@ -63,6 +62,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	// happens on this component.
 	private GLJPanel canvas;
 
+	//Drawing modes
 	private static final byte DM_OBJECT = 0;
 	private static final byte DM_WALL = 1;
 	private static final byte DM_FLOOR = 2;
@@ -131,10 +131,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	private int objectToHighlight = -1;
 	private int pickupToHighlight = -1;
 	
+	//Cursor
 	private CursorHandler c;
-
-	private int lvlinfoToDraw;
-	
 	private MouseEvent CursorPos;
 	
 	/**
@@ -200,7 +198,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	@Override
 	/**
 	 * A function defined in GLEventListener. It is called once, when the frame containing the GLCanvas 
-	 * becomes visible. In this assignment, there is no moving ´camera´, so the view and projection can 
+	 * becomes visible. In the editor, there is no moving ´camera´, so the view and projection can 
 	 * be set at initialization. 
 	 */
 	public void init(GLAutoDrawable drawable) {
@@ -257,6 +255,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Load the textures for the leveleditor
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadTextures(){
 		@SuppressWarnings("rawtypes")
@@ -294,6 +295,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		drawBackground(gl);
 		
 		// Draw a figure based on the current draw mode and user input
+		// Drawing a figure also adds it to the storey
 		drawFigure(gl);
 		
 		// Draw the Floor or Roof according to the drawMode
@@ -320,9 +322,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 		// Draw the Walls
 		drawWalls(gl);
-			
+		
+		// Draw objects
 		drawObjects(gl);
 		
+		//Only draw navmesh if the user pressed the button
 		if(drawNavMesh){
 			drawNavMesh(gl);
 		}
@@ -378,6 +382,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		storeys = s;
 	}
 	
+	/**
+	 * Load a new level from the loadfolder
+	 * @param loadfolder Loadfolder from
+	 * @return returns a boolean if loading is succesfull
+	 * @throws FileNotFoundException Throws an exception if a file is not found
+	 */
 	public boolean loadFromFolder(String loadfolder) throws FileNotFoundException{
 		grid.clear();
 		storeys = new ArrayList<Storey>();
@@ -415,6 +425,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		return true;
 	}
 	
+	/**
+	 * Change between storeys
+	 * @param newStoreyNumber Storeys to change to
+	 */
 	public void changeStorey(int newStoreyNumber){
 		storeyNumber = newStoreyNumber;
 		initGrid();
@@ -432,6 +446,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			
 	}
 		
+	/**
+	 * Draw the grid to draw the objects on
+	 * @param gl Jogl
+	 */
 	public void drawGrid(GL gl){
 		Point2D.Float p1 = new Point2D.Float();
 		for(int i = 0; i < grid.size();i++){
@@ -447,6 +465,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Draw the tooltip which shows the name of the texture of walls
+	 * @param gl Jogl
+	 */
 	public void drawTooltip(GL gl){
 		
 		if(wallToHighlight != -1){
@@ -471,6 +493,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Change the mode to draw different objects: walls, floors, enzo.
+	 * @param i Mode to be drawing on
+	 */
 	public void setDrawMode(int i){
 		
 		resetHighlighting();
@@ -503,6 +529,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Setting the mode for highlighting
+	 * @param i mode to be set the highlighting to.
+	 */
 	public void setMode(int i){
 		
 		resetHighlighting();
@@ -510,24 +540,30 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				
 	}
 	
+	/**
+	 * Change the object to draw
+	 * @param i Object to be drawn
+	 */
 	public void setWhatObject(int i){
 		
 		objectToDraw = i; // 1 = Ramp, 2 = Predator, 3 = Lion, 4 = Exit, 5 = Bathos, 6 = Door;
 		
 	}
 	
+	/**
+	 * Set the string containing the next level
+	 * @param nextLevel String containing the path to the next level
+	 */
 	public void setNextLevel(String nextLevel){
 		levelExitLoadFolder = nextLevel;
 	}
 	
-	public void setWhatLevelinfo(int i){
-		
-		lvlinfoToDraw = i; // 1 = PlayerPosition
-	}
-	
-	public void setWhatPickup(int i){
-		
-		pickupToDraw = i; // 1 = Speed
+	/**
+	 * Set the pickup to be drawn
+	 * @param i The pickup to be drawn
+	 */
+	public void setWhatPickup(int i){		
+		pickupToDraw = i; // 1 = Speed // 2= Zwaard / 3 == Health
 		
 	}
 	
@@ -535,11 +571,18 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		textureFileName = "textures/" + textureName;
 	}
 	
+	/**
+	 * Generate the navmesh for the storeys
+	 */
 	public void generateNavMesh(){
 		navMesh = NavMesh.createMultiLayerNavMesh(storeys);
 		setNavMeshDrawMode(true);
 	}
 	
+	/**
+	 * Draw the navmesh if boolean is true
+	 * @param b Boolean if the navmesh should be drawn
+	 */
 	public void setNavMeshDrawMode(boolean b){
 		drawNavMesh = b;
 	}
@@ -561,6 +604,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		Point2D.Float g1, g2, g3, g4;
 		switch (drawMode) {
 		case DM_OBJECT:
+			//Draw objects if the size is 1
 			if (points.size() == 1) {
 
 				p1 = gridpoints.get(0);
@@ -574,33 +618,40 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				temp.add(p2);
 				temp.add(p3);
 				temp.add(p4);
+				//Draw ramp
 				if(objectToDraw == 1){
 					Object obj = new ObjectRamp(temp, textureFileName);
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
+				//Draw predator
 				else if(objectToDraw == 2){
 					Object obj = new ObjectEnemy(temp,"3d_object/Predator/Predator_Youngblood/Body.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
+				//Draw liom
 				else if(objectToDraw == 3){
 					Object obj = new ObjectEnemy(temp,"3d_object/lion/lion.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
+				//Draw levelexit
 				else if(objectToDraw == 4){
 					if(!levelExitLoadFolder.equals("")){
 						Object obj = new LevelExit(p1,2,levelExitLoadFolder);
 						storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 					}
 				}
+				//Draw batos
 				else if(objectToDraw == 5){
 					Object obj = new ObjectEnemy(temp,"3d_object/Bathos/bathos.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
+				//Draw small predator
 				else if(objectToDraw == 7){
 					Object obj = new ObjectEnemy(temp,"3d_object/Predator/Predator_Youngblood2/Body.obj");
 					storeys.get(storeyNumber - 1).getObjectList().addObject(obj);
 				}
 			}
+			//If the size is 2 draw doors
 			else if(points.size() >= 2){
 				if(objectToDraw == 6){
 					p1 = gridpoints.get(0);
@@ -621,6 +672,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			}
 			break;
 		case DM_LVLINFO:
+			//Draw starting pos
 			if (points.size() >= 1) {
 
 				p1 = gridpoints.get(0);
@@ -630,6 +682,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			}
 			break;
 		case DM_PICKUP:
+			//Draw pickup
 			if (points.size() >= 1) {
 
 				p1 = gridpoints.get(0);
@@ -644,9 +697,11 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			}
 			break;
 		case DM_WALL:
+			//Draw wall
 			if (points.size() >= 2) {
 				// If the draw mode is "line" and the user has supplied at least
 				// two points, draw a line between those points
+				// and create a wall
 				g1 = gridpoints.get(0);
 				g2 = gridpoints.get(1);
 				wall = new Wall((int)g1.x,(int)g1.y,(int)g2.x,(int)g2.y,textureFileName);
@@ -656,7 +711,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		case DM_FLOOR:
 			if (points.size() >= 4) {
 				// If the draw mode is "floor" and the user has supplied at least
-				// three points, draw a line between those points
+				// four points, draw a floor between those points
 				g1 = gridpoints.get(0);
 				g2 = gridpoints.get(1);
 				g3 = gridpoints.get(2);
@@ -673,7 +728,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		case DM_ROOF:
 			if (points.size() >= 4) {
 				// If the draw mode is "roof" and the user has supplied at least
-				// three points, draw a line between those points
+				// four points, draw a roof between those points
 				g1 = gridpoints.get(0);
 				g2 = gridpoints.get(1);
 				g3 = gridpoints.get(2);
@@ -688,15 +743,16 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				}
 			break;
 		case DM_ERASE:
-			
-			// Erase dingen?
-			// Niet nodig meer denk ik - Ruben
+			//Erase objects is handled in a different method
 			break;
 			}
 		}
 	
 	
-	
+	/**
+	 * Draw the walls in the level editor as lines
+	 * @param gl Jogl
+	 */
 	private void drawWalls(GL gl){
 		//Screen points
 		if(storeys.size()>0){
@@ -716,12 +772,17 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 		
+	/**
+	 * Draw the pickups in the level editor as textures
+	 * @param gl Jogl
+	 */
 	public void drawPickups(GL gl){
 		
 		if(storeys.size()>0){
 			
 			pickupList = storeys.get(storeyNumber - 1).getPickupList();
-						
+				
+			//Generate the extra points to draw the texture
 			for(int i = 0;i< pickupList.getPickups().size();i++){
 				
 				Point2D.Float pPos = pickupList.getPickups().get(i).getPoint();
@@ -735,6 +796,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 				Point2D.Float p4 = new Point2D.Float(gridOffsetX + pPos.x * gridDistance - (gridDistance / 4), 	screenHeight - gridOffsetY - pPos.y * gridDistance + (gridDistance / 4));
 				drawP.add(p4);
 				
+				//Select the right texture
 				String texture = "upgrade_speed.png";
 				switch(pickupList.getPickups().get(i).getType()){
 				case 1:
@@ -749,6 +811,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 					
 				}
 				
+				//Draw
 				int textureID = textureNames.lastIndexOf("textures/"+texture);
 				
 				if(pickupToHighlight == i)
@@ -762,13 +825,17 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Draw the levelstart in the level editor as textures
+	 * @param gl Jogl
+	 */
 	public void drawLevelInfo(GL gl){
 		
 		if(storeys.size()>0){
 			
 			Point3D pPos = lvlinfo.getPlayerPos();
 			
-			// Draw player position
+			// Draw player position by generating more points
 			if(pPos.z == storeyNumber){
 				
 				ArrayList<Point2D.Float> drawP = new ArrayList<Point2D.Float>();
@@ -791,6 +858,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Draw the objects accoring to their type
+	 * @param gl
+	 */
 	private void drawObjects(GL gl){
 		
 		if(storeys.size()>0){
@@ -801,6 +872,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 			int textureSwitch = textureNames.lastIndexOf("textures/switch.png");
 			for(int i = 0; i < objectList.getObjects().size();i++){
 				
+				//If the object is a ramp draw it as a texture
 				if(objectList.getObjects().get(i) instanceof ObjectRamp){
 					textureID = textureNames.lastIndexOf("textures/arrow.png");
 					ObjectRamp or = (ObjectRamp) objectList.getObjects().get(i);
@@ -813,6 +885,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						p.add(p1);
 					}
 				}
+				
+				//If the object is a enemy draw it as a picture of an enemy
 				if(objectList.getObjects().get(i) instanceof ObjectEnemy){
 					textureID = textureNames.lastIndexOf("textures/predator.png");
 					ObjectEnemy or = (ObjectEnemy) objectList.getObjects().get(i);
@@ -835,7 +909,8 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						p1.y = screenHeight - gridOffsetY - (or.getPoints().get(j).y-1)*gridDistance;
 						p.add(p1);
 					}
-				}					
+				}
+				//If the object is a levelExit draw a finish flag
 				else if(objectList.getObjects().get(i) instanceof LevelExit){
 					textureID = textureNames.lastIndexOf("textures/levelexit.png");
 					LevelExit tempObject = (LevelExit) objectList.getObjects().get(i);
@@ -857,6 +932,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 						p.add(p1);
 					}
 				}
+				//If the object is a door draw a door and the switch
 				else if(objectList.getObjects().get(i) instanceof ObjectDoor){
 					textureID = textureNames.lastIndexOf("textures/door_top_view.png");
 					ObjectDoor or = (ObjectDoor) objectList.getObjects().get(i);
@@ -904,6 +980,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Draw the floors in the leveleditor as textures
+	 * @param gl Jogl
+	 */
 	private void drawFloors(GL gl){
 		//Screen points
 		if(storeys.size()>0){
@@ -929,6 +1009,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Draw the roofs in the leveleditor as textures
+	 * @param gl Jogl
+	 */
 	private void drawRoofs(GL gl){
 		//Screen points
 		if(storeys.size()>0){
@@ -951,6 +1035,10 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		}
 	}
 	
+	/**
+	 * Draw the navmesh by calling its drawing method
+	 * @param gl Jogl
+	 */
 	public void drawNavMesh(GL gl){
 		
 		navMesh.get(storeyNumber-1).drawNavMeshEditor(gl,gridOffsetX,gridOffsetY,gridDistance,screenHeight);
@@ -983,6 +1071,14 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glEnd();
 	}
 	
+	/**
+	 * Help method to draw a polygon with texture
+	 * @param gl Jogl
+	 * @param p ArrayList with the points of the polygons
+	 * @param textureID ID of the texture
+	 * @param obj is the polygon one of the object (enemy,door,exit)
+	 * @param highlight must the polygon get highlighted
+	 */
 	private void polygonOnScreen(GL gl, ArrayList<Point2D.Float> p, int textureID, boolean obj, boolean highlight){
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_TEXTURE);
 		
@@ -1002,7 +1098,7 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		textures.get(textureID).bind();		
 		gl.glBegin(GL.GL_POLYGON);
 
-		
+		//Calculate the repeating of the texure
 		float numTex2 = (float) Math.ceil(disPoints(p.get(0), p.get(1)) / 60);
 		float numTex1 = (float) Math.ceil(disPoints(p.get(1), p.get(2)) / 60);
 		
@@ -1030,6 +1126,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
 	}
 	
+	/**
+	 * Calculate the distance between two points
+	 * @param p1 Point1
+	 * @param p2 Point2
+	 * @return return the distance
+	 */
 	private double disPoints(Point2D.Float p1, Point2D.Float p2){
 		
 		double r = Math.sqrt(Math.pow((p2.y - p1.y), 2) + Math.pow((p2.x - p1.x), 2));	
@@ -1037,6 +1139,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		return r;		
 	}
 	
+	/**
+	 * Delete the points when they are no longer necessary
+	 */
 	private void deletePoints(){
 		if (drawMode == DM_OBJECT && points.size() == 1) {
 			if(objectToDraw !=6){
@@ -1091,7 +1196,6 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		// Set the new screen size and adjusting the viewport
 		screenWidth = width;
 		screenHeight = height;
-		buttonSize = height / 10.0f;
 		gl.glViewport(0, 0, screenWidth, screenHeight);
 
 		// Update the projection to an orthogonal projection using the new screen size
@@ -1103,13 +1207,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	@Override
 	/**
 	 * A function defined in MouseListener. Is called when the pointer is in the GLCanvas, and a mouse button is released.
+	 * Is used to draw the objects and delete the points
 	 */
-	public void mouseReleased(MouseEvent me) {
-
-		
+	public void mouseReleased(MouseEvent me) {		
 		// Drawing
 		if(mode == 1){
-		
+			
 			if((gridHighlight.x >= ((me.getX()-gridOffsetX)/gridDistance+1)-0.1) 
 					&& (gridHighlight.x <= ((me.getX()-gridOffsetX)/gridDistance+1)+0.1)
 					&& (gridHighlight.y >= ((me.getY()-gridOffsetY)/gridDistance+1)-0.1)
@@ -1307,6 +1410,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		gridDragY = me.getY();
 	}
 	
+	/**
+	 * Called by Jogl when the mouse is moved. Almost the same as mouse released except this is used for highlighting
+	 */
 	@Override
 	public void mouseMoved(MouseEvent me) {
 		
@@ -1568,6 +1674,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Reset the highlighting if necessary
+	 */
 	public void resetHighlighting(){
 		
 		floorToHighlight = -1;
@@ -1578,6 +1687,12 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Test if a point is inside a polygon
+	 * @param test point
+	 * @param points Polygon
+	 * @return
+	 */
 	public boolean inPolygon(Point2D.Float test, Point2D.Float[] points) {
 		int i;
 		int j;
@@ -1591,8 +1706,31 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		return result;
 	}
 	
-	public double dist2(double vx, double vy, double wx, double wy) { return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); }
+	//All the code about distance is found on http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 	
+	/**
+	 * Distance between to points 
+	 * @param vx point1x
+	 * @param vy point1y
+	 * @param wx point2x
+	 * @param wy point2y
+	 * @return
+	 */
+	public double dist2(double vx, double vy, double wx, double wy) 
+	{ 
+		return Math.pow(vx - wx, 2) + Math.pow(vy - wy, 2); 
+	}
+	
+	/**
+	 * Distance from a point to a segment of a line (squared)
+	 * @param px PointX to be tested
+	 * @param py Pointy to be tested
+	 * @param vx Line1X
+	 * @param vy Line1Y
+ 	 * @param wx Line2X
+	 * @param wy Line2Y
+	 * @return return the distance squared
+	 */
 	public double distToSegmentSquared(double px, double py, double vx, double vy, double wx, double wy) {
 	  double l2 = dist2(vx, vy, wx, wy);
 	  if (l2 == 0) return dist2(px, py, vx, vy);
@@ -1602,11 +1740,24 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 	  return dist2(px, py, vx + t * (wx - vx), vy + t * (wy - vy));
 	}	
 	
+	/**
+	 * Distance from a point to a segment of a line
+	 * @param px PointX to be tested
+	 * @param py Pointy to be tested
+	 * @param vx Line1X
+	 * @param vy Line1Y
+ 	 * @param wx Line2X
+	 * @param wy Line2Y
+	 * @return return the distance
+	 */
 	public double distToSegment(double px, double py, double vx, double vy, double wx, double wy) 
 	{ 
 		return Math.sqrt(distToSegmentSquared(px, py, vx, vy, wx, wy)); 
 	}
 	
+	/**
+	 * Used to drag the grid
+	 */
 	@Override
 	public void mouseDragged(MouseEvent me) {
 		gridOffsetX += me.getX()- gridDragX;
@@ -1620,6 +1771,9 @@ public class LevelEditorFrame extends Frame implements GLEventListener, MouseLis
 		
 	}
 	
+	/**
+	 * Used to scroll the grid
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent me) {
 		gridDistance -= gridDistance*0.05*me.getWheelRotation();
