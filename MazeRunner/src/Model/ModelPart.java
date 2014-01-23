@@ -21,6 +21,9 @@ public class ModelPart {
     private boolean enableSmoothShading = true;
     private GL gl;
 
+    /**
+     * States for texture, smooth and flat models
+     */
     public void enableStates() {
     	
         if (hasTextureCoordinates()) {
@@ -71,7 +74,9 @@ public class ModelPart {
         return materials;
     }
 
-    /** @author Oskar */
+    /** @author Oskar 
+     * Faces of the model
+     */
     public static class Face {
 
         private final int[] vertexIndices = {-1, -1, -1};

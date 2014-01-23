@@ -41,9 +41,16 @@ import Utils.Point3D;
 
 /**
  * @author Oskar
+ * Extended by Guido Remmerswaal
  */
 public class OBJLoader {
 
+	/**
+	 * Generate a displaylist for a model
+	 * @param m model
+	 * @param gl jogl
+	 * @return return the id of the displaylist
+	 */
     public static int createDisplayList(Model m,GL gl) {
         int displayList = gl.glGenLists(1);
         gl.glNewList(displayList, GL.GL_COMPILE_AND_EXECUTE);
@@ -91,6 +98,9 @@ public class OBJLoader {
     }
     
 
+    /**
+     * Generate a model as VertexBufferObject
+     */
     public static IntBuffer createVBO(Model model, GL gl) {
     	model = loadTextures(model,gl);
         IntBuffer vboHandle = IntBuffer.allocate(3);
@@ -132,6 +142,12 @@ public class OBJLoader {
         return vboHandle;
     }
     
+    /**
+     * Load the textures of the model
+     * @param model
+     * @param gl
+     * @return
+     */
     private static Model loadTextures(Model model, GL gl){
     	 for(int i =0;i<model.getModelParts().size();i++){
     		 ModelPart modelPart = model.getModelParts().get(i);
@@ -172,6 +188,12 @@ public class OBJLoader {
         }
     }
 
+    /**
+     * Load model without textures
+     * @param f file
+     * @return return model
+     * @throws IOException
+     */
     public static Model loadModel(File f) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(f));
         Model m = new Model();
@@ -207,6 +229,12 @@ public class OBJLoader {
         return m;
     }
 
+    /**
+     * Display with textures, isn't working correctly
+     * @param m model
+     * @param gl
+     * @return
+     */
     public static int createTexturedDisplayList(Model m, GL gl) {
         int displayList = gl.glGenLists(1);
         gl.glNewList(displayList, GL.GL_COMPILE);
@@ -268,7 +296,12 @@ public class OBJLoader {
         return displayList;
     }
 
-    
+    /**
+     * Load textured model
+     * @param f file
+     * @return return model
+     * @throws IOException
+     */
     public static Model loadTexturedModel(File f) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(f));
         Model m = new Model();

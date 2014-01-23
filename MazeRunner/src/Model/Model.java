@@ -57,6 +57,9 @@ public class Model {
     private boolean enableSmoothShading = true;
     private GL gl;
 
+    /**
+     * States for texture, smooth and flat models
+     */
     public void enableStates() {
     	
         if (hasTextureCoordinates()) {
@@ -98,7 +101,6 @@ public class Model {
     	normalOffsetArray[part] = offset;
     }
 
-    
     public void initiliazeArrays(){
     	verticesOffsetArray = new int[parts.size()];
     	normalOffsetArray = new int[parts.size()];
@@ -141,6 +143,11 @@ public class Model {
         return materials;
     }
 
+    /**
+     * Material of the model
+     * @author Oskar Verhoek
+     *
+     */
     public static class Material {
 
         @Override
