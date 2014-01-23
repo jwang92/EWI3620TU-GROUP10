@@ -1,4 +1,0 @@
-Size: 15 15;
-Floorheight: 0;
-StoreyHeight: 5;
-End;

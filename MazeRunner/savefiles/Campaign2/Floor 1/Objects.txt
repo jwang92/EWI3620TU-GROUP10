@@ -1,7 +1,8 @@
-NumberOfObjects: 5;
-Door: 8 16; 9 16; 9 17; 8 17; 2 16;
-Enemy: 10 1; 11 1; 11 2; 10 2; 3d_object/Bathos/bathos.obj;
-Ramp: 15 9; 14 9; 14 8; 15 8; textures/arrow.png;
-Door: 14 11; 15 11; 15 12; 14 12; 2 8;
-Door: 2 11; 3 11; 3 12; 2 12; 8 1;
+NumberOfObjects: 6;
+Ramp: 8 3; 7 3; 7 2; 8 2; textures/wood.png;
+Ramp: 7 12; 8 12; 8 13; 7 13; textures/brick.png;
+Enemy: 4 4; 5 4; 5 5; 4 5; 3d_object/Predator/Predator_Youngblood/Body.obj;
+Enemy: 4 9; 5 9; 5 10; 4 10; 3d_object/Predator/Predator_Youngblood2/Body.obj;
+Exit: 1 1; 2; savefiles/Campaign3;
+Door: 1 7; 2 7; 2 8; 1 8; 13 13;
 End;

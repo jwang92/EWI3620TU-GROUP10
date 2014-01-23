@@ -1,4 +1,4 @@
 NumberOfObjects: 2;
-Exit: 5 3; 2; finish;
-Exit: 10 7; 2; savefiles/Campaign2;
+Exit: 7 7; 2; savefiles/Campaign2;
+Exit: 5 3; 2; savefiles/Campaign2;
 End;

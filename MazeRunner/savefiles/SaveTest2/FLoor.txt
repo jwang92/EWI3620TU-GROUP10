@@ -1,3 +1,0 @@
-NumberOfFloors: 1;
-4 4; 4 4; 4 4; 4 4; textures/brick.png;
-End;

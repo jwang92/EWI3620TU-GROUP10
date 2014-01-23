@@ -1,6 +1,0 @@
-NumberOfRoofs: 4;
-5 4; 5 7; 7 7; 7 4; textures/brick.png;
-2 5; 2 7; 3 7; 3 5; textures/grass.png;
-7 3; 7 4; 8 4; 8 3; textures/wood.png;
-8 6; 8 8; 9 8; 9 6; textures/wood.png;
-End;

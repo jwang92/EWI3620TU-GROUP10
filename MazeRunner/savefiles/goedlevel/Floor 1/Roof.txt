@@ -1,3 +1,0 @@
-NumberOfRoofs: 1;
-1 1; 14 1; 14 14; 1 14; textures/wood.png;
-End;

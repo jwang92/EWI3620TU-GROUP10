@@ -1,4 +1,0 @@
-NumberOfFloors: 2;
-1 1; 14 1; 14 14; 1 14; textures/grass.png;
-9 7; 14 7; 14 11; 9 11; textures/wood.png;
-End;

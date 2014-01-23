@@ -1,10 +1,5 @@
-NumberOfObjects: 8;
-Door: 4 12; 5 12; 5 13; 4 13; 1 13;
-Door: 2 12; 3 12; 3 13; 2 13; 6 10;
-Door: 4 14; 5 14; 5 15; 4 15; 1 12;
-Door: 10 14; 10 13; 11 13; 11 14; 6 15;
-Enemy: 7 8; 8 8; 8 9; 7 9; 3d_object/Predator/Predator_Youngblood2/Body.obj;
-Enemy: 8 4; 9 4; 9 5; 8 5; 3d_object/Predator/Predator_Youngblood/Body.obj;
-Door: 6 5; 6 4; 7 4; 7 5; 6 1;
-Exit: 5 2; 2; finish;
+NumberOfObjects: 3;
+Enemy: 12 5; 13 5; 13 6; 12 6; 3d_object/Predator/Predator_Youngblood/Body.obj;
+Enemy: 5 4; 6 4; 6 5; 5 5; 3d_object/Predator/Predator_Youngblood/Body.obj;
+Exit: 1 1; 2; finish;
 End;

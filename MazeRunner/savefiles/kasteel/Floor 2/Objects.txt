@@ -1,2 +1,4 @@
-NumberOfObjects: 0;
+NumberOfObjects: 2;
+Enemy: 1 3; 2 3; 2 4; 1 4; 3d_object/lion/lion.obj;
+Enemy: 1 5; 2 5; 2 6; 1 6; 3d_object/lion/lion.obj;
 End;

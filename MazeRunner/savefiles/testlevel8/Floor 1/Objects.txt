@@ -1,3 +1,0 @@
-NumberOfObjects: 1;
-Ramp: 7 5; 8 5; 8 6; 7 6; textures/brick.png;
-End;

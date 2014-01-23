@@ -1,2 +1,0 @@
-NumberOfObjects: 0;
-End;
